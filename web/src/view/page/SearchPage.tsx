@@ -34,6 +34,11 @@ export function SearchPage(props: HomePageProps) {
   return (
     <div>
       <ThemeProvider theme={theme}>
+        <div style={{
+          fontSize: 18, fontWeight: 700, fontStyle: "italic",
+          marginBottom: 18, marginTop: 260
+        }}>LEAGUE OF LEGENDS STATS TRACKER
+        </div>
         <TextField style={{ marginRight: 4 }}
           id="outlined-basic" label="Player Name" variant="outlined"
           InputLabelProps={{ shrink: true, }}
@@ -45,7 +50,15 @@ export function SearchPage(props: HomePageProps) {
           onClick={searchPlayerName}>
           <NavigateNextRoundedIcon />
         </Button>
+        <div style={{
+          fontSize: 14, fontWeight: 700, fontStyle: "italic",
+          color: "#bdbdbd", marginTop: 14
+        }}>
+          <a style={{ textDecoration: "none", color: "#bdbdbd" }} href="https://github.com/scalableinternetservices/twitchprime">
+            @twitchprime
+          </a>
+        </div>
       </ThemeProvider>
     </div>
-  );
+  )
 }
