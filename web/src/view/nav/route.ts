@@ -10,6 +10,8 @@ export enum Route {
   PROJECTS = 'app/projects',
   PLAYGROUND = 'app/playground',
   PLAYGROUND_APP = 'app/playground/:app',
+  SEARCH = 'app/search',
+  PLAYERDETAIL = "app/player-detail/:playerName"
 }
 
 export enum PlaygroundApp {
