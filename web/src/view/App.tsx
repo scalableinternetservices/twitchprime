@@ -12,6 +12,7 @@ import { UserContext, UserCtx } from './auth/user'
 import { Route } from './nav/route'
 import { HomePage } from './page/HomePage'
 import { LecturesPage } from './page/LecturesPage'
+import { MatchDetailPage } from './page/MatchDetailPage'
 import { PlayerDetailPage } from './page/PlayerDetailPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
 import { ProjectsPage } from './page/ProjectsPage'
@@ -61,6 +62,7 @@ export function AppBody() {
         <PlaygroundPage path={Route.PLAYGROUND_APP} />
         <SearchPage path={Route.SEARCH} />
         <PlayerDetailPage path={Route.PLAYERDETAIL} />
+        <MatchDetailPage path={Route.MATCHDETAIL} />
       </Router>
       <Footer>
         <FooterText>© 2020 John Rothfels</FooterText>

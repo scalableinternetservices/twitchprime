@@ -11,7 +11,8 @@ export enum Route {
   PLAYGROUND = 'app/playground',
   PLAYGROUND_APP = 'app/playground/:app',
   SEARCH = 'app/search',
-  PLAYERDETAIL = "app/player-detail/:playerName"
+  PLAYERDETAIL = "app/player-detail/:playerName",
+  MATCHDETAIL = "app/match-detail/:matchID"
 }
 
 export enum PlaygroundApp {

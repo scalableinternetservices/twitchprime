@@ -12,7 +12,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
-import { RouteComponentProps, useParams } from '@reach/router';
+import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { AppRouteParams } from '../nav/route';
@@ -27,6 +27,7 @@ const theme = createMuiTheme({
 });
 
 export function PlayerDetailPage(props: HomePageProps) {
+  const navigate = useNavigate();
   const params = useParams();
 
   useEffect(() => {
@@ -58,15 +59,14 @@ export function PlayerDetailPage(props: HomePageProps) {
     createData('zzz', 356, 16.0, 49, 3.9),
   ];
 
-  const goToMatchDetailPage = (key: string) => {
-    // TODO: nav to match detail page
-    console.log(key);
+  const goToMatchDetailPage = (matchID: string) => {
+    navigate(`/app/match-detail/${matchID}`)
   }
 
   return (
     <div>
       <ThemeProvider theme={theme}>
-        <div style={{ fontSize: 30, fontWeight: 500, marginBottom: 10 }}>{params.playerName}</div>
+        <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}>{params.playerName}</div>
         <Paper>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
