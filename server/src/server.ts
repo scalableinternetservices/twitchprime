@@ -61,7 +61,7 @@ server.express.get('/', (req, res) => {
       "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
       "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
       "Origin": "https://developer.riotgames.com",
-      "X-Riot-Token": "RGAPI-dac6a563-92a2-4967-b507-f5d7a9525d82"
+      "X-Riot-Token": "{Your own token}"
     }
   })
   .then(async function (response) {
@@ -81,7 +81,7 @@ server.express.get('/', (req, res) => {
       "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
       "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
       "Origin": "https://developer.riotgames.com",
-      "X-Riot-Token": "RGAPI-dac6a563-92a2-4967-b507-f5d7a9525d82"
+      "X-Riot-Token": "{Your own token}"
     }
   })
   .then(async function (response) {
@@ -96,7 +96,7 @@ server.express.get('/', (req, res) => {
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
         "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
         "Origin": "https://developer.riotgames.com",
-        "X-Riot-Token": "RGAPI-dac6a563-92a2-4967-b507-f5d7a9525d82"
+        "X-Riot-Token": "{Your own token}"
       }
     })
     .then(async function (response) {
