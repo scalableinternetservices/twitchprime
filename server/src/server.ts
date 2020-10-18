@@ -7,9 +7,11 @@ require('honeycomb-beeline')({
 })
 
 import assert from 'assert'
+import axios from 'axios' // import axios for http requests
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { json, raw, RequestHandler, static as expressStatic } from 'express'
+import fs from 'fs'
 import { getOperationAST, parse as parseGraphql, specifiedRules, subscribe as gqlSubscribe, validate } from 'graphql'
 import { GraphQLServer } from 'graphql-yoga'
 import { forAwaitEach, isAsyncIterable } from 'iterall'
@@ -26,6 +28,11 @@ import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
+
+// create axios instance with customized baseURL
+const instance = axios.create({
+  baseURL: 'https://na1.api.riotgames.com/lol/'
+})
 
 const server = new GraphQLServer({
   typeDefs: getSchema(),
@@ -44,10 +51,70 @@ const asyncRoute = (fn: RequestHandler) => (...args: Parameters<RequestHandler>)
 server.express.get('/', (req, res) => {
   console.log('GET /')
   res.redirect('/app')
+  // sample instance http requests call with riot token in header
+  instance({
+    method: 'get',
+    url: '/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5',
+    headers:
+    {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
+      "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
+      "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+      "Origin": "https://developer.riotgames.com",
+      "X-Riot-Token": "RGAPI-dac6a563-92a2-4967-b507-f5d7a9525d82"
+    }
+  })
+  .then(async function (response) {
+    // console.log(response.data)
+    fs.writeFile("challengerData.json", JSON.stringify(response.data), (err) => {
+      if (err)
+        console.log(err)
+    }) // write stringified response data to json file, TBD: change file directory
+  });
+  // For individual player search, first find accountId by summonerName
+  instance({
+    method: 'get',
+    url: '/summoner/v4/summoners/by-name/Psyx', // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
+    headers:
+    {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
+      "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
+      "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+      "Origin": "https://developer.riotgames.com",
+      "X-Riot-Token": "RGAPI-dac6a563-92a2-4967-b507-f5d7a9525d82"
+    }
+  })
+  .then(async function (response) {
+    const parsed = JSON.parse(JSON.stringify(response.data))
+    const accountId = parsed.accountId
+    instance({
+      method: 'get',
+      url: '/match/v4/matchlists/by-account/' + accountId, // can be any accountId, i.e. /match/v4/matchlists/by-account/{accountId}
+      headers:
+      {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
+        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
+        "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Origin": "https://developer.riotgames.com",
+        "X-Riot-Token": "RGAPI-dac6a563-92a2-4967-b507-f5d7a9525d82"
+      }
+    })
+    .then(async function (response) {
+      fs.writeFile("Psyx.json", JSON.stringify(response.data), (err) => {
+        if (err)
+          console.log(err)
+      }) // write stringified response data to json file, TBD: change file directory
+    });
+  });
 })
 
 server.express.get('/app/*', (req, res) => {
   console.log('GET /app')
+  renderApp(req, res)
+})
+
+server.express.get('/app/search', (req, res) => {
+  console.log('GET /app/search')
   renderApp(req, res)
 })
 
