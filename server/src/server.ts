@@ -11,7 +11,6 @@ import axios from 'axios' // import axios for http requests
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { json, raw, RequestHandler, static as expressStatic } from 'express'
-import fs from 'fs'
 import { getOperationAST, parse as parseGraphql, specifiedRules, subscribe as gqlSubscribe, validate } from 'graphql'
 import { GraphQLServer } from 'graphql-yoga'
 import { forAwaitEach, isAsyncIterable } from 'iterall'
@@ -22,12 +21,16 @@ import { checkEqual, Unpromise } from '../../common/src/util'
 import { Config } from './config'
 import { migrate } from './db/migrate'
 import { initORM } from './db/sql'
+import { RecentMatch } from './entities/RecentMatch'
 import { Session } from './entities/Session'
+import { Summoner } from './entities/Summoner'
 import { User } from './entities/User'
 import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
+
+const riotToken = "{Your own Token}"
 
 // create axios instance with customized baseURL
 const instance = axios.create({
@@ -61,51 +64,106 @@ server.express.get('/', (req, res) => {
       "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
       "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
       "Origin": "https://developer.riotgames.com",
-      "X-Riot-Token": "{Your own token}"
+      "X-Riot-Token": riotToken
     }
   })
   .then(async function (response) {
-    // console.log(response.data)
-    fs.writeFile("challengerData.json", JSON.stringify(response.data), (err) => {
-      if (err)
-        console.log(err)
-    }) // write stringified response data to json file, TBD: change file directory
+
+    console.log("Parsing and Saving challengerData")
+    const jsonObj = JSON.parse(JSON.stringify(response.data))
+    const entries = jsonObj.entries
+    entries.forEach(async (element: any) => {
+      //console.log(element.summonerName)
+
+      //check whether the summoner is exist in the database
+      var summoner = await(Summoner.findOne({ where: { summonerId : element.summonerId}}))
+      if (!summoner){ //if not create a new one
+        summoner = new Summoner()
+        summoner.summonerId = element.summonerId
+      }
+      summoner.summonerName = element.summonerName
+      summoner.leaguePoints = element.leaguePoints
+      summoner.isTop300 = true //uses to differentiate Top 300 player that we got from the Ranking and other player that we got from normal searching
+      summoner.rank = element.rank
+      summoner.wins = element.wins
+      summoner.losses = element.losses
+      summoner.veteran = element.veteran
+      summoner.inactive = element.inactive
+      summoner.freshBlood = element.freshBlood
+      summoner.hotStreak = element.hotStreak
+
+      Summoner.save(summoner)//.then(s => console.log('saved summoner: ' + s.summonerName))
+    });
+    console.log("ChallengerData is saved")
   });
   // For individual player search, first find accountId by summonerName
+  var searchName = "rovex1"
   instance({
     method: 'get',
-    url: '/summoner/v4/summoners/by-name/Psyx', // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
+    url: '/summoner/v4/summoners/by-name/' + searchName, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
     headers:
     {
       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
       "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
       "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
       "Origin": "https://developer.riotgames.com",
-      "X-Riot-Token": "{Your own token}"
+      "X-Riot-Token": riotToken
     }
   })
   .then(async function (response) {
-    const parsed = JSON.parse(JSON.stringify(response.data))
-    const accountId = parsed.accountId
+    console.log("Search summoner by name success: " + searchName)
+    const summonerByName = JSON.parse(JSON.stringify(response.data))
+    var summoner = await(Summoner.findOne({ where: { summonerId : summonerByName.id}}))
+
+    if (!summoner){
+      summoner = new Summoner()
+      summoner.summonerId = summonerByName.id
+    }
+    summoner.accountId = summonerByName.accountId
+    summoner.summonerName = summonerByName.name
+    summoner.profileIconId = summonerByName.profileIconId
+    summoner.summonerLevel = summonerByName.summonerLevel
+
+    Summoner.save(summoner)
+
+    const playerAccountID = summoner.accountId
+    const playerName = summoner.summonerName
     instance({
       method: 'get',
-      url: '/match/v4/matchlists/by-account/' + accountId, // can be any accountId, i.e. /match/v4/matchlists/by-account/{accountId}
+      url: '/match/v4/matchlists/by-account/' + playerAccountID + '?endIndex=10', // can be any accountId, i.e. /match/v4/matchlists/by-account/{accountId}
       headers:
       {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
         "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
         "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
         "Origin": "https://developer.riotgames.com",
-        "X-Riot-Token": "{Your own token}"
+        "X-Riot-Token": riotToken
       }
     })
-    .then(async function (response) {
-      fs.writeFile("Psyx.json", JSON.stringify(response.data), (err) => {
-        if (err)
-          console.log(err)
-      }) // write stringified response data to json file, TBD: change file directory
+    .then(function (response) {
+      console.log("Saving player: \""  + "\" recent 10 matches")
+      const parsed = JSON.parse(JSON.stringify(response.data))
+      const recentMatches = parsed.matches
+      recentMatches.forEach(async (element : any) => {
+        var recentMatch = await(RecentMatch.findOne({ where: { accountId : playerAccountID, gameId : element.gameId}}))
+        if (!recentMatch){
+          recentMatch = new RecentMatch()
+          recentMatch.accountId = playerAccountID
+          recentMatch.summonerName = playerName
+          recentMatch.platformId = element.platformId
+          recentMatch.gameId = element.gameId
+          recentMatch.champion = element.champion
+          recentMatch.queue = element.queue
+          recentMatch.season = element.season
+          recentMatch.timestamp = element.timestamp
+          recentMatch.role = element.role
+          recentMatch.lane = element.lane
+          RecentMatch.save(recentMatch)
+        }
+      });
+      console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
     });
-  });
+  })
 })
 
 server.express.get('/app/*', (req, res) => {
@@ -303,6 +361,7 @@ initORM()
       () => {
         console.log(`server started on http://localhost:${Config.appserverPort}/`)
       }
+      //server start
     )
   )
   .catch(err => console.error(err))
