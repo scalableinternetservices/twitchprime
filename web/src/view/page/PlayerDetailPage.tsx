@@ -1,3 +1,4 @@
+import { gql, useQuery } from '@apollo/client';
 import { blue } from '@material-ui/core/colors';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
@@ -16,7 +17,9 @@ import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { AppRouteParams } from '../nav/route';
-
+import Error from './Error';
+import Loading from './Loading';
+import NotFound from './NotFound';
 
 interface HomePageProps extends RouteComponentProps, AppRouteParams { }
 
@@ -26,13 +29,29 @@ const theme = createMuiTheme({
   },
 });
 
+interface PlayerDetail {
+  id: number;
+  matches: string[]
+}
+
+const fetchPlayerDetail = gql`
+  query getPlayerDetail($playerName: String!) {
+    playerDetail(playerName: $playerName) {
+      test
+    }
+  }
+`;
+
 export function PlayerDetailPage(props: HomePageProps) {
   const navigate = useNavigate();
   const params = useParams();
+  const playerName = params.playerName;
+  const { loading, error, data } = useQuery<PlayerDetail>(fetchPlayerDetail, {
+    variables: { playerName },
+  });
 
   useEffect(() => {
-    // TODO: send request to backend to get player detail data
-    console.log(params.playerName);
+    console.log(playerName);
   });
 
   const [page, setPage] = React.useState(0);
@@ -63,8 +82,15 @@ export function PlayerDetailPage(props: HomePageProps) {
     navigate(`/app/match-detail/${matchID}`)
   }
 
+  if (loading) return <ThemeProvider theme={theme}><Loading /></ThemeProvider>;
+  if (error) return <Error />;
+  if (!data) return <NotFound />;
+
   return (
     <div>
+      {data.matches.map((test) => (
+        <div>{test}</div>
+      ))}
       <ThemeProvider theme={theme}>
         <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}>{params.playerName}</div>
         <Paper>
