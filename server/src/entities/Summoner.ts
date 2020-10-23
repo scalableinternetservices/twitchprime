@@ -51,11 +51,6 @@ export class Summoner extends BaseEntity {
   @Column({
     nullable: true
   })
-  isTop300: boolean
-
-  @Column({
-    nullable: true
-  })
   wins: number
 
   @Column({

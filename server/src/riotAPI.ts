@@ -41,7 +41,6 @@ export class RiotAPI {
         }
         summoner.summonerName = element.summonerName
         summoner.leaguePoints = element.leaguePoints
-        summoner.isTop300 = true //uses to differentiate Top 300 player that we got from the Ranking and other player that we got from normal searching
         summoner.rank = element.rank
         summoner.wins = element.wins
         summoner.losses = element.losses
@@ -57,8 +56,11 @@ export class RiotAPI {
   }
 
   //update summoner AccountID, return summoner obj
-  updateSummonerByName(searchName: String){
-    this.instance({
+  async updateSummonerByName(searchName: String){
+    var summoner : any
+
+    //update account info
+    await this.instance({
       method: 'get',
       url: '/summoner/v4/summoners/by-name/' + searchName, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
       headers:
@@ -70,9 +72,9 @@ export class RiotAPI {
         "X-Riot-Token": this.riotToken
       }
     }).then(async function (response) {
-      console.log("Search summoner by name success: " + searchName)
+      console.log("Account info Update for summoner " + searchName)
       const summonerByName = JSON.parse(JSON.stringify(response.data))
-      var summoner = await(Summoner.findOne({ where: { summonerId : summonerByName.id}}))
+      summoner = await(Summoner.findOne({ where: { summonerId : summonerByName.id}}))
       if (!summoner){
         summoner = new Summoner()
         summoner.summonerId = summonerByName.id
@@ -82,8 +84,37 @@ export class RiotAPI {
       summoner.profileIconId = summonerByName.profileIconId
       summoner.summonerLevel = summonerByName.summonerLevel
       Summoner.save(summoner)
-      return summoner
+    })
+
+    //update game stat
+    await this.instance({
+      method: 'get',
+      url: '/league/v4/entries/by-summoner/' + summoner.summonerId, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
+      headers:
+      {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
+        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja-JP;q=0.6,ja;q=0.5",
+        "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Origin": "https://developer.riotgames.com",
+        "X-Riot-Token": this.riotToken
+    }
+    }).then(function (response) {
+      console.log("Game stat Update for summoner " + searchName)
+      const summonerAllGameStat = JSON.parse(JSON.stringify(response.data))
+      if (summonerAllGameStat.length != 0){
+        const summonerGameStat = summonerAllGameStat[summonerAllGameStat.length - 1] //the last entry is the  stat of Ranked_solo_5x5
+        summoner.leaguePoints = summonerGameStat.leaguePoints
+        summoner.rank = summonerGameStat.rank
+        summoner.wins = summonerGameStat.wins
+        summoner.losses = summonerGameStat.losses
+        summoner.veteran = summonerGameStat.veteran
+        summoner.inactive = summonerGameStat.inactive
+        summoner.freshBlood = summonerGameStat.freshBlood
+        summoner.hotStreak = summonerGameStat.hotStreak
+      }
     });
+    Summoner.save(summoner)
+    return summoner
   }
 
   // For individual player search, first find accountId by summonerName

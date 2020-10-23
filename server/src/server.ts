@@ -56,6 +56,7 @@ server.express.get('/app/*', (req, res) => {
   renderApp(req, res)
   var riotAPI = new RiotAPI("RGAPI-987593b7-725e-40db-8320-5f755118b574")
   riotAPI.updateChallengerData()
+  riotAPI.updateSummonerByName('Yassuo')
 })
 
 server.express.get('/app/search', (req, res) => {
