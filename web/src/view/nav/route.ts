@@ -5,11 +5,6 @@
  * Some routes are special values that map to one of the other routes depending on current location context.
  */
 export enum Route {
-  HOME = 'app/index',
-  LECTURES = 'app/lectures',
-  PROJECTS = 'app/projects',
-  PLAYGROUND = 'app/playground',
-  PLAYGROUND_APP = 'app/playground/:app',
   SEARCH = 'app/search',
   PLAYERDETAIL = "app/player-detail/:playerName",
   MATCHDETAIL = "app/match-detail/:matchID"
@@ -18,19 +13,6 @@ export enum Route {
 export enum PlaygroundApp {
   SURVEYS = 'surveys',
   LOGIN = 'login',
-}
-
-export function getSurveyPath(surveyId?: number) {
-  const path = getPath(Route.PLAYGROUND_APP, { app: PlaygroundApp.SURVEYS })
-  return path + (surveyId ? `?surveyId=${surveyId}` : '')
-}
-
-export function getLoginPath() {
-  return getPath(Route.PLAYGROUND_APP, { app: PlaygroundApp.LOGIN })
-}
-
-export function getPlaygroundPath() {
-  return getPath(Route.PLAYGROUND)
 }
 
 /**
