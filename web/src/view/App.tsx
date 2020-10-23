@@ -39,7 +39,7 @@ export function AppBody() {
     <>
       <Router className={bodyClass}>
         <Redirect noThrow from="app" to="index" />
-        <SearchPage path={Route.SEARCH} />
+        <SearchPage path={Route.SEARCH} default />
         <PlayerDetailPage path={Route.PLAYERDETAIL} />
         <MatchDetailPage path={Route.MATCHDETAIL} />
       </Router>
