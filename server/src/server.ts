@@ -26,6 +26,10 @@ import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
+import { RiotAPI } from './riotAPI'
+
+
+
 
 const server = new GraphQLServer({
   typeDefs: getSchema(),
@@ -44,10 +48,18 @@ const asyncRoute = (fn: RequestHandler) => (...args: Parameters<RequestHandler>)
 server.express.get('/', (req, res) => {
   console.log('GET /')
   res.redirect('/app')
+
 })
 
 server.express.get('/app/*', (req, res) => {
   console.log('GET /app')
+  renderApp(req, res)
+  var riotAPI = new RiotAPI("RGAPI-987593b7-725e-40db-8320-5f755118b574")
+  riotAPI.updateChallengerData()
+})
+
+server.express.get('/app/search', (req, res) => {
+  console.log('GET /app/search')
   renderApp(req, res)
 })
 
@@ -236,6 +248,7 @@ initORM()
       () => {
         console.log(`server started on http://localhost:${Config.appserverPort}/`)
       }
+      //server start
     )
   )
   .catch(err => console.error(err))
