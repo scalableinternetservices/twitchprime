@@ -17,9 +17,11 @@ schema {
 type Query {
   # Returns the logged-in user making the query, or null if anonymous.
   self: User
-
   surveys: [Survey!]!
   survey (surveyId: Int!): Survey
+
+  # Returns an PlayerDeatil according to playerName param
+  playerDetail (playerName: String!): PlayerDetail!
 }
 
 type Mutation {
@@ -28,6 +30,12 @@ type Mutation {
 
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
+}
+
+# GraphQL type of PlayerDetail, npm run gen to generate real TypeScript PlayerDetail type
+type PlayerDetail {
+  id: Int!
+  winRate: Float!
 }
 
 type Subscription {
