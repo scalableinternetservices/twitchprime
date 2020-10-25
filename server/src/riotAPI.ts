@@ -6,7 +6,7 @@ export class RiotAPI {
   riotToken: String
   instance: AxiosInstance
 
-  constructor(riotToken: String){
+  constructor(riotToken: String) {
     this.riotToken = riotToken
     // create axios instance with customized baseURL
     this.instance = axios.create({
@@ -14,7 +14,7 @@ export class RiotAPI {
     })
   }
 
-  updateChallengerData(){
+  updateChallengerData() {
     this.instance({
       method: 'get',
       url: '/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5',
@@ -34,8 +34,8 @@ export class RiotAPI {
         //console.log(element.summonerName)
 
         //check whether the summoner is exist in the database
-        var summoner = await(Summoner.findOne({ where: { summonerId : element.summonerId}}))
-        if (!summoner){ //if not create a new one
+        var summoner = await (Summoner.findOne({ where: { summonerId: element.summonerId } }))
+        if (!summoner) { //if not create a new one
           summoner = new Summoner()
           summoner.summonerId = element.summonerId
         }
@@ -56,8 +56,8 @@ export class RiotAPI {
   }
 
   //update summoner AccountID, return summoner obj
-  async updateSummonerByName(searchName: String){
-    var summoner : any
+  async updateSummonerByName(searchName: String) {
+    var summoner: any
 
     //update account info
     await this.instance({
@@ -74,11 +74,15 @@ export class RiotAPI {
     }).then(async function (response) {
       console.log("Account info Update for summoner " + searchName)
       const summonerByName = JSON.parse(JSON.stringify(response.data))
-      summoner = await(Summoner.findOne({ where: { summonerId : summonerByName.id}}))
-      if (!summoner){
+      summoner = await (Summoner.findOne({ where: { summonerId: summonerByName.id } }))
+      const now = new Date()
+      const secondsSinceEpoch = Math.round(now.getTime() / 1000)
+      if (!summoner) {
         summoner = new Summoner()
         summoner.summonerId = summonerByName.id
       }
+      summoner.timeStamp = secondsSinceEpoch
+      console.log(summoner.timeStamp)
       summoner.accountId = summonerByName.accountId
       summoner.summonerName = summonerByName.name
       summoner.profileIconId = summonerByName.profileIconId
@@ -97,11 +101,11 @@ export class RiotAPI {
         "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
         "Origin": "https://developer.riotgames.com",
         "X-Riot-Token": this.riotToken
-    }
+      }
     }).then(function (response) {
-      console.log("Game stat Update for summoner " + searchName)
+      console.log("lololoGame stat Update for summoner " + searchName)
       const summonerAllGameStat = JSON.parse(JSON.stringify(response.data))
-      if (summonerAllGameStat.length != 0){
+      if (summonerAllGameStat.length != 0) {
         const summonerGameStat = summonerAllGameStat[summonerAllGameStat.length - 1] //the last entry is the  stat of Ranked_solo_5x5
         summoner.leaguePoints = summonerGameStat.leaguePoints
         summoner.rank = summonerGameStat.rank
@@ -114,11 +118,13 @@ export class RiotAPI {
       }
     });
     Summoner.save(summoner)
+    //console.log("AID: " + summoner.accountId);
+    //console.log("Name: " + summoner.summonerName);
     return summoner
   }
 
   // For individual player search, first find accountId by summonerName
-  updateRecentMatchForSummoner(summoner: Summoner){
+  updateRecentMatchForSummoner(summoner: Summoner) {
     const playerAccountID = summoner.accountId
     const playerName = summoner.summonerName
     this.instance({
@@ -133,29 +139,81 @@ export class RiotAPI {
         "X-Riot-Token": this.riotToken
       }
     })
-    .then(function (response) {
-      console.log("Saving player: \""  + "\" recent 10 matches")
-      const parsed = JSON.parse(JSON.stringify(response.data))
-      const recentMatches = parsed.matches
-      recentMatches.forEach(async (element : any) => {
-        var recentMatch = await(RecentMatch.findOne({ where: { accountId : playerAccountID, gameId : element.gameId}}))
-        if (!recentMatch){
-          recentMatch = new RecentMatch()
-          recentMatch.accountId = playerAccountID
-          recentMatch.summonerName = playerName
-          recentMatch.platformId = element.platformId
-          recentMatch.gameId = element.gameId
-          recentMatch.champion = element.champion
-          recentMatch.queue = element.queue
-          recentMatch.season = element.season
-          recentMatch.timestamp = element.timestamp
-          recentMatch.role = element.role
-          recentMatch.lane = element.lane
-          RecentMatch.save(recentMatch)
-        }
+      .then(function (response) {
+        console.log("Saving player: \"" + "\" recent 10 matches")
+        const parsed = JSON.parse(JSON.stringify(response.data))
+        const recentMatches = parsed.matches
+        recentMatches.forEach(async (element: any) => {
+          var recentMatch = await (RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId } }))
+          if (!recentMatch) {
+            recentMatch = new RecentMatch()
+            recentMatch.accountId = playerAccountID
+            recentMatch.summonerName = playerName
+            recentMatch.platformId = element.platformId
+            recentMatch.gameId = element.gameId
+            recentMatch.champion = element.champion
+            recentMatch.queue = element.queue
+            recentMatch.season = element.season
+            recentMatch.timestamp = element.timestamp
+            recentMatch.role = element.role
+            recentMatch.lane = element.lane
+            console.log("TS:" + recentMatch.timestamp)
+            RecentMatch.save(recentMatch)
+          }
+          console.log("TS:" + recentMatch.timestamp)
+        });
+        console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
       });
-      console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
-    });
+  }
+
+  async getSummonerByName(searchName: String) {
+    var summoner: any
+    summoner = await Summoner.findOne({ where: { summonerName: searchName } })//search in db first
+    if (!summoner) {//if not found, make a new request
+      console.log("summoner not found in db")
+      summoner = await this.updateSummonerByName(searchName)
+    }
+    const now = new Date()
+    const secondsSinceEpoch = Math.round(now.getTime() / 1000)
+    if (secondsSinceEpoch - summoner.timeStamp > 86400) {//864000 seconds in a day, update if the data is from more than a day ago
+      console.log("updating data")
+      summoner = await this.updateSummonerByName(searchName)
+    }
+
+    //winrate is expressed as XX.XX%  ex.50.21%
+    var winRate: any
+    if (summoner.wins == null || summoner.losses == null) {
+      winRate = null
+    }
+    else {
+      winRate = (Math.round((summoner.wins / (summoner.wins + summoner.losses) * 100) * 100) / 100).toFixed(2)
+    }
+    var ResStr = '{"winrate":' + winRate + ',"timestamp":' + summoner.timeStamp + ',"summonerid":"' + summoner.summonerId +
+      '","accountid":"' + summoner.accountId + '","profileiconid":' + summoner.profileIconId + ',"summonername":"' + summoner.summonerName +
+      '","summonerlevel":' + summoner.summonerLevel + ',"leaguepoints":' + summoner.leaguePoints + ',"rank":"' + summoner.rank +
+      '","wins":' + summoner.wins + ',"losses":' + summoner.losses + ',"veteran":' + summoner.veteran + ',"inactive":' + summoner.inactive +
+      ',"freshblood":' + summoner.freshBlood + ',"hotstreak":' + summoner.hotStreak + '}'
+    console.log(ResStr)
+    var jsonObj = JSON.parse(ResStr)
+    console.log(JSON.stringify(jsonObj))
+    return jsonObj
+  }
+
+  async getRecentMatches(searchName: String) {
+    var summoner: any
+    var recentMatches: any
+    //var recentMatch: any
+    summoner = this.updateSummonerByName(searchName)
+    this.updateRecentMatchForSummoner(summoner)
+    recentMatches = RecentMatch.find({ where: { accountId: summoner.accountId } })
+    if (!recentMatches) {
+
+    }
+    // recentMatches.forEach(async (element: any) => {
+    //   recentMatch = await RecentMatch.findOne()
+    // });
+
+
   }
 }
 

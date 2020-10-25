@@ -51,17 +51,17 @@ server.express.get('/', (req, res) => {
 
 })
 
-server.express.get('/app/*', (req, res) => {
+server.express.get('/app/index', (req, res) => {
   console.log('GET /app')
   renderApp(req, res)
-  var riotAPI = new RiotAPI("RGAPI-987593b7-725e-40db-8320-5f755118b574")
-  riotAPI.updateChallengerData()
-  riotAPI.updateSummonerByName('Yassuo')
 })
 
-server.express.get('/app/search', (req, res) => {
-  console.log('GET /app/search')
+server.express.get('/app/player-detail/*', (req, res) => {
+  console.log('GET /app/player-detail')
+  console.log(req.url);
   renderApp(req, res)
+  var riotAPI = new RiotAPI("RGAPI-121a9bea-4053-4ae4-982d-3efc1cd04ea2")
+  riotAPI.getSummonerByName('Yassuo')
 })
 
 server.express.post(
