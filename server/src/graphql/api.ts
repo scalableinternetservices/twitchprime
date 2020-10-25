@@ -7,6 +7,7 @@ import { Survey } from '../entities/Survey'
 import { SurveyAnswer } from '../entities/SurveyAnswer'
 import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { User } from '../entities/User'
+import { RiotAPI } from '../riotAPI'
 import { PlayerDetail, Resolvers } from './schema.types'
 
 export const pubsub = new PubSub()
@@ -24,10 +25,32 @@ interface Context {
 }
 
 /* create an playerDetail obj */
-function createPlayerDetail(config: PlayerDetail): { id: number, winRate: float } {
-  let newPlayerDetail = { id: 12345, winRate: 100 };
-  if (config.id) { newPlayerDetail.id = config.id; }
+function createPlayerDetail(config: PlayerDetail): {
+  timeStamp: number, summonerId: string,
+  accountId: string, summonerName: string, profileIconId: number, summonerLevel: number,
+  leaguePoints: number, rank: number, wins: number, losses: number, winRate: float,
+  veteran: boolean, inactive: boolean, hotStreak: boolean
+} {
+  let newPlayerDetail = {
+    timeStamp: 0, summonerId: "string",
+    accountId: "string", summonerName: "string", profileIconId: -1, summonerLevel: -1,
+    leaguePoints: -1, rank: -1, wins: -1, losses: -1, winRate: -1,
+    veteran: false, inactive: false, hotStreak: false
+  };
+  if (config.timeStamp) { newPlayerDetail.timeStamp = config.timeStamp; }
+  if (config.summonerId) { newPlayerDetail.summonerId = config.summonerId; }
+  if (config.accountId) { newPlayerDetail.accountId = config.accountId; }
+  if (config.summonerName) { newPlayerDetail.summonerName = config.summonerName; }
+  if (config.profileIconId) { newPlayerDetail.profileIconId = config.profileIconId; }
+  if (config.summonerLevel) { newPlayerDetail.summonerLevel = config.summonerLevel; }
+  if (config.leaguePoints) { newPlayerDetail.leaguePoints = config.leaguePoints; }
+  if (config.rank) { newPlayerDetail.rank = config.rank; }
+  if (config.wins) { newPlayerDetail.wins = config.wins; }
+  if (config.losses) { newPlayerDetail.losses = config.losses; }
   if (config.winRate) { newPlayerDetail.winRate = config.winRate; }
+  if (config.veteran) { newPlayerDetail.veteran = config.veteran }
+  if (config.inactive) { newPlayerDetail.inactive = config.inactive; }
+  if (config.hotStreak) { newPlayerDetail.hotStreak = config.hotStreak; }
   return newPlayerDetail;
 }
 
@@ -38,9 +61,20 @@ export const graphqlRoot: Resolvers<Context> = {
     surveys: () => Survey.find(),
 
     /* received graphQL call to fetch playerDetail */
-    playerDetail: (_, { playerName }) => {
+    playerDetail: async (_, { playerName }) => {
       console.log("Received PlayerName: " + playerName)
-      let returnPlayerDetail = createPlayerDetail({ id: 12345, winRate: 100 }); // create an playerDetail obj
+      var riotAPI = new RiotAPI("RGAPI-79ca3cf9-6ea0-423d-8087-5b7e71584d43")
+      var jsonObj: any
+      jsonObj = await riotAPI.getSummonerByName(playerName)
+      var playerDetail = JSON.parse(JSON.stringify(jsonObj))
+      let returnPlayerDetail = createPlayerDetail({
+        timeStamp: playerDetail.timestamp, summonerId: playerDetail.summonerId,
+        accountId: playerDetail.accountid, summonerName: playerDetail.summonername, profileIconId: playerDetail.profileiconid,
+        summonerLevel: playerDetail.summonerlevel, leaguePoints: playerDetail.leaguepoints, rank: playerDetail.rank,
+        wins: playerDetail.wins, losses: playerDetail.losses, winRate: playerDetail.winrate, veteran: playerDetail.veteran,
+        inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak
+      }); // create an playerDetail obj
+      console.log("playerDetail: " + playerDetail)
       return returnPlayerDetail
     }
   },

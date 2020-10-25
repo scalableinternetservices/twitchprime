@@ -9,7 +9,7 @@
 
 export interface getPlayerDetail_playerDetail {
   __typename: "PlayerDetail";
-  id: number;
+  accountId: string;
   winRate: number;
 }
 

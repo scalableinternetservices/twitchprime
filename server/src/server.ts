@@ -26,9 +26,6 @@ import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
-import { RiotAPI } from './riotAPI'
-
-
 
 
 const server = new GraphQLServer({
@@ -60,8 +57,8 @@ server.express.get('/app/player-detail/*', (req, res) => {
   console.log('GET /app/player-detail')
   console.log(req.url);
   renderApp(req, res)
-  var riotAPI = new RiotAPI("RGAPI-121a9bea-4053-4ae4-982d-3efc1cd04ea2")
-  riotAPI.getSummonerByName('Yassuo')
+  // var riotAPI = new RiotAPI("RGAPI-121a9bea-4053-4ae4-982d-3efc1cd04ea2")
+  // riotAPI.getSummonerByName('Yassuo')
 })
 
 server.express.post(

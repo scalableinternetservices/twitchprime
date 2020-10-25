@@ -44,8 +44,20 @@ export interface MutationNextSurveyQuestionArgs {
 
 export interface PlayerDetail {
   __typename?: 'PlayerDetail'
-  id: Scalars['Int']
+  timeStamp: Scalars['Int']
+  summonerId: Scalars['String']
+  accountId: Scalars['String']
+  summonerName: Scalars['String']
+  profileIconId: Scalars['Int']
+  summonerLevel: Scalars['Int']
+  leaguePoints: Scalars['Int']
+  rank: Scalars['Int']
+  wins: Scalars['Int']
+  losses: Scalars['Int']
   winRate: Scalars['Float']
+  veteran: Scalars['Boolean']
+  inactive: Scalars['Boolean']
+  hotStreak: Scalars['Boolean']
 }
 
 export interface Subscription {
@@ -253,8 +265,20 @@ export type PlayerDetailResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['PlayerDetail'] = ResolversParentTypes['PlayerDetail']
 > = {
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  timeStamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  summonerId?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  accountId?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  summonerName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  profileIconId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  summonerLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  leaguePoints?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  rank?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  wins?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  losses?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   winRate?: Resolver<ResolversTypes['Float'], ParentType, ContextType>
+  veteran?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  inactive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  hotStreak?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

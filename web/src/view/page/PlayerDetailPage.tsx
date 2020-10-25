@@ -32,7 +32,7 @@ const theme = createMuiTheme({
 const fetchPlayerDetail = gql`
   query getPlayerDetail($playerName: String!) {
     playerDetail(playerName: $playerName) {
-      id
+      accountId
       winRate
     }
   }
@@ -80,7 +80,7 @@ export function PlayerDetailPage(props: HomePageProps) {
   if (data) { console.log(data) }
   return (
     <div>
-      <div>{data.playerDetail.id} {data.playerDetail.winRate}</div>
+      <div>{data.playerDetail.accountId} {data.playerDetail.winRate}</div>
       <ThemeProvider theme={theme}>
         <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}>{params.playerName}</div>
         <Paper>

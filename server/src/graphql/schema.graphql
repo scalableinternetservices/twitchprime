@@ -34,8 +34,20 @@ type Mutation {
 
 # GraphQL type of PlayerDetail, npm run gen to generate real TypeScript PlayerDetail type
 type PlayerDetail {
-  id: Int!
+  timeStamp: Int!
+  summonerId: String!
+  accountId: String!
+  summonerName: String!
+  profileIconId: Int!
+  summonerLevel: Int!
+  leaguePoints: Int!
+  rank: Int!
+  wins: Int!
+  losses: Int!
   winRate: Float!
+  veteran: Boolean!
+  inactive: Boolean!
+  hotStreak: Boolean!
 }
 
 type Subscription {
