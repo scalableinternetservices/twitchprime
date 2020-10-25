@@ -1,3 +1,4 @@
+import { float } from 'aws-sdk/clients/lightsail'
 import { readFileSync } from 'fs'
 import { PubSub } from 'graphql-yoga'
 import path from 'path'
@@ -6,7 +7,7 @@ import { Survey } from '../entities/Survey'
 import { SurveyAnswer } from '../entities/SurveyAnswer'
 import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { User } from '../entities/User'
-import { Resolvers } from './schema.types'
+import { PlayerDetail, Resolvers } from './schema.types'
 
 export const pubsub = new PubSub()
 
@@ -22,11 +23,26 @@ interface Context {
   pubsub: PubSub
 }
 
+/* create an playerDetail obj */
+function createPlayerDetail(config: PlayerDetail): { id: number, winRate: float } {
+  let newPlayerDetail = { id: 12345, winRate: 100 };
+  if (config.id) { newPlayerDetail.id = config.id; }
+  if (config.winRate) { newPlayerDetail.winRate = config.winRate; }
+  return newPlayerDetail;
+}
+
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
+
+    /* received graphQL call to fetch playerDetail */
+    playerDetail: (_, { playerName }) => {
+      console.log("Received PlayerName: " + playerName)
+      let returnPlayerDetail = createPlayerDetail({ id: 12345, winRate: 100 }); // create an playerDetail obj
+      return returnPlayerDetail
+    }
   },
   Mutation: {
     answerSurvey: async (_, { input }, ctx) => {

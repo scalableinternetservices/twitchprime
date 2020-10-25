@@ -36,7 +36,7 @@ export function SearchPage(props: HomePageProps) {
       <ThemeProvider theme={theme}>
         <div style={{
           fontSize: 18, fontWeight: 700, fontStyle: "italic",
-          marginBottom: 18, marginTop: 260
+          marginBottom: 18
         }}>LEAGUE OF LEGENDS STATS TRACKER
         </div>
         <TextField style={{ marginRight: 4 }}

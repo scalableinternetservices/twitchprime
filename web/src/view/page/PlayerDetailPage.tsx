@@ -15,7 +15,6 @@ import TableRow from '@material-ui/core/TableRow';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import * as React from 'react';
-import { useEffect } from 'react';
 import { AppRouteParams } from '../nav/route';
 import Error from './Error';
 import Loading from './Loading';
@@ -29,15 +28,12 @@ const theme = createMuiTheme({
   },
 });
 
-interface PlayerDetail {
-  id: number;
-  matches: string[]
-}
-
+// GraphQL query def to fetch PlayerDetail
 const fetchPlayerDetail = gql`
   query getPlayerDetail($playerName: String!) {
     playerDetail(playerName: $playerName) {
-      test
+      id
+      winRate
     }
   }
 `;
@@ -46,12 +42,8 @@ export function PlayerDetailPage(props: HomePageProps) {
   const navigate = useNavigate();
   const params = useParams();
   const playerName = params.playerName;
-  const { loading, error, data } = useQuery<PlayerDetail>(fetchPlayerDetail, {
+  const { loading, error, data } = useQuery(fetchPlayerDetail, {
     variables: { playerName },
-  });
-
-  useEffect(() => {
-    console.log(playerName);
   });
 
   const [page, setPage] = React.useState(0);
@@ -85,12 +77,10 @@ export function PlayerDetailPage(props: HomePageProps) {
   if (loading) return <ThemeProvider theme={theme}><Loading /></ThemeProvider>;
   if (error) return <Error />;
   if (!data) return <NotFound />;
-
+  if (data) { console.log(data) }
   return (
     <div>
-      {data.matches.map((test) => (
-        <div>{test}</div>
-      ))}
+      <div>{data.playerDetail.id} {data.playerDetail.winRate}</div>
       <ThemeProvider theme={theme}>
         <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}>{params.playerName}</div>
         <Paper>
