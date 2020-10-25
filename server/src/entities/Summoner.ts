@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
 export class Summoner extends BaseEntity {
@@ -8,8 +8,8 @@ export class Summoner extends BaseEntity {
   // @CreateDateColumn()
   // timeCreated: Date
 
-  @UpdateDateColumn()
-  timeUpdated: Date
+  @Column()
+  timeStamp: number
 
   @Column({
     length: 100,
