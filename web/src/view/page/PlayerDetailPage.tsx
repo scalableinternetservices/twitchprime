@@ -83,7 +83,7 @@ export function PlayerDetailPage(props: HomePageProps) {
 
   if (loading) return <ThemeProvider theme={theme}><Loading /></ThemeProvider>;
   if (error) return <Error />;
-  if (!data) return <NotFound />;
+  if (!data || (data.playerDetail.accountId === "string" && data.playerDetail.profileIconId === -1)) return <NotFound />;
   if (data) { console.log(data) }
 
   let winsRender = "WINS: " + data.playerDetail.wins
@@ -97,14 +97,14 @@ export function PlayerDetailPage(props: HomePageProps) {
       <ThemeProvider theme={theme}>
         <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}>{params.playerName}</div>
         <div style={{ marginBottom: 20, fontSize: 20, fontWeight: 600 }}>
-          <Chip style={{ marginRight: 10, color: "#1e88e5", background: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={winsRender} />
-          <Chip style={{ marginRight: 10, color: "#1e88e5", backgroundColor: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={lossesRender} />
-          <Chip style={{ marginRight: 10, color: "#1e88e5", backgroundColor: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={winRateRender} />
-          <Chip style={{ marginRight: 10, color: "#1e88e5", backgroundColor: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={rankRender} />
-          <Chip style={{ marginRight: 10, color: "#1e88e5", backgroundColor: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={levelRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", background: "#fafafa", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={winsRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", background: "#fafafa", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={lossesRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", background: "#fafafa", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={winRateRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", background: "#fafafa", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={rankRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", background: "#fafafa", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={levelRender} />
         </div>
-        <Paper elevation={1}>
-          <TableContainer component={Paper}>
+        <Paper style={{ boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }}>
+          <TableContainer>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>

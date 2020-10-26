@@ -53,10 +53,10 @@ export function MatchDetailPage(props: HomePageProps) {
       <ThemeProvider theme={theme}>
         <div style={{
           fontSize: 30, fontWeight: 700, fontStyle: "italic",
-          marginTop: -50, marginBottom: 10, color: "#2196f3"
+          marginTop: -50, marginBottom: 10, color: "#1e88e5"
         }}>VICTORY</div>
-        <Paper>
-          <TableContainer component={Paper}>
+        <Paper style={{ boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }}>
+          <TableContainer>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
@@ -90,10 +90,10 @@ export function MatchDetailPage(props: HomePageProps) {
 
         <div style={{
           fontSize: 30, fontWeight: 700, fontStyle: "italic",
-          marginTop: 20, marginBottom: 10, color: "#f44336"
+          marginTop: 20, marginBottom: 10, color: "#e53935"
         }}>DEFEAT</div>
-        <Paper>
-          <TableContainer component={Paper}>
+        <Paper style={{ boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }}>
+          <TableContainer>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
