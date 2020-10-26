@@ -66,6 +66,16 @@ export const graphqlRoot: Resolvers<Context> = {
       var riotAPI = new RiotAPI("RGAPI-79ca3cf9-6ea0-423d-8087-5b7e71584d43")
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
+      if (!jsonObj) {//failed to search for summoner
+        let returnPlayerDetail = createPlayerDetail({//unsolved: need to display "not found"
+          timeStamp: null, summonerId: null,
+          accountId: null, summonerName: "Not Found", profileIconId: null,
+          summonerLevel: null, leaguePoints: null, rank: null,
+          wins: null, losses: null, winRate: null, veteran: null,
+          inactive: null, hotStreak: null
+        });
+        return returnPlayerDetail
+      }
       var playerDetail = JSON.parse(JSON.stringify(jsonObj))
       let returnPlayerDetail = createPlayerDetail({
         timeStamp: playerDetail.timestamp, summonerId: playerDetail.summonerId,

@@ -9,8 +9,14 @@
 
 export interface getPlayerDetail_playerDetail {
   __typename: "PlayerDetail";
-  accountId: string;
-  winRate: number;
+  accountId: string | null;
+  profileIconId: number | null;
+  winRate: number | null;
+  summonerLevel: number | null;
+  leaguePoints: number | null;
+  rank: string | null;
+  wins: number | null;
+  losses: number | null;
 }
 
 export interface getPlayerDetail {

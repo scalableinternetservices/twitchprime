@@ -44,20 +44,20 @@ export interface MutationNextSurveyQuestionArgs {
 
 export interface PlayerDetail {
   __typename?: 'PlayerDetail'
-  timeStamp: Scalars['Int']
-  summonerId: Scalars['String']
-  accountId: Scalars['String']
-  summonerName: Scalars['String']
-  profileIconId: Scalars['Int']
-  summonerLevel: Scalars['Int']
-  leaguePoints: Scalars['Int']
-  rank: Scalars['String']
-  wins: Scalars['Int']
-  losses: Scalars['Int']
-  winRate: Scalars['Float']
-  veteran: Scalars['Boolean']
-  inactive: Scalars['Boolean']
-  hotStreak: Scalars['Boolean']
+  timeStamp?: Maybe<Scalars['Int']>
+  summonerId?: Maybe<Scalars['String']>
+  accountId?: Maybe<Scalars['String']>
+  summonerName?: Maybe<Scalars['String']>
+  profileIconId?: Maybe<Scalars['Int']>
+  summonerLevel?: Maybe<Scalars['Int']>
+  leaguePoints?: Maybe<Scalars['Int']>
+  rank?: Maybe<Scalars['String']>
+  wins?: Maybe<Scalars['Int']>
+  losses?: Maybe<Scalars['Int']>
+  winRate?: Maybe<Scalars['Float']>
+  veteran?: Maybe<Scalars['Boolean']>
+  inactive?: Maybe<Scalars['Boolean']>
+  hotStreak?: Maybe<Scalars['Boolean']>
 }
 
 export interface Subscription {
@@ -265,20 +265,20 @@ export type PlayerDetailResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['PlayerDetail'] = ResolversParentTypes['PlayerDetail']
 > = {
-  timeStamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  summonerId?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  accountId?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  summonerName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  profileIconId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  summonerLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  leaguePoints?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  wins?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  losses?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  winRate?: Resolver<ResolversTypes['Float'], ParentType, ContextType>
-  veteran?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
-  inactive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
-  hotStreak?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  timeStamp?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  summonerId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  accountId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  summonerName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  profileIconId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  summonerLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  leaguePoints?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  rank?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  wins?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  losses?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  winRate?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  veteran?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  inactive?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  hotStreak?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
