@@ -28,13 +28,13 @@ interface Context {
 function createPlayerDetail(config: PlayerDetail): {
   timeStamp: number, summonerId: string,
   accountId: string, summonerName: string, profileIconId: number, summonerLevel: number,
-  leaguePoints: number, rank: number, wins: number, losses: number, winRate: float,
+  leaguePoints: number, rank: string, wins: number, losses: number, winRate: float,
   veteran: boolean, inactive: boolean, hotStreak: boolean
 } {
   let newPlayerDetail = {
     timeStamp: 0, summonerId: "string",
     accountId: "string", summonerName: "string", profileIconId: -1, summonerLevel: -1,
-    leaguePoints: -1, rank: -1, wins: -1, losses: -1, winRate: -1,
+    leaguePoints: -1, rank: "", wins: -1, losses: -1, winRate: -1,
     veteran: false, inactive: false, hotStreak: false
   };
   if (config.timeStamp) { newPlayerDetail.timeStamp = config.timeStamp; }

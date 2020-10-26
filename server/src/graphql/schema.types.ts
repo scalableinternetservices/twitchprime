@@ -51,7 +51,7 @@ export interface PlayerDetail {
   profileIconId: Scalars['Int']
   summonerLevel: Scalars['Int']
   leaguePoints: Scalars['Int']
-  rank: Scalars['Int']
+  rank: Scalars['String']
   wins: Scalars['Int']
   losses: Scalars['Int']
   winRate: Scalars['Float']
@@ -272,7 +272,7 @@ export type PlayerDetailResolvers<
   profileIconId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   summonerLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   leaguePoints?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  rank?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   wins?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   losses?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   winRate?: Resolver<ResolversTypes['Float'], ParentType, ContextType>

@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
+import Chip from '@material-ui/core/Chip';
 import { blue } from '@material-ui/core/colors';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
@@ -33,7 +34,13 @@ const fetchPlayerDetail = gql`
   query getPlayerDetail($playerName: String!) {
     playerDetail(playerName: $playerName) {
       accountId
+      profileIconId
       winRate
+      summonerLevel
+      leaguePoints
+      rank
+      wins
+      losses
     }
   }
 `;
@@ -78,12 +85,25 @@ export function PlayerDetailPage(props: HomePageProps) {
   if (error) return <Error />;
   if (!data) return <NotFound />;
   if (data) { console.log(data) }
+
+  let winsRender = "WINS: " + data.playerDetail.wins
+  let lossesRender = "LOSSES: " + data.playerDetail.losses
+  let winRateRender = "WIN RATE: " + data.playerDetail.winRate + "%"
+  let rankRender = "RANK: " + data.playerDetail.rank
+  let levelRender = "LEVEL: " + data.playerDetail.summonerLevel
+
   return (
     <div>
-      <div>{data.playerDetail.accountId} {data.playerDetail.winRate}</div>
       <ThemeProvider theme={theme}>
         <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}>{params.playerName}</div>
-        <Paper>
+        <div style={{ marginBottom: 20, fontSize: 20, fontWeight: 600 }}>
+          <Chip style={{ marginRight: 10, color: "#1e88e5", background: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={winsRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", backgroundColor: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={lossesRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", backgroundColor: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={winRateRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", backgroundColor: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={rankRender} />
+          <Chip style={{ marginRight: 10, color: "#1e88e5", backgroundColor: "#f5f5f5", boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }} label={levelRender} />
+        </div>
+        <Paper elevation={1}>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>

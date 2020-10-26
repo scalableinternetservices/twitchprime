@@ -41,7 +41,7 @@ type PlayerDetail {
   profileIconId: Int!
   summonerLevel: Int!
   leaguePoints: Int!
-  rank: Int!
+  rank: String!
   wins: Int!
   losses: Int!
   winRate: Float!
