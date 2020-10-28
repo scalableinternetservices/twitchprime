@@ -127,7 +127,7 @@ export class RiotAPI {
       });
     }
     if (!notFound) {
-      this.updateRecentMatchForSummoner(summoner)
+      await this.updateRecentMatchForSummoner(summoner)
     }
     if (notFound) {
       return null
@@ -152,10 +152,18 @@ export class RiotAPI {
         "X-Riot-Token": this.riotToken
       }
     })
-      .then(function (response) {
+      .then(async function (response) {
         console.log("Saving player: \"" + "\" recent 10 matches")
         const parsed = JSON.parse(JSON.stringify(response.data))
         const recentMatches = parsed.matches
+
+        //Remove current players old recent matches from db
+        var oldMatches = await (RecentMatch.find({where: {accountId: playerAccountID}}))
+        if(oldMatches.length != 0){
+          await RecentMatch.remove(oldMatches)
+          console.log("Removing old matches for player: "+ playerName)
+        }
+
         recentMatches.forEach(async (element: any) => {
           var recentMatch = await (RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId } }))
           if (!recentMatch) {
