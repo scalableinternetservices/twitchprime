@@ -126,9 +126,6 @@ export class RiotAPI {
         }
       });
     }
-    if (!notFound) {
-      await this.updateRecentMatchForSummoner(summoner)
-    }
     if (notFound) {
       return null
     }
@@ -136,10 +133,22 @@ export class RiotAPI {
     return summoner
   }
 
+  // async deleteOldMatches(name: string) {
+  //   var oldMatches = await (RecentMatch.find({ where: { summonerName: name } }))
+  //   if (oldMatches.length != 0) {
+  //     console.log("oldMatches:" + oldMatches)
+  //     await RecentMatch.remove(oldMatches)
+  //     console.log("Removing old matches for player: " + name)
+  //     return 1
+  //   }
+  //   return 0
+  // }
+
   // For individual player search, first find accountId by summonerName
   async updateRecentMatchForSummoner(summoner: Summoner) {
     const playerAccountID = summoner.accountId
     const playerName = summoner.summonerName
+
     await this.instance({
       method: 'get',
       url: '/match/v4/matchlists/by-account/' + playerAccountID + '?endIndex=10', // can be any accountId, i.e. /match/v4/matchlists/by-account/{accountId}
@@ -156,15 +165,8 @@ export class RiotAPI {
         console.log("Saving player: \"" + "\" recent 10 matches")
         const parsed = JSON.parse(JSON.stringify(response.data))
         const recentMatches = parsed.matches
-
-        //Remove current players old recent matches from db
-        var oldMatches = await (RecentMatch.find({where: {accountId: playerAccountID}}))
-        if(oldMatches.length != 0){
-          await RecentMatch.remove(oldMatches)
-          console.log("Removing old matches for player: "+ playerName)
-        }
-
-        recentMatches.forEach(async (element: any) => {
+        //console.log(recentMatches)
+        await recentMatches.forEach(async (element: any) => {
           var recentMatch = await (RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId } }))
           if (!recentMatch) {
             recentMatch = new RecentMatch()
@@ -180,13 +182,11 @@ export class RiotAPI {
             recentMatch.lane = element.lane
             RecentMatch.save(recentMatch)
           }
-          else {
-            recentMatch.timestamp = element.timestamp
-            RecentMatch.save(recentMatch)
-          }
         });
         console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
+        return 1
       });
+    return 0
   }
 
   async getSummonerByName(searchName: String) {
@@ -225,36 +225,33 @@ export class RiotAPI {
     return jsonObj
   }
 
-  async getRecentMatches(searchName: String) {//to do: clear corresponding recent matches before updating recent match
+  async getRecentMatches(searchName: string) {
     var summoner: any
-    var recentMatches: any
     var returnStr: string
+    var jsonObj: any
     returnStr = ""
     summoner = await this.updateSummonerByName(searchName)
     if (!summoner) {
       return null
-    } else {//add extra matches to db, RecentMatch find returns more than 10
-      await this.updateRecentMatchForSummoner(summoner)
     }
+    await this.updateRecentMatchForSummoner(summoner)
+
+    var recentMatches: any
     recentMatches = await RecentMatch.find({ where: { accountId: summoner.accountId } })
     var notFirst = false
     recentMatches.forEach(async (element: any) => {
-      console.log("2timestamp:" + element.timestamp)
       if (notFirst) {
         returnStr += ','
       }
       returnStr += '{"accountId":"' + element.accountId + '","summonerName":"' + element.summonerName
         + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
-        + ',"queue":' + element.queue + + ',"season":' + element.season + ',"timestamp":"' + element.timestamp
-        + '","role":"' + element.role + + '","lane":"' + element.lane + '}'
+        + ',"queue":"' + element.queue + '","season":' + element.season + ',"timestamp":"' + element.timestamp
+        + '","role":"' + element.role + '","lane":"' + element.lane + '"}'
       notFirst = true
     });
-    returnStr = '{' + returnStr + '}'
-    console.log(returnStr)
-    return returnStr
+    returnStr = '[' + returnStr + ']'
+    jsonObj = JSON.parse(returnStr)
+    console.log(jsonObj)
+    return jsonObj
   }
 }
-
-
-
-

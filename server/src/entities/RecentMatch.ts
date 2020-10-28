@@ -26,7 +26,7 @@ export class RecentMatch extends BaseEntity {
   champion: number
 
   @Column()
-  queue: number
+  queue: string
 
   @Column()
   season: number
