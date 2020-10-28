@@ -9,7 +9,7 @@ export class Summoner extends BaseEntity {
   // timeCreated: Date
 
   @Column()
-  timeStamp: number
+  timestamp: number
 
   @Column({
     length: 100,

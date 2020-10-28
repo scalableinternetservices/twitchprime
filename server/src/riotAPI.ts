@@ -84,8 +84,7 @@ export class RiotAPI {
           summoner = new Summoner()
           summoner.summonerId = summonerByName.id
         }
-        summoner.timeStamp = secondsSinceEpoch
-        console.log(summoner.timeStamp)
+        summoner.timestamp = secondsSinceEpoch
         summoner.accountId = summonerByName.accountId
         summoner.summonerName = summonerByName.name
         summoner.profileIconId = summonerByName.profileIconId
@@ -127,6 +126,9 @@ export class RiotAPI {
         }
       });
     }
+    if (!notFound) {
+      this.updateRecentMatchForSummoner(summoner)
+    }
     if (notFound) {
       return null
     }
@@ -135,10 +137,10 @@ export class RiotAPI {
   }
 
   // For individual player search, first find accountId by summonerName
-  updateRecentMatchForSummoner(summoner: Summoner) {
+  async updateRecentMatchForSummoner(summoner: Summoner) {
     const playerAccountID = summoner.accountId
     const playerName = summoner.summonerName
-    this.instance({
+    await this.instance({
       method: 'get',
       url: '/match/v4/matchlists/by-account/' + playerAccountID + '?endIndex=10', // can be any accountId, i.e. /match/v4/matchlists/by-account/{accountId}
       headers:
@@ -168,10 +170,12 @@ export class RiotAPI {
             recentMatch.timestamp = element.timestamp
             recentMatch.role = element.role
             recentMatch.lane = element.lane
-            console.log("TS:" + recentMatch.timestamp)
             RecentMatch.save(recentMatch)
           }
-          console.log("TS:" + recentMatch.timestamp)
+          else {
+            recentMatch.timestamp = element.timestamp
+            RecentMatch.save(recentMatch)
+          }
         });
         console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
       });
@@ -189,7 +193,7 @@ export class RiotAPI {
     }
     const now = new Date()
     const secondsSinceEpoch = Math.round(now.getTime() / 1000)
-    if (secondsSinceEpoch - summoner.timeStamp > 86400) {//864000 seconds in a day, update if the data is from more than a day ago
+    if (secondsSinceEpoch - summoner.timestamp > 86400) {//864000 seconds in a day, update if the data is from more than a day ago
       console.log("updating data")
       summoner = await this.updateSummonerByName(searchName)
     }
@@ -202,7 +206,7 @@ export class RiotAPI {
     else {
       winRate = (Math.round((summoner.wins / (summoner.wins + summoner.losses) * 100) * 100) / 100).toFixed(2)
     }
-    var ResStr = '{"winrate":' + winRate + ',"timestamp":' + summoner.timeStamp + ',"summonerid":"' + summoner.summonerId +
+    var ResStr = '{"winrate":' + winRate + ',"timestamp":' + summoner.timestamp + ',"summonerid":"' + summoner.summonerId +
       '","accountid":"' + summoner.accountId + '","profileiconid":' + summoner.profileIconId + ',"summonername":"' + summoner.summonerName +
       '","summonerlevel":' + summoner.summonerLevel + ',"leaguepoints":' + summoner.leaguePoints + ',"rank":"' + summoner.rank +
       '","wins":' + summoner.wins + ',"losses":' + summoner.losses + ',"veteran":' + summoner.veteran + ',"inactive":' + summoner.inactive +
@@ -213,16 +217,33 @@ export class RiotAPI {
     return jsonObj
   }
 
-  async getRecentMatches(searchName: String) {
-    // var summoner: any
-    // var recentMatches: any
-    // //var recentMatch: any
-    // summoner = this.updateSummonerByName(searchName)
-    // if (!summoner) {
-    //   return null
-    // }
-    // this.updateRecentMatchForSummoner(summoner)
-    // recentMatches = RecentMatch.find({ where: { accountId: summoner.accountId } })
+  async getRecentMatches(searchName: String) {//to do: clear corresponding recent matches before updating recent match
+    var summoner: any
+    var recentMatches: any
+    var returnStr: string
+    returnStr = ""
+    summoner = await this.updateSummonerByName(searchName)
+    if (!summoner) {
+      return null
+    } else {//add extra matches to db, RecentMatch find returns more than 10
+      await this.updateRecentMatchForSummoner(summoner)
+    }
+    recentMatches = await RecentMatch.find({ where: { accountId: summoner.accountId } })
+    var notFirst = false
+    recentMatches.forEach(async (element: any) => {
+      console.log("2timestamp:" + element.timestamp)
+      if (notFirst) {
+        returnStr += ','
+      }
+      returnStr += '{"accountId":"' + element.accountId + '","summonerName":"' + element.summonerName
+        + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
+        + ',"queue":' + element.queue + + ',"season":' + element.season + ',"timestamp":"' + element.timestamp
+        + '","role":"' + element.role + + '","lane":"' + element.lane + '}'
+      notFirst = true
+    });
+    returnStr = '{' + returnStr + '}'
+    console.log(returnStr)
+    return returnStr
   }
 }
 
