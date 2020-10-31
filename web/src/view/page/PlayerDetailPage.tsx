@@ -41,6 +41,9 @@ const fetchPlayerDetail = gql`
       rank
       wins
       losses
+      recentMatches {
+        matchId
+      }
     }
   }
 `;

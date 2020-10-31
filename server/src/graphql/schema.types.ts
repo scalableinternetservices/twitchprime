@@ -58,6 +58,12 @@ export interface PlayerDetail {
   veteran?: Maybe<Scalars['Boolean']>
   inactive?: Maybe<Scalars['Boolean']>
   hotStreak?: Maybe<Scalars['Boolean']>
+  recentMatches?: Maybe<Array<RecentMatch>>
+}
+
+export interface RecentMatch {
+  __typename?: 'RecentMatch'
+  matchId?: Maybe<Scalars['Int']>
 }
 
 export interface Subscription {
@@ -197,6 +203,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
   PlayerDetail: ResolverTypeWrapper<PlayerDetail>
   Float: ResolverTypeWrapper<Scalars['Float']>
+  RecentMatch: ResolverTypeWrapper<RecentMatch>
   Subscription: ResolverTypeWrapper<{}>
   User: ResolverTypeWrapper<User>
   UserType: UserType
@@ -215,6 +222,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']
   PlayerDetail: PlayerDetail
   Float: Scalars['Float']
+  RecentMatch: RecentMatch
   Subscription: {}
   User: User
   Survey: Survey
@@ -279,6 +287,15 @@ export type PlayerDetailResolvers<
   veteran?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
   inactive?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
   hotStreak?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  recentMatches?: Resolver<Maybe<Array<ResolversTypes['RecentMatch']>>, ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type RecentMatchResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RecentMatch'] = ResolversParentTypes['RecentMatch']
+> = {
+  matchId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -345,6 +362,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
   PlayerDetail?: PlayerDetailResolvers<ContextType>
+  RecentMatch?: RecentMatchResolvers<ContextType>
   Subscription?: SubscriptionResolvers<ContextType>
   User?: UserResolvers<ContextType>
   Survey?: SurveyResolvers<ContextType>

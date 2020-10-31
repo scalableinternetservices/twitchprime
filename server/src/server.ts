@@ -52,7 +52,7 @@ server.express.get('/', (req, res) => {
 server.express.get('/app/index', (req, res) => {
   console.log('GET /app')
   renderApp(req, res)
-  var riotAPI = new RiotAPI("")
+  var riotAPI = new RiotAPI("RGAPI-49b5a840-118d-4b65-b900-cb6ef305509d")
   riotAPI.getRecentMatches('Yassuo')
 })
 

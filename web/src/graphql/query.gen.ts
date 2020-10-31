@@ -7,6 +7,11 @@
 // GraphQL query operation: getPlayerDetail
 // ====================================================
 
+export interface getPlayerDetail_playerDetail_recentMatches {
+  __typename: "RecentMatch";
+  matchId: number | null;
+}
+
 export interface getPlayerDetail_playerDetail {
   __typename: "PlayerDetail";
   accountId: string | null;
@@ -17,6 +22,7 @@ export interface getPlayerDetail_playerDetail {
   rank: string | null;
   wins: number | null;
   losses: number | null;
+  recentMatches: getPlayerDetail_playerDetail_recentMatches[] | null;
 }
 
 export interface getPlayerDetail {

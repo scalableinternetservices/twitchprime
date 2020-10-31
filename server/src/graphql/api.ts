@@ -8,7 +8,7 @@ import { SurveyAnswer } from '../entities/SurveyAnswer'
 import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { User } from '../entities/User'
 import { RiotAPI } from '../riotAPI'
-import { PlayerDetail, Resolvers } from './schema.types'
+import { PlayerDetail, RecentMatch, Resolvers } from './schema.types'
 
 export const pubsub = new PubSub()
 
@@ -24,19 +24,34 @@ interface Context {
   pubsub: PubSub
 }
 
+/* create an RecentMatch obj */
+function createRecentMatch(config: RecentMatch): { matchId: number } {
+  let newRecentMatch = {
+    matchId: -1
+  };
+  if (config.matchId) { newRecentMatch.matchId = config.matchId }
+  return newRecentMatch;
+}
+
 /* create an playerDetail obj */
 function createPlayerDetail(config: PlayerDetail): {
   timeStamp: number, summonerId: string,
   accountId: string, summonerName: string, profileIconId: number, summonerLevel: number,
   leaguePoints: number, rank: string, wins: number, losses: number, winRate: float,
-  veteran: boolean, inactive: boolean, hotStreak: boolean
+  veteran: boolean, inactive: boolean, hotStreak: boolean, recentMatches: Array<RecentMatch>
 } {
+
+  // create an default RecentMatch obj & RecentMatch array
+  let defaultRecentMatch = createRecentMatch({ matchId: -1 });
+  let defaultRecentMatches: Array<RecentMatch> = [defaultRecentMatch];
+
   let newPlayerDetail = {
     timeStamp: 0, summonerId: "string",
     accountId: "string", summonerName: "string", profileIconId: -1, summonerLevel: -1,
     leaguePoints: -1, rank: "", wins: -1, losses: -1, winRate: -1,
-    veteran: false, inactive: false, hotStreak: false
+    veteran: false, inactive: false, hotStreak: false, recentMatches: defaultRecentMatches
   };
+
   if (config.timeStamp) { newPlayerDetail.timeStamp = config.timeStamp; }
   if (config.summonerId) { newPlayerDetail.summonerId = config.summonerId; }
   if (config.accountId) { newPlayerDetail.accountId = config.accountId; }
@@ -51,6 +66,8 @@ function createPlayerDetail(config: PlayerDetail): {
   if (config.veteran) { newPlayerDetail.veteran = config.veteran }
   if (config.inactive) { newPlayerDetail.inactive = config.inactive; }
   if (config.hotStreak) { newPlayerDetail.hotStreak = config.hotStreak; }
+  if (config.recentMatches) { newPlayerDetail.recentMatches = config.recentMatches }
+
   return newPlayerDetail;
 }
 
@@ -63,7 +80,7 @@ export const graphqlRoot: Resolvers<Context> = {
     /* received graphQL call to fetch playerDetail */
     playerDetail: async (_, { playerName }) => {
       console.log("Received PlayerName: " + playerName)
-      var riotAPI = new RiotAPI("")
+      var riotAPI = new RiotAPI("RGAPI-49b5a840-118d-4b65-b900-cb6ef305509d")
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner
@@ -76,14 +93,22 @@ export const graphqlRoot: Resolvers<Context> = {
         });
         return returnPlayerDetail
       }
+
+
+      // create an RecentMatch obj & RecentMatch array
+      let returnRecentMatch = createRecentMatch({ matchId: -1 });
+      let returnRrecentMatches: RecentMatch[] = [returnRecentMatch, returnRecentMatch, returnRecentMatch];
+      returnRrecentMatches.push(returnRecentMatch);
+
+      // create an playerDetail obj
       var playerDetail = JSON.parse(JSON.stringify(jsonObj))
       let returnPlayerDetail = createPlayerDetail({
         timeStamp: playerDetail.timestamp, summonerId: playerDetail.summonerId,
         accountId: playerDetail.accountid, summonerName: playerDetail.summonername, profileIconId: playerDetail.profileiconid,
         summonerLevel: playerDetail.summonerlevel, leaguePoints: playerDetail.leaguepoints, rank: playerDetail.rank,
         wins: playerDetail.wins, losses: playerDetail.losses, winRate: playerDetail.winrate, veteran: playerDetail.veteran,
-        inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak
-      }); // create an playerDetail obj
+        inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak, recentMatches: returnRrecentMatches
+      });
       console.log("playerDetail: " + playerDetail)
       return returnPlayerDetail
     }
