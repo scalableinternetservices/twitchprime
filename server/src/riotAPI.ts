@@ -165,11 +165,13 @@ export class RiotAPI {
         const parsed = JSON.parse(JSON.stringify(response.data))
         const recentMatches = parsed.matches
 
-        //Remove current players old recent matches from db
-        var newPromise = new Promise(async (resolve)=>{
+
+        var updateRecentMatchPromise = new Promise(async (resolve)=>{
           await RecentMatch.find({where: {accountId: playerAccountID}}).then((result)=>{
+            //Remove current players old recent matches from db
             console.log("Removing old matches for player: "+ playerName)
             RecentMatch.remove(result).then(()=>{
+              //add new recent match
               console.log("Saving player: \"" + playerName + "\" recent 10 matches")
               var index = 0
               recentMatches.forEach(async (element: any) => {
@@ -200,7 +202,7 @@ export class RiotAPI {
           })
 
         })
-        return newPromise
+        return updateRecentMatchPromise
       });
 
   }
