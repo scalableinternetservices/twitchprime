@@ -134,7 +134,6 @@ export const graphqlRoot: Resolvers<Context> = {
             role: recentMatches[i].role, lane: recentMatches[i].lane
           })
           returnRrecentMatches.push(returnRecentMatch)
-          console.log("hehe" + returnRecentMatch)
         }
       }
 

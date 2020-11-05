@@ -26,7 +26,6 @@ import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
-import { RiotAPI } from './riotAPI'
 
 
 const server = new GraphQLServer({
@@ -52,11 +51,11 @@ server.express.get('/', (req, res) => {
 server.express.get('/app/index', async (req, res) => {
   console.log('GET /app')
   renderApp(req, res)
-  var riotAPI = new RiotAPI("")
-  await riotAPI.getRecentMatches('Spawwwwn').then((result) => {
-    //the result is the jsonObj
-    console.log(result)
-  })
+  // var riotAPI = new RiotAPI("")
+  // await riotAPI.getRecentMatches('Spawwwwn').then((result) => {
+  //   //the result is the jsonObj
+  //   console.log(result)
+  // })
 })
 
 server.express.get('/app/player-detail/*', (req, res) => {
