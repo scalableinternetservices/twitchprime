@@ -250,35 +250,35 @@ export class RiotAPI {
     if (!summoner) {
       return null
     }
-    await this.updateRecentMatchForSummoner(summoner).then(()=>{
-      RecentMatch.find({ where: { accountId: summoner.accountId}}).then((result) =>{
-        var recentMatches = result;
-        var getRecentMatchFromDataBase = new Promise(async function (result,resolve){
-          var notFirst = false
-          var index = 0;
-          recentMatches.forEach((element: any) => {
-            if (notFirst) {
-              returnStr+= ','
-            }
-            returnStr += '{"accountId":"' + element.accountId + '","summonerName":"' + element.summonerName
-              + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
-              + ',"queue":"' + element.queue + '","season":' + element.season + ',"timestamp":"' + element.timestamp
-              + '","role":"' + element.role + '","lane":"' + element.lane + '"}'
-            notFirst = true
-            if(index === RecentMatch.length - 1) resolve()
-            index += 1
-          });
-        });
 
-        getRecentMatchFromDataBase.then()
-        returnStr = '[' + returnStr + ']'
-        jsonObj = JSON.parse(returnStr)
-        console.log(jsonObj)
-        //console.log(returnStr)
+    var jsonObjPromise = new Promise(async (resolve) =>{
+      await this.updateRecentMatchForSummoner(summoner).then(()=>{
+        RecentMatch.find({ where: { accountId: summoner.accountId}}).then((result) =>{
+          var recentMatches = result;
+          var getRecentMatchFromDataBase = new Promise(async function (result,resolve){
+            var notFirst = false
+            var index = 0;
+            recentMatches.forEach((element: any) => {
+              if (notFirst) {
+                returnStr+= ','
+              }
+              returnStr += '{"accountId":"' + element.accountId + '","summonerName":"' + element.summonerName
+                + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
+                + ',"queue":"' + element.queue + '","season":' + element.season + ',"timestamp":"' + element.timestamp
+                + '","role":"' + element.role + '","lane":"' + element.lane + '"}'
+              notFirst = true
+              if(index === RecentMatch.length - 1) resolve()
+              index += 1
+            });
+          });
+
+          getRecentMatchFromDataBase.then()
+          returnStr = '[' + returnStr + ']'
+          jsonObj = JSON.parse(returnStr)
+          resolve(jsonObj)
+        })
       })
     })
-
-
-    return jsonObj
+    return jsonObjPromise
   }
 }

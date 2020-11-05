@@ -49,11 +49,14 @@ server.express.get('/', (req, res) => {
 
 })
 
-server.express.get('/app/index', (req, res) => {
+server.express.get('/app/index', async (req, res) => {
   console.log('GET /app')
   renderApp(req, res)
   var riotAPI = new RiotAPI("")
-  riotAPI.getRecentMatches('Yassuo')
+  await riotAPI.getRecentMatches('Yassuo').then((result) =>{
+    //the result is the jsonObj
+    console.log(result)
+  })
 })
 
 server.express.get('/app/player-detail/*', (req, res) => {
