@@ -161,32 +161,48 @@ export class RiotAPI {
         "X-Riot-Token": this.riotToken
       }
     })
-      .then(async function (response) {
-        console.log("Saving player: \"" + "\" recent 10 matches")
+      .then(function (response) {
         const parsed = JSON.parse(JSON.stringify(response.data))
         const recentMatches = parsed.matches
-        //console.log(recentMatches)
-        await recentMatches.forEach(async (element: any) => {
-          var recentMatch = await (RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId } }))
-          if (!recentMatch) {
-            recentMatch = new RecentMatch()
-            recentMatch.accountId = playerAccountID
-            recentMatch.summonerName = playerName
-            recentMatch.platformId = element.platformId
-            recentMatch.gameId = element.gameId
-            recentMatch.champion = element.champion
-            recentMatch.queue = element.queue
-            recentMatch.season = element.season
-            recentMatch.timestamp = element.timestamp
-            recentMatch.role = element.role
-            recentMatch.lane = element.lane
-            RecentMatch.save(recentMatch)
-          }
-        });
-        console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
-        return 1
+
+        //Remove current players old recent matches from db
+        var newPromise = new Promise(async (resolve)=>{
+          await RecentMatch.find({where: {accountId: playerAccountID}}).then((result)=>{
+            console.log("Removing old matches for player: "+ playerName)
+            RecentMatch.remove(result).then(()=>{
+              console.log("Saving player: \"" + playerName + "\" recent 10 matches")
+              var index = 0
+              recentMatches.forEach(async (element: any) => {
+                await RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId }}).then(async (result) =>{
+                  var recentMatch = result
+                  if (!recentMatch) {
+                    recentMatch = new RecentMatch()
+                    recentMatch.accountId = playerAccountID
+                    recentMatch.summonerName = playerName
+                    recentMatch.platformId = element.platformId
+                    recentMatch.gameId = element.gameId
+                    recentMatch.champion = element.champion
+                    recentMatch.queue = element.queue
+                    recentMatch.season = element.season
+                    recentMatch.timestamp = element.timestamp
+                    recentMatch.role = element.role
+                    recentMatch.lane = element.lane
+                    await RecentMatch.save(recentMatch)
+                  }
+                })
+                if (index === recentMatches.length - 1){
+                  console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
+                  resolve();
+                }
+                index += 1;
+              });
+            })
+          })
+
+        })
+        return newPromise
       });
-    return 0
+
   }
 
   async getSummonerByName(searchName: String) {
@@ -234,24 +250,35 @@ export class RiotAPI {
     if (!summoner) {
       return null
     }
-    await this.updateRecentMatchForSummoner(summoner)
+    await this.updateRecentMatchForSummoner(summoner).then(()=>{
+      RecentMatch.find({ where: { accountId: summoner.accountId}}).then((result) =>{
+        var recentMatches = result;
+        var getRecentMatchFromDataBase = new Promise(async function (result,resolve){
+          var notFirst = false
+          var index = 0;
+          recentMatches.forEach((element: any) => {
+            if (notFirst) {
+              returnStr+= ','
+            }
+            returnStr += '{"accountId":"' + element.accountId + '","summonerName":"' + element.summonerName
+              + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
+              + ',"queue":"' + element.queue + '","season":' + element.season + ',"timestamp":"' + element.timestamp
+              + '","role":"' + element.role + '","lane":"' + element.lane + '"}'
+            notFirst = true
+            if(index === RecentMatch.length - 1) resolve()
+            index += 1
+          });
+        });
 
-    var recentMatches: any
-    recentMatches = await RecentMatch.find({ where: { accountId: summoner.accountId } })
-    var notFirst = false
-    recentMatches.forEach(async (element: any) => {
-      if (notFirst) {
-        returnStr += ','
-      }
-      returnStr += '{"accountId":"' + element.accountId + '","summonerName":"' + element.summonerName
-        + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
-        + ',"queue":"' + element.queue + '","season":' + element.season + ',"timestamp":"' + element.timestamp
-        + '","role":"' + element.role + '","lane":"' + element.lane + '"}'
-      notFirst = true
-    });
-    returnStr = '[' + returnStr + ']'
-    jsonObj = JSON.parse(returnStr)
-    console.log(jsonObj)
+        getRecentMatchFromDataBase.then()
+        returnStr = '[' + returnStr + ']'
+        jsonObj = JSON.parse(returnStr)
+        console.log(jsonObj)
+        //console.log(returnStr)
+      })
+    })
+
+
     return jsonObj
   }
 }
