@@ -97,7 +97,7 @@ export const graphqlRoot: Resolvers<Context> = {
     /* received graphQL call to fetch playerDetail */
     playerDetail: async (_, { playerName }) => {
       console.log("Received PlayerName: " + playerName)
-      var riotAPI = new RiotAPI("RGAPI-5cf67f6f-941b-4570-83cd-5d01d4b00159")
+      var riotAPI = new RiotAPI("")
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner
