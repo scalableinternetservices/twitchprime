@@ -25,11 +25,24 @@ interface Context {
 }
 
 /* create an RecentMatch obj */
-function createRecentMatch(config: RecentMatch): { matchId: number } {
+function createRecentMatch(config: RecentMatch): {
+  accountId: string, summonerName: string, platformId: string,
+  gameId: string, champion: number, queue: string, season: number, timestamp: string, role: string, lane: string
+} {
   let newRecentMatch = {
-    matchId: -1
+    accountId: "null", summonerName: "null", platformId: "null", gameId: "null", champion: -1, queue: "null", season: -1,
+    timestamp: "null", role: "null", lane: "null"
   };
-  if (config.matchId) { newRecentMatch.matchId = config.matchId }
+  if (config.accountId) { newRecentMatch.accountId = config.accountId }
+  if (config.summonerName) { newRecentMatch.summonerName = config.summonerName }
+  if (config.platformId) { newRecentMatch.platformId = config.platformId }
+  if (config.gameId) { newRecentMatch.gameId = config.gameId }
+  if (config.champion) { newRecentMatch.champion = config.champion }
+  if (config.queue) { newRecentMatch.queue = config.queue }
+  if (config.season) { newRecentMatch.season = config.season }
+  if (config.timestamp) { newRecentMatch.timestamp = config.timestamp }
+  if (config.role) { newRecentMatch.role = config.role }
+  if (config.lane) { newRecentMatch.lane = config.lane }
   return newRecentMatch;
 }
 
@@ -42,12 +55,16 @@ function createPlayerDetail(config: PlayerDetail): {
 } {
 
   // create an default RecentMatch obj & RecentMatch array
-  let defaultRecentMatch = createRecentMatch({ matchId: -1 });
-  let defaultRecentMatches: Array<RecentMatch> = [defaultRecentMatch];
+  let defaultRecentMatch = createRecentMatch({
+    accountId: "null", summonerName: "null", platformId: "null", gameId: "null", champion: -1, queue: "null", season: -1,
+    timestamp: "null", role: "null", lane: "null"
+  });
+  let defaultRecentMatches: Array<RecentMatch> = [defaultRecentMatch, defaultRecentMatch, defaultRecentMatch, defaultRecentMatch,
+    defaultRecentMatch, defaultRecentMatch, defaultRecentMatch, defaultRecentMatch, defaultRecentMatch, defaultRecentMatch];
 
   let newPlayerDetail = {
-    timeStamp: 0, summonerId: "string",
-    accountId: "string", summonerName: "string", profileIconId: -1, summonerLevel: -1,
+    timeStamp: -1, summonerId: "null",
+    accountId: "null", summonerName: "null", profileIconId: -1, summonerLevel: -1,
     leaguePoints: -1, rank: "", wins: -1, losses: -1, winRate: -1,
     veteran: false, inactive: false, hotStreak: false, recentMatches: defaultRecentMatches
   };
@@ -80,13 +97,13 @@ export const graphqlRoot: Resolvers<Context> = {
     /* received graphQL call to fetch playerDetail */
     playerDetail: async (_, { playerName }) => {
       console.log("Received PlayerName: " + playerName)
-      var riotAPI = new RiotAPI("")
+      var riotAPI = new RiotAPI("RGAPI-5cf67f6f-941b-4570-83cd-5d01d4b00159")
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner
-        let returnPlayerDetail = createPlayerDetail({//unsolved: need to display "not found"
+        let returnPlayerDetail = createPlayerDetail({
           timeStamp: null, summonerId: null,
-          accountId: null, summonerName: "Not Found", profileIconId: null,
+          accountId: null, summonerName: null, profileIconId: null,
           summonerLevel: null, leaguePoints: null, rank: null,
           wins: null, losses: null, winRate: null, veteran: null,
           inactive: null, hotStreak: null
@@ -94,11 +111,32 @@ export const graphqlRoot: Resolvers<Context> = {
         return returnPlayerDetail
       }
 
-
       // create an RecentMatch obj & RecentMatch array
-      let returnRecentMatch = createRecentMatch({ matchId: -1 });
-      let returnRrecentMatches: RecentMatch[] = [returnRecentMatch, returnRecentMatch, returnRecentMatch];
-      returnRrecentMatches.push(returnRecentMatch);
+      var returnRecentMatch: any
+      let returnRrecentMatches: RecentMatch[] = [];
+      var recentMatchesObj: any
+      recentMatchesObj = await riotAPI.getRecentMatches(playerName)
+      if (!recentMatchesObj) {
+        returnRecentMatch = createRecentMatch({
+          accountId: null, summonerName: null, platformId: null, gameId: null, champion: -1, queue: null, season: -1,
+          timestamp: null, role: null, lane: null
+        });
+        for (let i = 0; i < 10; i++) {
+          returnRrecentMatches.push(returnRecentMatch)
+        }
+      } else {
+        var recentMatches = JSON.parse(JSON.stringify(recentMatchesObj))
+        for (let i = 0; i < 10; i++) {
+          returnRecentMatch = createRecentMatch({
+            accountId: recentMatches[i].accountId, summonerName: recentMatches[i].summonerName,
+            platformId: recentMatches[i].platformId, gameId: recentMatches[i].gameId, champion: recentMatches[i].champion,
+            queue: recentMatches[i].queue, season: recentMatches[i].season, timestamp: recentMatches[i].timestamp,
+            role: recentMatches[i].role, lane: recentMatches[i].lane
+          })
+          returnRrecentMatches.push(returnRecentMatch)
+          console.log("hehe" + returnRecentMatch)
+        }
+      }
 
       // create an playerDetail obj
       var playerDetail = JSON.parse(JSON.stringify(jsonObj))
@@ -110,6 +148,7 @@ export const graphqlRoot: Resolvers<Context> = {
         inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak, recentMatches: returnRrecentMatches
       });
       console.log("playerDetail: " + playerDetail)
+
       return returnPlayerDetail
     }
   },

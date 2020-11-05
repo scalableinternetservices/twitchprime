@@ -52,7 +52,16 @@ type PlayerDetail {
 }
 
 type RecentMatch {
-  matchId: Int
+  accountId: String
+  summonerName: String
+  platformId: String
+  gameId: String
+  champion: Int
+  queue: String
+  season: Int
+  timestamp: String
+  role: String
+  lane: String
 }
 
 type Subscription {

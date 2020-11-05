@@ -32,7 +32,7 @@ export class RecentMatch extends BaseEntity {
   season: number
 
   @Column()
-  timestamp: string
+  timestamp: String
 
   @Column()
   role: string

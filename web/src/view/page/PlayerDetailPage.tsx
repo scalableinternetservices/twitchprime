@@ -42,7 +42,16 @@ const fetchPlayerDetail = gql`
       wins
       losses
       recentMatches {
-        matchId
+        accountId
+        summonerName
+        platformId
+        gameId
+        champion
+        queue
+        season
+        timestamp
+        role
+        lane
       }
     }
   }

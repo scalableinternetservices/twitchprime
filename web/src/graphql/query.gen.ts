@@ -9,7 +9,16 @@
 
 export interface getPlayerDetail_playerDetail_recentMatches {
   __typename: "RecentMatch";
-  matchId: number | null;
+  accountId: string | null;
+  summonerName: string | null;
+  platformId: string | null;
+  gameId: string | null;
+  champion: number | null;
+  queue: string | null;
+  season: number | null;
+  timestamp: string | null;
+  role: string | null;
+  lane: string | null;
 }
 
 export interface getPlayerDetail_playerDetail {

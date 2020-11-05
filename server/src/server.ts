@@ -52,8 +52,8 @@ server.express.get('/', (req, res) => {
 server.express.get('/app/index', async (req, res) => {
   console.log('GET /app')
   renderApp(req, res)
-  var riotAPI = new RiotAPI("")
-  await riotAPI.getRecentMatches('Yassuo').then((result) =>{
+  var riotAPI = new RiotAPI("RGAPI-5cf67f6f-941b-4570-83cd-5d01d4b00159")
+  await riotAPI.getRecentMatches('Spawwwwn').then((result) => {
     //the result is the jsonObj
     console.log(result)
   })

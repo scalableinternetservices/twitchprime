@@ -63,7 +63,16 @@ export interface PlayerDetail {
 
 export interface RecentMatch {
   __typename?: 'RecentMatch'
-  matchId?: Maybe<Scalars['Int']>
+  accountId?: Maybe<Scalars['String']>
+  summonerName?: Maybe<Scalars['String']>
+  platformId?: Maybe<Scalars['String']>
+  gameId?: Maybe<Scalars['String']>
+  champion?: Maybe<Scalars['Int']>
+  queue?: Maybe<Scalars['String']>
+  season?: Maybe<Scalars['Int']>
+  timestamp?: Maybe<Scalars['String']>
+  role?: Maybe<Scalars['String']>
+  lane?: Maybe<Scalars['String']>
 }
 
 export interface Subscription {
@@ -295,7 +304,16 @@ export type RecentMatchResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['RecentMatch'] = ResolversParentTypes['RecentMatch']
 > = {
-  matchId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  accountId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  summonerName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  platformId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  gameId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  champion?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  queue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  season?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  timestamp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  role?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  lane?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

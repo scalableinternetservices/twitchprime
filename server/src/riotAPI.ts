@@ -166,16 +166,16 @@ export class RiotAPI {
         const recentMatches = parsed.matches
 
 
-        var updateRecentMatchPromise = new Promise(async (resolve)=>{
-          await RecentMatch.find({where: {accountId: playerAccountID}}).then((result)=>{
+        var updateRecentMatchPromise = new Promise(async (resolve) => {
+          await RecentMatch.find({ where: { accountId: playerAccountID } }).then((result) => {
             //Remove current players old recent matches from db
-            console.log("Removing old matches for player: "+ playerName)
-            RecentMatch.remove(result).then(()=>{
+            console.log("Removing old matches for player: " + playerName)
+            RecentMatch.remove(result).then(() => {
               //add new recent match
               console.log("Saving player: \"" + playerName + "\" recent 10 matches")
               var index = 0
               recentMatches.forEach(async (element: any) => {
-                await RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId }}).then(async (result) =>{
+                await RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId } }).then(async (result) => {
                   var recentMatch = result
                   if (!recentMatch) {
                     recentMatch = new RecentMatch()
@@ -192,7 +192,7 @@ export class RiotAPI {
                     await RecentMatch.save(recentMatch)
                   }
                 })
-                if (index === recentMatches.length - 1){
+                if (index === recentMatches.length - 1) {
                   console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
                   resolve();
                 }
@@ -253,23 +253,23 @@ export class RiotAPI {
       return null
     }
 
-    var jsonObjPromise = new Promise(async (resolve) =>{
-      await this.updateRecentMatchForSummoner(summoner).then(()=>{
-        RecentMatch.find({ where: { accountId: summoner.accountId}}).then((result) =>{
+    var jsonObjPromise = new Promise(async (resolve) => {
+      await this.updateRecentMatchForSummoner(summoner).then(() => {
+        RecentMatch.find({ where: { accountId: summoner.accountId } }).then((result) => {
           var recentMatches = result;
-          var getRecentMatchFromDataBase = new Promise(async function (result,resolve){
+          var getRecentMatchFromDataBase = new Promise(async function (result, resolve) {
             var notFirst = false
             var index = 0;
             recentMatches.forEach((element: any) => {
               if (notFirst) {
-                returnStr+= ','
+                returnStr += ','
               }
               returnStr += '{"accountId":"' + element.accountId + '","summonerName":"' + element.summonerName
                 + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
                 + ',"queue":"' + element.queue + '","season":' + element.season + ',"timestamp":"' + element.timestamp
                 + '","role":"' + element.role + '","lane":"' + element.lane + '"}'
               notFirst = true
-              if(index === RecentMatch.length - 1) resolve()
+              if (index === RecentMatch.length - 1) resolve()
               index += 1
             });
           });
