@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios' // import axios for http requests
+import { FetchTime } from './entities/FetchTime'
 import { RecentMatch } from './entities/RecentMatch'
 import { Summoner } from './entities/Summoner'
 
@@ -148,63 +149,84 @@ export class RiotAPI {
   async updateRecentMatchForSummoner(summoner: Summoner) {
     const playerAccountID = summoner.accountId
     const playerName = summoner.summonerName
+    var update: boolean = true
 
-    await this.instance({
-      method: 'get',
-      url: '/match/v4/matchlists/by-account/' + playerAccountID + '?endIndex=10', // can be any accountId, i.e. /match/v4/matchlists/by-account/{accountId}
-      headers:
-      {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
-        "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
-        "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-        "Origin": "https://developer.riotgames.com",
-        "X-Riot-Token": this.riotToken
+    const now = new Date()
+    const secondsSinceEpoch = Math.round(now.getTime() / 1000)
+    //check last time the user's match info was fetched. Will not make a new request if within one day.
+    var lastTimeFetched: any
+    lastTimeFetched = await FetchTime.findOne({ where: { summonerName: playerName } })
+    if (lastTimeFetched) {
+      if (secondsSinceEpoch - parseInt(lastTimeFetched.timeFetched) < 86400) {
+        update = false
       }
-    })
-      .then(function (response) {
-        const parsed = JSON.parse(JSON.stringify(response.data))
-        const recentMatches = parsed.matches
+    }
 
+    if (update) {
+      if (lastTimeFetched) {
+        await FetchTime.remove(lastTimeFetched)
+      }
 
-        var updateRecentMatchPromise = new Promise(async (resolve) => {
-          await RecentMatch.find({ where: { accountId: playerAccountID } }).then((result) => {
-            //Remove current players old recent matches from db
-            console.log("Removing old matches for player: " + playerName)
-            RecentMatch.remove(result).then(() => {
-              //add new recent match
-              console.log("Saving player: \"" + playerName + "\" recent 10 matches")
-              var index = 0
-              recentMatches.forEach(async (element: any) => {
-                await RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId } }).then(async (result) => {
-                  var recentMatch = result
-                  if (!recentMatch) {
-                    recentMatch = new RecentMatch()
-                    recentMatch.accountId = playerAccountID
-                    recentMatch.summonerName = playerName
-                    recentMatch.platformId = element.platformId
-                    recentMatch.gameId = element.gameId
-                    recentMatch.champion = element.champion
-                    recentMatch.queue = element.queue
-                    recentMatch.season = element.season
-                    recentMatch.timestamp = element.timestamp
-                    recentMatch.role = element.role
-                    recentMatch.lane = element.lane
-                    await RecentMatch.save(recentMatch)
+      var timeFetched = new FetchTime()
+      timeFetched.summonerName = playerName;
+      timeFetched.timeFetched = secondsSinceEpoch.toString();
+      await FetchTime.save(timeFetched)
+
+      await this.instance({
+        method: 'get',
+        url: '/match/v4/matchlists/by-account/' + playerAccountID + '?endIndex=10', // can be any accountId, i.e. /match/v4/matchlists/by-account/{accountId}
+        headers:
+        {
+          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
+          "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
+          "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+          "Origin": "https://developer.riotgames.com",
+          "X-Riot-Token": this.riotToken
+        }
+      })
+        .then(function (response) {
+          const parsed = JSON.parse(JSON.stringify(response.data))
+          const recentMatches = parsed.matches
+
+          var updateRecentMatchPromise = new Promise(async (resolve) => {
+            await RecentMatch.find({ where: { accountId: playerAccountID } }).then((result) => {
+              //Remove current players old recent matches from db
+              console.log("Removing old matches for player: " + playerName)
+              RecentMatch.remove(result).then(() => {
+                //add new recent match
+                console.log("Saving player: \"" + playerName + "\" recent 10 matches")
+                var index = 0
+                recentMatches.forEach(async (element: any) => {
+                  await RecentMatch.findOne({ where: { accountId: playerAccountID, gameId: element.gameId } }).then(async (result) => {
+                    var recentMatch = result
+                    if (!recentMatch) {
+                      recentMatch = new RecentMatch()
+                      recentMatch.accountId = playerAccountID
+                      recentMatch.summonerName = playerName
+                      recentMatch.platformId = element.platformId
+                      recentMatch.gameId = element.gameId
+                      recentMatch.champion = element.champion
+                      recentMatch.queue = element.queue
+                      recentMatch.season = element.season
+                      recentMatch.timestamp = element.timestamp
+                      recentMatch.role = element.role
+                      recentMatch.lane = element.lane
+                      await RecentMatch.save(recentMatch)
+                    }
+                  })
+                  if (index === recentMatches.length - 1) {
+                    console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
+                    resolve();
                   }
-                })
-                if (index === recentMatches.length - 1) {
-                  console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
-                  resolve();
-                }
-                index += 1;
-              });
+                  index += 1;
+                });
+              })
             })
+
           })
-
-        })
-        return updateRecentMatchPromise
-      });
-
+          return updateRecentMatchPromise
+        });
+    }
   }
 
   async getSummonerByName(searchName: String) {

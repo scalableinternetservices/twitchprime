@@ -1,5 +1,6 @@
 import { createPool, PoolConnection, QueryOptions } from 'mysql2'
 import { createConnection } from 'typeorm'
+import { FetchTime } from '../entities/FetchTime'
 import { RecentMatch } from '../entities/RecentMatch'
 import { Summoner } from '../entities/Summoner'
 // import { Session } from '../entities/Session'
@@ -24,7 +25,7 @@ export async function initORM() {
     synchronize: true,
     logging: false,
     //entities: [User, Session, Survey, SurveyQuestion, SurveyAnswer, Summoner],
-    entities: [Summoner, RecentMatch],
+    entities: [Summoner, RecentMatch, FetchTime],
     extra: {
       connectionLimit: 5,
     },
