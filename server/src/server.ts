@@ -18,7 +18,6 @@ import 'reflect-metadata'
 import { v4 as uuidv4 } from 'uuid'
 import { checkEqual, Unpromise } from '../../common/src/util'
 import { Config } from './config'
-import { migrate } from './db/migrate'
 import { initORM } from './db/sql'
 import { Session } from './entities/Session'
 import { User } from './entities/User'
@@ -26,7 +25,6 @@ import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
-import { RiotAPI } from './riotAPI'
 
 const server = new GraphQLServer({
   typeDefs: getSchema(),
@@ -51,8 +49,8 @@ server.express.get('/', (req, res) => {
 server.express.get('/app/index', async (req, res) => {
   console.log('GET /app')
   renderApp(req, res)
-  var riotAPI = new RiotAPI("")
-  await riotAPI.updateRecentMatchDetail('3648643251')
+  //var riotAPI = new RiotAPI("")
+  //await riotAPI.updateRecentMatchDetail('3648643251')
 })
 
 server.express.get('/app/player-detail/*', (req, res) => {
@@ -236,7 +234,7 @@ server.express.post(
 )
 
 initORM()
-  .then(() => migrate())
+  //.then(() => migrate())
   .then(() =>
     server.start(
       {

@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { RecentMatch } from './RecentMatch'
 
 @Entity()
 export class Summoner extends BaseEntity {
@@ -77,5 +78,8 @@ export class Summoner extends BaseEntity {
     nullable: true
   })
   hotStreak: boolean
+
+  @OneToMany(() => RecentMatch, recentMatch => recentMatch.summoner, {eager: true})
+  recentMatches: RecentMatch[]
 
 }

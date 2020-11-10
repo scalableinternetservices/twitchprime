@@ -1,20 +1,14 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Summoner } from './Summoner'
 
 @Entity()
 export class RecentMatch extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({
-    length: 100,
-  })
-  accountId: string
-
-  @Column({
-    length: 20,
-    nullable: true
-  })
-  summonerName: string
+  @ManyToOne(() => Summoner, summoner => summoner.recentMatches)
+  @JoinColumn()
+  summoner: Summoner
 
   @Column()
   platformId: string
