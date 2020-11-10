@@ -1,8 +1,10 @@
 import axios, { AxiosInstance } from 'axios' // import axios for http requests
 import { FetchTime } from './entities/FetchTime'
 import { MatchDetail } from './entities/MatchDetail'
+import { MatchParticipant } from './entities/MatchParticipant'
 import { RecentMatch } from './entities/RecentMatch'
 import { Summoner } from './entities/Summoner'
+
 
 export class RiotAPI {
   riotToken: String
@@ -261,15 +263,72 @@ export class RiotAPI {
             newMatchDetail.gameVersion = matchDetail.gameVersion
             newMatchDetail.mapId = matchDetail.mapId.toString()
             newMatchDetail.gameMode = matchDetail.gameMode
-            console.log("gameid " + newMatchDetail.gameId)
-            console.log("type " + newMatchDetail.gameType)
-            await MatchDetail.save(newMatchDetail)
             for (let i = 0; i < matchDetail.teams.length; i++) {
-              console.log("one team")
+              if (matchDetail.teams[i].teamId == 100) {//blue side
+                newMatchDetail.blueTowerKills = matchDetail.teams[i].towerKills
+                newMatchDetail.blueRiftHeraldKills = matchDetail.teams[i].riftHeraldKills
+                newMatchDetail.blueFirstBlood = matchDetail.teams[i].firstBlood
+                newMatchDetail.blueInhibitorKills = matchDetail.teams[i].inhibitorKills
+                newMatchDetail.blueFirstBaron = matchDetail.teams[i].firstBaron
+                newMatchDetail.blueFirstDragon = matchDetail.teams[i].firstDragon
+                newMatchDetail.blueDominionVictoryScore = matchDetail.teams[i].dominionVictoryScore
+                newMatchDetail.blueDragonKills = matchDetail.teams[i].dragonKills
+                newMatchDetail.blueBaronKills = matchDetail.teams[i].baronKills
+                newMatchDetail.blueFirstInhibitor = matchDetail.teams[i].firstInhibitor
+                newMatchDetail.blueVilemawKills = matchDetail.teams[i].vilemawKills
+                newMatchDetail.blueFirstRiftHerald = matchDetail.teams[i].firstRiftHerald
+                newMatchDetail.blueFirstTower = matchDetail.teams[i].firstTower
+                newMatchDetail.blueWin = matchDetail.teams[i].win
+              } else {//red side
+                newMatchDetail.redTowerKills = matchDetail.teams[i].towerKills
+                newMatchDetail.redRiftHeraldKills = matchDetail.teams[i].riftHeraldKills
+                newMatchDetail.redFirstBlood = matchDetail.teams[i].firstBlood
+                newMatchDetail.redInhibitorKills = matchDetail.teams[i].inhibitorKills
+                newMatchDetail.redFirstBaron = matchDetail.teams[i].firstBaron
+                newMatchDetail.redFirstDragon = matchDetail.teams[i].firstDragon
+                newMatchDetail.redDominionVictoryScore = matchDetail.teams[i].dominionVictoryScore
+                newMatchDetail.redDragonKills = matchDetail.teams[i].dragonKills
+                newMatchDetail.redBaronKills = matchDetail.teams[i].baronKills
+                newMatchDetail.redFirstInhibitor = matchDetail.teams[i].firstInhibitor
+                newMatchDetail.redVilemawKills = matchDetail.teams[i].vilemawKills
+                newMatchDetail.redFirstRiftHerald = matchDetail.teams[i].firstRiftHerald
+                newMatchDetail.redFirstTower = matchDetail.teams[i].firstTower
+                newMatchDetail.redWin = matchDetail.teams[i].win
+              }
             }
+            await MatchDetail.save(newMatchDetail)
+            console.log("match saved")
             for (let i = 0; i < matchDetail.participants.length; i++) {
-              console.log("one participant")
+              var newParticipant = new MatchParticipant()
+              newParticipant.gameId = matchDetail.gameId.toString()
+              newParticipant.participantId = matchDetail.participants[i].participantId
+              newParticipant.championId = matchDetail.participants[i].championId
+              newParticipant.teamId = matchDetail.participants[i].teamId
+              newParticipant.spell1Id = matchDetail.participants[i].spell1Id
+              newParticipant.spell2Id = matchDetail.participants[i].spell2Id
+              newParticipant.item0 = matchDetail.participants[i].item0
+              newParticipant.item1 = matchDetail.participants[i].item1
+              newParticipant.item2 = matchDetail.participants[i].item2
+              newParticipant.item3 = matchDetail.participants[i].item3
+              newParticipant.item4 = matchDetail.participants[i].item4
+              newParticipant.item5 = matchDetail.participants[i].item5
+              newParticipant.item6 = matchDetail.participants[i].item6
+              newParticipant.goldEarned = matchDetail.participants[i].goldEarned
+              newParticipant.goldSpent = matchDetail.participants[i].goldSpent
+              newParticipant.totalDamageTaken = matchDetail.participants[i].totalDamageTaken
+              newParticipant.totalHeal = matchDetail.participants[i].totalHeal
+              newParticipant.totalPlayerScore = matchDetail.participants[i].totalPlayerScore
+              newParticipant.champLevel = matchDetail.participants[i].champLevel
+              newParticipant.totalDamageDealt = matchDetail.participants[i].totalDamageDealt
+              newParticipant.kills = matchDetail.participants[i].kills
+              newParticipant.deaths = matchDetail.participants[i].deaths
+              newParticipant.assist = matchDetail.participants[i].assist
+              newParticipant.damageSelfMitigated = matchDetail.participants[i].damageSelfMitigated
+              newParticipant.totalMinionsKilled = matchDetail.participants[i].totalMinionsKilled
+              await MatchParticipant.save(newParticipant)
+              console.log("participant saved")
             }
+            console.log("resolving")
             resolve()
           })
           return updateMatchDetailPromise
