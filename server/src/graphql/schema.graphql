@@ -22,6 +22,7 @@ type Query {
 
   # Returns an PlayerDeatil according to playerName param
   playerDetail (playerName: String!): PlayerDetail!
+  matchDetail (gameId: String!): MatchDetail!
 }
 
 type Mutation {
@@ -62,6 +63,10 @@ type RecentMatch {
   timestamp: String
   role: String
   lane: String
+}
+
+type MatchDetail {
+  gameId: String
 }
 
 type Subscription {

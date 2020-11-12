@@ -88,6 +88,18 @@ function createPlayerDetail(config: PlayerDetail): {
   return newPlayerDetail;
 }
 
+/* create a MatchDetail obj */
+function createMatchDetail(config: RecentMatch): {
+  gameId: string,
+} {
+  let newMatchDetail = {
+    gameId: "null",
+  };
+  if (config.gameId) { newMatchDetail.gameId = config.gameId }
+
+  return newMatchDetail;
+}
+
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
@@ -95,9 +107,19 @@ export const graphqlRoot: Resolvers<Context> = {
     surveys: () => Survey.find(),
 
     /* received graphQL call to fetch playerDetail */
+    matchDetail: async (_, { gameId }) => {
+      console.log("Received gameId: " + gameId);
+      let returnMatchDetail = createMatchDetail({
+        gameId: gameId
+      })
+
+      return returnMatchDetail;
+    },
+
+    /* received graphQL call to fetch playerDetail */
     playerDetail: async (_, { playerName }) => {
       console.log("Received PlayerName: " + playerName)
-      var riotAPI = new RiotAPI("")
+      var riotAPI = new RiotAPI("RGAPI-b6ae8040-36ce-4f6d-ac3d-4e2b44130e9e")
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner
@@ -149,8 +171,9 @@ export const graphqlRoot: Resolvers<Context> = {
       console.log("playerDetail: " + playerDetail)
 
       return returnPlayerDetail
-    }
+    },
   },
+
   Mutation: {
     answerSurvey: async (_, { input }, ctx) => {
       const { answer, questionId } = input

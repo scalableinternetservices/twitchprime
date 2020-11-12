@@ -18,6 +18,7 @@ export interface Query {
   surveys: Array<Survey>
   survey?: Maybe<Survey>
   playerDetail: PlayerDetail
+  matchDetail: MatchDetail
 }
 
 export interface QuerySurveyArgs {
@@ -26,6 +27,10 @@ export interface QuerySurveyArgs {
 
 export interface QueryPlayerDetailArgs {
   playerName: Scalars['String']
+}
+
+export interface QueryMatchDetailArgs {
+  gameId: Scalars['String']
 }
 
 export interface Mutation {
@@ -73,6 +78,11 @@ export interface RecentMatch {
   timestamp?: Maybe<Scalars['String']>
   role?: Maybe<Scalars['String']>
   lane?: Maybe<Scalars['String']>
+}
+
+export interface MatchDetail {
+  __typename?: 'MatchDetail'
+  gameId?: Maybe<Scalars['String']>
 }
 
 export interface Subscription {
@@ -213,6 +223,7 @@ export type ResolversTypes = {
   PlayerDetail: ResolverTypeWrapper<PlayerDetail>
   Float: ResolverTypeWrapper<Scalars['Float']>
   RecentMatch: ResolverTypeWrapper<RecentMatch>
+  MatchDetail: ResolverTypeWrapper<MatchDetail>
   Subscription: ResolverTypeWrapper<{}>
   User: ResolverTypeWrapper<User>
   UserType: UserType
@@ -232,6 +243,7 @@ export type ResolversParentTypes = {
   PlayerDetail: PlayerDetail
   Float: Scalars['Float']
   RecentMatch: RecentMatch
+  MatchDetail: MatchDetail
   Subscription: {}
   User: User
   Survey: Survey
@@ -257,6 +269,12 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryPlayerDetailArgs, 'playerName'>
+  >
+  matchDetail?: Resolver<
+    ResolversTypes['MatchDetail'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryMatchDetailArgs, 'gameId'>
   >
 }
 
@@ -314,6 +332,14 @@ export type RecentMatchResolvers<
   timestamp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   role?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   lane?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type MatchDetailResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['MatchDetail'] = ResolversParentTypes['MatchDetail']
+> = {
+  gameId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -381,6 +407,7 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>
   PlayerDetail?: PlayerDetailResolvers<ContextType>
   RecentMatch?: RecentMatchResolvers<ContextType>
+  MatchDetail?: MatchDetailResolvers<ContextType>
   Subscription?: SubscriptionResolvers<ContextType>
   User?: UserResolvers<ContextType>
   Survey?: SurveyResolvers<ContextType>

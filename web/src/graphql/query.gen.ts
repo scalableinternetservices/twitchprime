@@ -4,6 +4,28 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: getMatchDetail
+// ====================================================
+
+export interface getMatchDetail_matchDetail {
+  __typename: "MatchDetail";
+  gameId: string | null;
+}
+
+export interface getMatchDetail {
+  matchDetail: getMatchDetail_matchDetail;
+}
+
+export interface getMatchDetailVariables {
+  gameId: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: getPlayerDetail
 // ====================================================
 
