@@ -15,12 +15,9 @@ import { GraphQLServer } from 'graphql-yoga'
 import { forAwaitEach, isAsyncIterable } from 'iterall'
 import path from 'path'
 import 'reflect-metadata'
-import { v4 as uuidv4 } from 'uuid'
 import { checkEqual, Unpromise } from '../../common/src/util'
 import { Config } from './config'
 import { initORM } from './db/sql'
-import { Session } from './entities/Session'
-import { User } from './entities/User'
 import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
@@ -42,7 +39,7 @@ const asyncRoute = (fn: RequestHandler) => (...args: Parameters<RequestHandler>)
 
 server.express.get('/', (req, res) => {
   console.log('GET /')
-  res.redirect('/app')
+  res.redirect('/app/index')
 
 })
 
@@ -65,47 +62,6 @@ server.express.get('/app/player-detail/*', (req, res) => {
   // riotAPI.getSummonerByName('Yassuo')
 })
 
-server.express.post(
-  '/auth/login',
-  asyncRoute(async (req, res) => {
-    console.log('POST /auth/login')
-    const email = req.body.email
-    const password = req.body.password
-
-    const user = await User.findOne({ where: { email } })
-    if (!user || password !== Config.adminPassword) {
-      res.status(403).send('Forbidden')
-      return
-    }
-
-    const authToken = uuidv4()
-
-    await Session.delete({ user })
-
-    const session = new Session()
-    session.authToken = authToken
-    session.user = user
-    await Session.save(session).then(s => console.log('saved session ' + s.id))
-
-    const SESSION_DURATION = 30 * 24 * 60 * 60 * 1000 // 30 days
-    res
-      .status(200)
-      .cookie('authToken', authToken, { maxAge: SESSION_DURATION, path: '/', httpOnly: true, secure: Config.isProd })
-      .send('Success!')
-  })
-)
-
-server.express.post(
-  '/auth/logout',
-  asyncRoute(async (req, res) => {
-    console.log('POST /auth/logout')
-    const authToken = req.cookies.authToken
-    if (authToken) {
-      await Session.delete({ authToken })
-    }
-    res.status(200).cookie('authToken', '', { maxAge: 0 }).send('Success!')
-  })
-)
 
 server.express.get(
   '/api/:function',
@@ -225,14 +181,14 @@ server.express.post('/graphqlsubscription/disconnect', (req, res) => {
 server.express.post(
   '/graphql',
   asyncRoute(async (req, res, next) => {
-    const authToken = req.cookies.authToken || req.header('x-authtoken')
-    if (authToken) {
-      const session = await Session.findOne({ where: { authToken }, relations: ['user'] })
-      if (session) {
-        const reqAny = req as any
-        reqAny.user = session.user
-      }
-    }
+    //const authToken = req.cookies.authToken || req.header('x-authtoken')
+    // if (authToken) {
+    //   const session = await Session.findOne({ where: { authToken }, relations: ['user'] })
+    //   if (session) {
+    //     const reqAny = req as any
+    //     reqAny.user = session.user
+    //   }
+    // }
     next()
   })
 )
