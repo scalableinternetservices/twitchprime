@@ -67,7 +67,75 @@ type RecentMatch {
 
 type MatchDetail {
   gameId: String
+  queueId: String
+  gameType: String
+  gameDuration: String
+  platformId: String
+  gameCreation: String
+  seasonId: String
+  gameVersion: String
+  mapId: String
+  gameMode: String
+  blueTowerKills: Int
+  blueRiftHeraldKills: Int
+  blueFirstBlood: Boolean
+  blueInhibitorKills: Int
+  blueFirstBaron: Boolean
+  blueFirstDragon: Boolean
+  blueDominionVictoryScore: Int
+  blueDragonKills: Int
+  blueBaronKills: Int
+  blueFirstInhibitor: Boolean
+  blueFirstTower: Boolean
+  blueVilemawKills: Int
+  blueFirstRiftHerald: Boolean
+  blueWin: Boolean
+  redTowerKills: Int
+  redRiftHeraldKills: Int
+  redFirstBlood: Boolean
+  redInhibitorKills: Int
+  redFirstBaron: Boolean
+  redFirstDragon: Boolean
+  redDominionVictoryScore: Int
+  redDragonKills: Int
+  redBaronKills: Int
+  redFirstInhibitor: Boolean
+  redFirstTower: Boolean
+  redVilemawKills: Int
+  redFirstRiftHerald: Boolean
+  redWin: Boolean
+  participants: [Participant!]
 }
+
+type Participant {
+  gameId: String
+  participantId: Int
+  participantName: String
+  championId: Int
+  teamId: Int
+  spell1Id: Int
+  spell2Id: Int
+  item0: Int
+  item1: Int
+  item2: Int
+  item3: Int
+  item4: Int
+  item5: Int
+  item6: Int
+  goldEarned: Int
+  goldSpent: Int
+  totalDamageTaken: Int
+  totalHeal: Int
+  totalPlayerScore: Int
+  champLevel: Int
+  totalDamageDealt: Int
+  kills: Int
+  deaths: Int
+  assist: Int
+  damageSelfMitigated: Int
+  totalMinionsKilled: Int
+}
+
 
 type Subscription {
   surveyUpdates (surveyId: Int!): Survey

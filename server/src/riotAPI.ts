@@ -151,7 +151,7 @@ export class RiotAPI {
 
   // For individual player search, first find accountId by summonerName
   async updateRecentMatchForSummoner(summonerId: String) {
-    var summoner = check(await Summoner.findOne({ where: {summonerId : summonerId}, relations: ['recentMatches']}))
+    var summoner = check(await Summoner.findOne({ where: { summonerId: summonerId }, relations: ['recentMatches'] }))
     const playerAccountID = summoner.accountId
     const playerName = summoner.summonerName
     var update: boolean = true
@@ -235,6 +235,7 @@ export class RiotAPI {
     console.log("updating details")
     const matchFromDB = await MatchDetail.findOne({ where: { gameId: matchId } })
     if (!matchFromDB) {
+      //MatchDetail.remove(matchFromDB)
       console.log("detail not found in db")
       await this.instance({
         method: 'get',
@@ -296,35 +297,52 @@ export class RiotAPI {
                 newMatchDetail.redWin = matchDetail.teams[i].win
               }
             }
+            console.log(newMatchDetail.blueTowerKills)
+            console.log(newMatchDetail.redTowerKills)
             await MatchDetail.save(newMatchDetail)
             console.log("match saved")
+
+            // const toRemove = await MatchParticipant.find()
+            // MatchParticipant.remove(toRemove)
+
+            var map = new Map<number, String>()
+            for (let i = 0; i < matchDetail.participantIdentities.length; i++) {
+              map.set(matchDetail.participantIdentities[i].participantId, matchDetail.participantIdentities[i].player.summonerName)
+            }
             for (let i = 0; i < matchDetail.participants.length; i++) {
               var newParticipant = new MatchParticipant()
-              newParticipant.gameId = matchDetail.gameId.toString()
+              newParticipant.gameId = matchDetail.gameId
               newParticipant.participantId = matchDetail.participants[i].participantId
+              let name = map.get(newParticipant.participantId)
+              if (name != undefined) {
+                newParticipant.participantName = name
+              }
+              else {
+                newParticipant.participantName = "Null"
+              }
               newParticipant.championId = matchDetail.participants[i].championId
               newParticipant.teamId = matchDetail.participants[i].teamId
               newParticipant.spell1Id = matchDetail.participants[i].spell1Id
               newParticipant.spell2Id = matchDetail.participants[i].spell2Id
-              newParticipant.item0 = matchDetail.participants[i].item0
-              newParticipant.item1 = matchDetail.participants[i].item1
-              newParticipant.item2 = matchDetail.participants[i].item2
-              newParticipant.item3 = matchDetail.participants[i].item3
-              newParticipant.item4 = matchDetail.participants[i].item4
-              newParticipant.item5 = matchDetail.participants[i].item5
-              newParticipant.item6 = matchDetail.participants[i].item6
-              newParticipant.goldEarned = matchDetail.participants[i].goldEarned
-              newParticipant.goldSpent = matchDetail.participants[i].goldSpent
-              newParticipant.totalDamageTaken = matchDetail.participants[i].totalDamageTaken
-              newParticipant.totalHeal = matchDetail.participants[i].totalHeal
-              newParticipant.totalPlayerScore = matchDetail.participants[i].totalPlayerScore
-              newParticipant.champLevel = matchDetail.participants[i].champLevel
-              newParticipant.totalDamageDealt = matchDetail.participants[i].totalDamageDealt
-              newParticipant.kills = matchDetail.participants[i].kills
-              newParticipant.deaths = matchDetail.participants[i].deaths
-              newParticipant.assist = matchDetail.participants[i].assist
-              newParticipant.damageSelfMitigated = matchDetail.participants[i].damageSelfMitigated
-              newParticipant.totalMinionsKilled = matchDetail.participants[i].totalMinionsKilled
+              newParticipant.item0 = matchDetail.participants[i].stats.item0
+              newParticipant.item1 = matchDetail.participants[i].stats.item1
+              newParticipant.item2 = matchDetail.participants[i].stats.item2
+              newParticipant.item3 = matchDetail.participants[i].stats.item3
+              newParticipant.item4 = matchDetail.participants[i].stats.item4
+              newParticipant.item5 = matchDetail.participants[i].stats.item5
+              newParticipant.item6 = matchDetail.participants[i].stats.item6
+              newParticipant.goldEarned = matchDetail.participants[i].stats.goldEarned
+              newParticipant.goldSpent = matchDetail.participants[i].stats.goldSpent
+              newParticipant.totalDamageTaken = matchDetail.participants[i].stats.totalDamageTaken
+              newParticipant.totalHeal = matchDetail.participants[i].stats.totalHeal
+              newParticipant.totalPlayerScore = matchDetail.participants[i].stats.totalPlayerScore
+              newParticipant.champLevel = matchDetail.participants[i].stats.champLevel
+              newParticipant.totalDamageDealt = matchDetail.participants[i].stats.totalDamageDealt
+              newParticipant.kills = matchDetail.participants[i].stats.kills
+              newParticipant.deaths = matchDetail.participants[i].stats.deaths
+              newParticipant.assist = matchDetail.participants[i].stats.assist
+              newParticipant.damageSelfMitigated = matchDetail.participants[i].stats.damageSelfMitigated
+              newParticipant.totalMinionsKilled = matchDetail.participants[i].stats.totalMinionsKilled
               await MatchParticipant.save(newParticipant)
               console.log("participant saved")
             }
@@ -384,10 +402,10 @@ export class RiotAPI {
 
     var jsonObjPromise = new Promise(async (resolve, reject) => {
       await this.updateRecentMatchForSummoner(summoner.summonerId).then(async () => {
-        Summoner.findOne({where: {summonerId: summoner.summonerId}, relations: ['recentMatches']}).then((result) =>{
-          if(result == null){
+        Summoner.findOne({ where: { summonerId: summoner.summonerId }, relations: ['recentMatches'] }).then((result) => {
+          if (result == null) {
             reject()
-          }else{
+          } else {
             const updatedSummoner = result;
             var getRecentMatchFromDataBase = new Promise(async function (resolve) {
               var notFirst = false
@@ -408,13 +426,104 @@ export class RiotAPI {
 
             getRecentMatchFromDataBase.then()
             returnStr = '[' + returnStr + ']'
+            //console.log(returnStr)
             jsonObj = JSON.parse(returnStr)
             resolve(jsonObj)
-
           }
+        })
+      })
+    })
+    return jsonObjPromise
+  }
 
-
-
+  async getMatchDetail(matchId: string) {
+    console.log("getting details")
+    var returnStr: string
+    var jsonObjPromise = new Promise(async (resolve, reject) => {
+      MatchDetail.findOne({ where: { gameId: matchId } }).then((result1) => {
+        MatchParticipant.find({ where: { gameId: matchId } }).then((result2) => {
+          returnStr = '['
+          if (result1 && result2) {
+            returnStr += '{"queueId":"' + result1.queueId
+              + '","gameType":"' + result1.gameType + '","gameId":"' + result1.gameId
+              + '","gameDuration":"' + result1.gameDuration + '","platformId":"' + result1.platformId
+              + '","gameCreation":"' + result1.gameCreation + '","seasonId":' + result1.seasonId
+              + ',"gameVersion":"' + result1.gameVersion + '","mapId":' + result1.mapId
+              + ',"gameMode":"' + result1.gameMode + '","blueTowerKills":' + result1.blueTowerKills
+              + ',"blueRiftHeraldKills":' + result1.blueRiftHeraldKills
+              + ',"blueFirstBlood":' + result1.blueFirstBlood
+              + ',"blueInhibitorKills":' + result1.blueInhibitorKills
+              + ',"blueFirstBaron":' + result1.blueFirstBaron
+              + ',"blueFirstDragon":' + result1.blueFirstDragon
+              + ',"blueDominationVictoryScore":' + result1.blueDominionVictoryScore
+              + ',"blueDragonKills":' + result1.blueDragonKills
+              + ',"blueBaronKills":' + result1.blueBaronKills
+              + ',"blueFirstInhibitor":' + result1.blueFirstInhibitor
+              + ',"blueFirstTower":' + result1.blueFirstTower
+              + ',"blueVilemawKills":' + result1.blueVilemawKills
+              + ',"blueFirstRiftHerald":' + result1.blueFirstRiftHerald
+              + ',"blueWin":' + result1.blueWin
+              + ',"redTowerKills":' + result1.redTowerKills
+              + ',"redRiftHeraldKills":' + result1.redRiftHeraldKills
+              + ',"redFirstBlood":' + result1.redFirstBlood
+              + ',"redInhibitorKills":' + result1.redInhibitorKills
+              + ',"redFirstBaron":' + result1.redFirstBaron
+              + ',"redFirstDragon":' + result1.redFirstDragon
+              + ',"redDominationVictoryScore":' + result1.redDominionVictoryScore
+              + ',"redDragonKills":' + result1.redDragonKills
+              + ',"redBaronKills":' + result1.redBaronKills
+              + ',"redFirstInhibitor":' + result1.redFirstInhibitor
+              + ',"redFirstTower":' + result1.redFirstTower
+              + ',"redVilemawKills":' + result1.redVilemawKills
+              + ',"redFirstRiftHerald":' + result1.redFirstRiftHerald
+              + ',"redWin":' + result1.redWin
+              + '},'
+            var notFirst = false
+            result2.forEach((element: any) => {
+              if (notFirst) {
+                returnStr += ','
+              }
+              notFirst = true
+              returnStr += '{"participantId":' + element.participantId
+                + ',"gameId":"' + element.gameId
+                + '","participantName":"' + element.participantName
+                + '","championId":' + element.championId
+                + ',"teamId":' + element.teamId
+                + ',"spell1Id":' + element.spell1Id
+                + ',"spell2Id":' + element.spell2Id
+                + ',"item0":' + element.item0
+                + ',"item1":' + element.item1
+                + ',"item2":' + element.item2
+                + ',"item3":' + element.item3
+                + ',"item4":' + element.item4
+                + ',"item5":' + element.item5
+                + ',"item6":' + element.item6
+                + ',"goldEarned":' + element.goldEarned
+                + ',"goldSpent":' + element.goldSpent
+                + ',"totalDamageTaken":' + element.totalDamageTaken
+                + ',"totalHeal":' + element.totalHeal
+                + ',"totalPlayerScore":' + element.totalPlayerScore
+                + ',"champLevel":' + element.champLevel
+                + ',"totalDamageDealt":' + element.totalDamageDealt
+                + ',"kills":' + element.kills
+                + ',"deaths":' + element.deaths
+                + ',"assist":' + element.assist
+                + ',"damageSelfMitigated":' + element.damageSelfMitigated
+                + ',"totalMinionsKilled":' + element.totalMinionsKilled
+                + '}'
+            })
+            returnStr += ']'
+            var jsonObj: any
+            //console.log(returnStr)
+            jsonObj = JSON.parse(returnStr)
+            resolve(jsonObj)
+          }
+          else {//return empty obj
+            console.log("error while getting match detail")
+            returnStr = '[]'
+            jsonObj = JSON.parse(returnStr)
+            resolve(jsonObj)
+          }
         })
       })
     })

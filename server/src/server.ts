@@ -49,8 +49,12 @@ server.express.get('/', (req, res) => {
 server.express.get('/app/index', async (req, res) => {
   console.log('GET /app')
   renderApp(req, res)
-  //var riotAPI = new RiotAPI("")
-  //await riotAPI.updateRecentMatchDetail('3648643251')
+  // var riotAPI = new RiotAPI("")
+  // await riotAPI.updateRecentMatchDetail('3648643251')
+  // var jsonObj: any
+  // jsonObj = await riotAPI.getMatchDetail('3648643251')
+  // var detail = JSON.parse(JSON.stringify(jsonObj))
+  // console.log(detail)
 })
 
 server.express.get('/app/player-detail/*', (req, res) => {

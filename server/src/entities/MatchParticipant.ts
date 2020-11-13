@@ -12,6 +12,9 @@ export class MatchParticipant extends BaseEntity {
   participantId: number
 
   @Column()
+  participantName: String
+
+  @Column()
   championId: number
 
   @Column()

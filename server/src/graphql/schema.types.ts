@@ -83,6 +83,74 @@ export interface RecentMatch {
 export interface MatchDetail {
   __typename?: 'MatchDetail'
   gameId?: Maybe<Scalars['String']>
+  queueId?: Maybe<Scalars['String']>
+  gameType?: Maybe<Scalars['String']>
+  gameDuration?: Maybe<Scalars['String']>
+  platformId?: Maybe<Scalars['String']>
+  gameCreation?: Maybe<Scalars['String']>
+  seasonId?: Maybe<Scalars['String']>
+  gameVersion?: Maybe<Scalars['String']>
+  mapId?: Maybe<Scalars['String']>
+  gameMode?: Maybe<Scalars['String']>
+  blueTowerKills?: Maybe<Scalars['Int']>
+  blueRiftHeraldKills?: Maybe<Scalars['Int']>
+  blueFirstBlood?: Maybe<Scalars['Boolean']>
+  blueInhibitorKills?: Maybe<Scalars['Int']>
+  blueFirstBaron?: Maybe<Scalars['Boolean']>
+  blueFirstDragon?: Maybe<Scalars['Boolean']>
+  blueDominionVictoryScore?: Maybe<Scalars['Int']>
+  blueDragonKills?: Maybe<Scalars['Int']>
+  blueBaronKills?: Maybe<Scalars['Int']>
+  blueFirstInhibitor?: Maybe<Scalars['Boolean']>
+  blueFirstTower?: Maybe<Scalars['Boolean']>
+  blueVilemawKills?: Maybe<Scalars['Int']>
+  blueFirstRiftHerald?: Maybe<Scalars['Boolean']>
+  blueWin?: Maybe<Scalars['Boolean']>
+  redTowerKills?: Maybe<Scalars['Int']>
+  redRiftHeraldKills?: Maybe<Scalars['Int']>
+  redFirstBlood?: Maybe<Scalars['Boolean']>
+  redInhibitorKills?: Maybe<Scalars['Int']>
+  redFirstBaron?: Maybe<Scalars['Boolean']>
+  redFirstDragon?: Maybe<Scalars['Boolean']>
+  redDominionVictoryScore?: Maybe<Scalars['Int']>
+  redDragonKills?: Maybe<Scalars['Int']>
+  redBaronKills?: Maybe<Scalars['Int']>
+  redFirstInhibitor?: Maybe<Scalars['Boolean']>
+  redFirstTower?: Maybe<Scalars['Boolean']>
+  redVilemawKills?: Maybe<Scalars['Int']>
+  redFirstRiftHerald?: Maybe<Scalars['Boolean']>
+  redWin?: Maybe<Scalars['Boolean']>
+  participants?: Maybe<Array<Participant>>
+}
+
+export interface Participant {
+  __typename?: 'Participant'
+  gameId?: Maybe<Scalars['String']>
+  participantId?: Maybe<Scalars['Int']>
+  participantName?: Maybe<Scalars['String']>
+  championId?: Maybe<Scalars['Int']>
+  teamId?: Maybe<Scalars['Int']>
+  spell1Id?: Maybe<Scalars['Int']>
+  spell2Id?: Maybe<Scalars['Int']>
+  item0?: Maybe<Scalars['Int']>
+  item1?: Maybe<Scalars['Int']>
+  item2?: Maybe<Scalars['Int']>
+  item3?: Maybe<Scalars['Int']>
+  item4?: Maybe<Scalars['Int']>
+  item5?: Maybe<Scalars['Int']>
+  item6?: Maybe<Scalars['Int']>
+  goldEarned?: Maybe<Scalars['Int']>
+  goldSpent?: Maybe<Scalars['Int']>
+  totalDamageTaken?: Maybe<Scalars['Int']>
+  totalHeal?: Maybe<Scalars['Int']>
+  totalPlayerScore?: Maybe<Scalars['Int']>
+  champLevel?: Maybe<Scalars['Int']>
+  totalDamageDealt?: Maybe<Scalars['Int']>
+  kills?: Maybe<Scalars['Int']>
+  deaths?: Maybe<Scalars['Int']>
+  assist?: Maybe<Scalars['Int']>
+  damageSelfMitigated?: Maybe<Scalars['Int']>
+  totalMinionsKilled?: Maybe<Scalars['Int']>
 }
 
 export interface Subscription {
@@ -224,6 +292,7 @@ export type ResolversTypes = {
   Float: ResolverTypeWrapper<Scalars['Float']>
   RecentMatch: ResolverTypeWrapper<RecentMatch>
   MatchDetail: ResolverTypeWrapper<MatchDetail>
+  Participant: ResolverTypeWrapper<Participant>
   Subscription: ResolverTypeWrapper<{}>
   User: ResolverTypeWrapper<User>
   UserType: UserType
@@ -244,6 +313,7 @@ export type ResolversParentTypes = {
   Float: Scalars['Float']
   RecentMatch: RecentMatch
   MatchDetail: MatchDetail
+  Participant: Participant
   Subscription: {}
   User: User
   Survey: Survey
@@ -340,6 +410,77 @@ export type MatchDetailResolvers<
   ParentType extends ResolversParentTypes['MatchDetail'] = ResolversParentTypes['MatchDetail']
 > = {
   gameId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  queueId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  gameType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  gameDuration?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  platformId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  gameCreation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  seasonId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  gameVersion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  mapId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  gameMode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  blueTowerKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  blueRiftHeraldKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  blueFirstBlood?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  blueInhibitorKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  blueFirstBaron?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  blueFirstDragon?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  blueDominionVictoryScore?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  blueDragonKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  blueBaronKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  blueFirstInhibitor?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  blueFirstTower?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  blueVilemawKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  blueFirstRiftHerald?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  blueWin?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  redTowerKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  redRiftHeraldKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  redFirstBlood?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  redInhibitorKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  redFirstBaron?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  redFirstDragon?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  redDominionVictoryScore?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  redDragonKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  redBaronKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  redFirstInhibitor?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  redFirstTower?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  redVilemawKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  redFirstRiftHerald?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  redWin?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  participants?: Resolver<Maybe<Array<ResolversTypes['Participant']>>, ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type ParticipantResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Participant'] = ResolversParentTypes['Participant']
+> = {
+  gameId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  participantId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  participantName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  championId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  teamId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  spell1Id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  spell2Id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  item0?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  item1?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  item2?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  item3?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  item4?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  item5?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  item6?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  goldEarned?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  goldSpent?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  totalDamageTaken?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  totalHeal?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  totalPlayerScore?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  champLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  totalDamageDealt?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  kills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  deaths?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  assist?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  damageSelfMitigated?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  totalMinionsKilled?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -408,6 +549,7 @@ export type Resolvers<ContextType = any> = {
   PlayerDetail?: PlayerDetailResolvers<ContextType>
   RecentMatch?: RecentMatchResolvers<ContextType>
   MatchDetail?: MatchDetailResolvers<ContextType>
+  Participant?: ParticipantResolvers<ContextType>
   Subscription?: SubscriptionResolvers<ContextType>
   User?: UserResolvers<ContextType>
   Survey?: SurveyResolvers<ContextType>

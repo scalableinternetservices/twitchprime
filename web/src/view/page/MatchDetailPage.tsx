@@ -36,6 +36,71 @@ export function MatchDetailPage(props: HomePageProps) {
     query getMatchDetail($gameId: String!) {
       matchDetail(gameId: $gameId) {
         gameId
+        queueId
+        gameType
+        gameDuration
+        platformId
+        gameCreation
+        seasonId
+        gameVersion
+        mapId
+        gameMode
+        blueTowerKills
+        blueRiftHeraldKills
+        blueFirstBlood
+        blueInhibitorKills
+        blueFirstBaron
+        blueFirstDragon
+        blueDominionVictoryScore
+        blueDragonKills
+        blueBaronKills
+        blueFirstInhibitor
+        blueFirstTower
+        blueVilemawKills
+        blueFirstRiftHerald
+        blueWin
+        redTowerKills
+        redRiftHeraldKills
+        redFirstBlood
+        redInhibitorKills
+        redFirstBaron
+        redFirstDragon
+        redDominionVictoryScore
+        redDragonKills
+        redBaronKills
+        redFirstInhibitor
+        redFirstTower
+        redVilemawKills
+        redFirstRiftHerald
+        redWin
+        participants{
+          gameId
+          participantId
+          participantName
+          championId
+          teamId
+          spell1Id
+          spell2Id
+          item0
+          item1
+          item2
+          item3
+          item4
+          item5
+          item6
+          goldEarned
+          goldSpent
+          totalDamageTaken
+          totalHeal
+          totalPlayerScore
+          champLevel
+          totalDamageDealt
+          kills
+          deaths
+          assist
+          damageSelfMitigated
+          totalMinionsKilled
+        }
       }
     }
   `;
