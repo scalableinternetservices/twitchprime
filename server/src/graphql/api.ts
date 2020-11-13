@@ -322,7 +322,7 @@ export const graphqlRoot: Resolvers<Context> = {
         returnParticipants.push(returnParticipant)
       }
 
-      console.log(returnMatchDetail[0].blueWin)
+      //console.log(returnMatchDetail[0].blueWin)
 
       let MatchDetail = createMatchDetail({
         gameId: returnMatchDetail[0].gameId,

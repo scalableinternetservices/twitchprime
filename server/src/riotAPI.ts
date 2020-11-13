@@ -185,7 +185,7 @@ export class RiotAPI {
           "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
           "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
           "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-          "Origin": "https://developer.riotgames.com",
+        "Origin": "https://developer.riotgames.com",
           "X-Riot-Token": this.riotToken
         }
       })
@@ -233,8 +233,9 @@ export class RiotAPI {
 
   async updateRecentMatchDetail(matchId: String) {
     console.log("updating details")
-    const matchFromDB = await MatchDetail.findOne({ where: { gameId: matchId } })
-    if (!matchFromDB) {
+    var recentMatch = check(await RecentMatch.findOne({where: {gameId : matchId}, relations: ['matchDetail']}))
+    const matchFromDB = recentMatch.matchDetail
+    if (matchFromDB == null) {
       //MatchDetail.remove(matchFromDB)
       console.log("detail not found in db")
       await this.instance({
@@ -297,21 +298,23 @@ export class RiotAPI {
                 newMatchDetail.redWin = matchDetail.teams[i].win
               }
             }
-            console.log(newMatchDetail.blueTowerKills)
-            console.log(newMatchDetail.redTowerKills)
-            await MatchDetail.save(newMatchDetail)
-            console.log("match saved")
+            //console.log(newMatchDetail.blueTowerKills)
+            //console.log(newMatchDetail.redTowerKills)
+            await newMatchDetail.save()
+            recentMatch.matchDetail = newMatchDetail
+            await recentMatch.save()
+            console.log("matchDetail is saved")
 
             // const toRemove = await MatchParticipant.find()
             // MatchParticipant.remove(toRemove)
 
+            var matchDetailFromDB = check(await MatchDetail.findOne({ where: { gameId: matchId }, relations: ['matchParticipants'] }))
             var map = new Map<number, String>()
             for (let i = 0; i < matchDetail.participantIdentities.length; i++) {
               map.set(matchDetail.participantIdentities[i].participantId, matchDetail.participantIdentities[i].player.summonerName)
             }
             for (let i = 0; i < matchDetail.participants.length; i++) {
               var newParticipant = new MatchParticipant()
-              newParticipant.gameId = matchDetail.gameId
               newParticipant.participantId = matchDetail.participants[i].participantId
               let name = map.get(newParticipant.participantId)
               if (name != undefined) {
@@ -343,9 +346,13 @@ export class RiotAPI {
               newParticipant.assist = matchDetail.participants[i].stats.assists
               newParticipant.damageSelfMitigated = matchDetail.participants[i].stats.damageSelfMitigated
               newParticipant.totalMinionsKilled = matchDetail.participants[i].stats.totalMinionsKilled
-              await MatchParticipant.save(newParticipant)
-              console.log("participant saved")
+              await newParticipant.save()
+              matchDetailFromDB.matchParticipants.push(newParticipant)
+              //console.log("participant saved")
             }
+            await matchDetailFromDB.save()
+
+
             console.log("resolving")
             resolve()
           })
@@ -440,92 +447,95 @@ export class RiotAPI {
     console.log("getting details")
     var returnStr: string
     var jsonObjPromise = new Promise(async (resolve, reject) => {
-      MatchDetail.findOne({ where: { gameId: matchId } }).then((result1) => {
-        MatchParticipant.find({ where: { gameId: matchId } }).then((result2) => {
+      MatchDetail.findOne({ where: { gameId: matchId }, relations: ['matchParticipants'] }).then((result) => {
+        const matchDetail = result
+
+        if(matchDetail != null){
           returnStr = '['
-          if (result1 && result2) {
-            returnStr += '{"queueId":"' + result1.queueId
-              + '","gameType":"' + result1.gameType + '","gameId":"' + result1.gameId
-              + '","gameDuration":"' + result1.gameDuration + '","platformId":"' + result1.platformId
-              + '","gameCreation":"' + result1.gameCreation + '","seasonId":' + result1.seasonId
-              + ',"gameVersion":"' + result1.gameVersion + '","mapId":' + result1.mapId
-              + ',"gameMode":"' + result1.gameMode + '","blueTowerKills":' + result1.blueTowerKills
-              + ',"blueRiftHeraldKills":' + result1.blueRiftHeraldKills
-              + ',"blueFirstBlood":' + result1.blueFirstBlood
-              + ',"blueInhibitorKills":' + result1.blueInhibitorKills
-              + ',"blueFirstBaron":' + result1.blueFirstBaron
-              + ',"blueFirstDragon":' + result1.blueFirstDragon
-              + ',"blueDominationVictoryScore":' + result1.blueDominionVictoryScore
-              + ',"blueDragonKills":' + result1.blueDragonKills
-              + ',"blueBaronKills":' + result1.blueBaronKills
-              + ',"blueFirstInhibitor":' + result1.blueFirstInhibitor
-              + ',"blueFirstTower":' + result1.blueFirstTower
-              + ',"blueVilemawKills":' + result1.blueVilemawKills
-              + ',"blueFirstRiftHerald":' + result1.blueFirstRiftHerald
-              + ',"blueWin":"' + result1.blueWin
-              + '","redTowerKills":' + result1.redTowerKills
-              + ',"redRiftHeraldKills":' + result1.redRiftHeraldKills
-              + ',"redFirstBlood":' + result1.redFirstBlood
-              + ',"redInhibitorKills":' + result1.redInhibitorKills
-              + ',"redFirstBaron":' + result1.redFirstBaron
-              + ',"redFirstDragon":' + result1.redFirstDragon
-              + ',"redDominationVictoryScore":' + result1.redDominionVictoryScore
-              + ',"redDragonKills":' + result1.redDragonKills
-              + ',"redBaronKills":' + result1.redBaronKills
-              + ',"redFirstInhibitor":' + result1.redFirstInhibitor
-              + ',"redFirstTower":' + result1.redFirstTower
-              + ',"redVilemawKills":' + result1.redVilemawKills
-              + ',"redFirstRiftHerald":' + result1.redFirstRiftHerald
-              + ',"redWin":"' + result1.redWin
-              + '"},'
-            var notFirst = false
-            result2.forEach((element: any) => {
-              if (notFirst) {
-                returnStr += ','
-              }
-              notFirst = true
-              returnStr += '{"participantId":' + element.participantId
-                + ',"gameId":"' + element.gameId
-                + '","participantName":"' + element.participantName
-                + '","championId":' + element.championId
-                + ',"teamId":' + element.teamId
-                + ',"spell1Id":' + element.spell1Id
-                + ',"spell2Id":' + element.spell2Id
-                + ',"item0":' + element.item0
-                + ',"item1":' + element.item1
-                + ',"item2":' + element.item2
-                + ',"item3":' + element.item3
-                + ',"item4":' + element.item4
-                + ',"item5":' + element.item5
-                + ',"item6":' + element.item6
-                + ',"goldEarned":' + element.goldEarned
-                + ',"goldSpent":' + element.goldSpent
-                + ',"totalDamageTaken":' + element.totalDamageTaken
-                + ',"totalHeal":' + element.totalHeal
-                + ',"totalPlayerScore":' + element.totalPlayerScore
-                + ',"champLevel":' + element.champLevel
-                + ',"totalDamageDealt":' + element.totalDamageDealt
-                + ',"kills":' + element.kills
-                + ',"deaths":' + element.deaths
-                + ',"assist":' + element.assist
-                + ',"damageSelfMitigated":' + element.damageSelfMitigated
-                + ',"totalMinionsKilled":' + element.totalMinionsKilled
-                + '}'
-            })
-            returnStr += ']'
-            var jsonObj: any
-            //console.log(returnStr)
-            jsonObj = JSON.parse(returnStr)
-            resolve(jsonObj)
-          }
-          else {//return empty obj
-            console.log("error while getting match detail")
-            returnStr = '[]'
-            jsonObj = JSON.parse(returnStr)
-            resolve(jsonObj)
-          }
-        })
+          returnStr += '{"queueId":"' + matchDetail.queueId
+            + '","gameType":"' + matchDetail.gameType + '","gameId":"' + matchDetail.gameId
+            + '","gameDuration":"' + matchDetail.gameDuration + '","platformId":"' + matchDetail.platformId
+            + '","gameCreation":"' + matchDetail.gameCreation + '","seasonId":' + matchDetail.seasonId
+            + ',"gameVersion":"' + matchDetail.gameVersion + '","mapId":' + matchDetail.mapId
+            + ',"gameMode":"' + matchDetail.gameMode + '","blueTowerKills":' + matchDetail.blueTowerKills
+            + ',"blueRiftHeraldKills":' + matchDetail.blueRiftHeraldKills
+            + ',"blueFirstBlood":' + matchDetail.blueFirstBlood
+            + ',"blueInhibitorKills":' + matchDetail.blueInhibitorKills
+            + ',"blueFirstBaron":' + matchDetail.blueFirstBaron
+            + ',"blueFirstDragon":' + matchDetail.blueFirstDragon
+            + ',"blueDominationVictoryScore":' + matchDetail.blueDominionVictoryScore
+            + ',"blueDragonKills":' + matchDetail.blueDragonKills
+            + ',"blueBaronKills":' + matchDetail.blueBaronKills
+            + ',"blueFirstInhibitor":' + matchDetail.blueFirstInhibitor
+            + ',"blueFirstTower":' + matchDetail.blueFirstTower
+            + ',"blueVilemawKills":' + matchDetail.blueVilemawKills
+            + ',"blueFirstRiftHerald":' + matchDetail.blueFirstRiftHerald
+            + ',"blueWin":"' + matchDetail.blueWin
+            + '","redTowerKills":' + matchDetail.redTowerKills
+            + ',"redRiftHeraldKills":' + matchDetail.redRiftHeraldKills
+            + ',"redFirstBlood":' + matchDetail.redFirstBlood
+            + ',"redInhibitorKills":' + matchDetail.redInhibitorKills
+            + ',"redFirstBaron":' + matchDetail.redFirstBaron
+            + ',"redFirstDragon":' + matchDetail.redFirstDragon
+            + ',"redDominationVictoryScore":' + matchDetail.redDominionVictoryScore
+            + ',"redDragonKills":' + matchDetail.redDragonKills
+            + ',"redBaronKills":' + matchDetail.redBaronKills
+            + ',"redFirstInhibitor":' + matchDetail.redFirstInhibitor
+            + ',"redFirstTower":' + matchDetail.redFirstTower
+            + ',"redVilemawKills":' + matchDetail.redVilemawKills
+            + ',"redFirstRiftHerald":' + matchDetail.redFirstRiftHerald
+            + ',"redWin":"' + matchDetail.redWin
+            + '"},'
+          var notFirst = false
+
+          //console.log(matchDetail.matchParticipants)
+          matchDetail.matchParticipants.forEach((element: any) => {
+            if (notFirst) {
+              returnStr += ','
+            }
+            notFirst = true
+            returnStr += '{"participantId":' + element.participantId
+              + ',"gameId":"' + matchDetail.gameId
+              + '","participantName":"' + element.participantName
+              + '","championId":' + element.championId
+              + ',"teamId":' + element.teamId
+              + ',"spell1Id":' + element.spell1Id
+              + ',"spell2Id":' + element.spell2Id
+              + ',"item0":' + element.item0
+              + ',"item1":' + element.item1
+              + ',"item2":' + element.item2
+              + ',"item3":' + element.item3
+              + ',"item4":' + element.item4
+              + ',"item5":' + element.item5
+              + ',"item6":' + element.item6
+              + ',"goldEarned":' + element.goldEarned
+              + ',"goldSpent":' + element.goldSpent
+              + ',"totalDamageTaken":' + element.totalDamageTaken
+              + ',"totalHeal":' + element.totalHeal
+              + ',"totalPlayerScore":' + element.totalPlayerScore
+              + ',"champLevel":' + element.champLevel
+              + ',"totalDamageDealt":' + element.totalDamageDealt
+              + ',"kills":' + element.kills
+              + ',"deaths":' + element.deaths
+              + ',"assist":' + element.assist
+              + ',"damageSelfMitigated":' + element.damageSelfMitigated
+              + ',"totalMinionsKilled":' + element.totalMinionsKilled
+              + '}'
+          })
+          returnStr += ']'
+          var jsonObj: any
+          //console.log(returnStr)
+          jsonObj = JSON.parse(returnStr)
+          resolve(jsonObj)
+        }
+        else {//return empty obj
+          console.log("error while getting match detail")
+          returnStr = '[]'
+          jsonObj = JSON.parse(returnStr)
+          reject(jsonObj)
+        }
       })
+
     })
     return jsonObjPromise
   }

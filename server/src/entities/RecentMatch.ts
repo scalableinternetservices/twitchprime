@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { MatchDetail } from './MatchDetail'
 import { Summoner } from './Summoner'
 
 @Entity()
@@ -9,6 +10,9 @@ export class RecentMatch extends BaseEntity {
   @ManyToOne(() => Summoner, summoner => summoner.recentMatches)
   @JoinColumn()
   summoner: Summoner
+
+  @OneToOne(() => MatchDetail, matchDetail => matchDetail.recentMatch, {eager: true})
+  matchDetail: MatchDetail
 
   @Column()
   platformId: string

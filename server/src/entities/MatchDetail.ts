@@ -1,10 +1,19 @@
 import { String } from 'aws-sdk/clients/cloudhsm'
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { MatchParticipant } from './MatchParticipant'
+import { RecentMatch } from './RecentMatch'
 
 @Entity()
 export class MatchDetail extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
+
+  @OneToOne(() => RecentMatch, recentMatch => recentMatch.matchDetail)
+  @JoinColumn()
+  recentMatch : RecentMatch
+
+  @OneToMany(() => MatchParticipant, matchParticipant => matchParticipant.matchDetail, {eager: true})
+  matchParticipants: MatchParticipant[]
 
   @Column()
   gameId: String

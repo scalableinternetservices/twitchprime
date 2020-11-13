@@ -204,7 +204,7 @@ initORM()
         playground: '/graphql',
       },
       () => {
-        console.log(`server started on http://localhost:${Config.appserverPort}/`)
+        console.log(`server started on http://localhost:${Config.appserverPort}/app/index`)
       }
       //server start
     )

@@ -1,12 +1,14 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { MatchDetail } from './MatchDetail'
 
 @Entity()
 export class MatchParticipant extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
-  gameId: String
+  @ManyToOne(()=> MatchDetail, matchDetail => matchDetail.matchParticipants)
+  @JoinColumn()
+  matchDetail: MatchDetail
 
   @Column()
   participantId: number
