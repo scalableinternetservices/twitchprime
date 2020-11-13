@@ -104,7 +104,7 @@ export class MatchDetail extends BaseEntity {
   @Column({
     default: false
   })
-  blueWin: boolean
+  blueWin: string
 
   @Column({
     default: 0
@@ -174,5 +174,5 @@ export class MatchDetail extends BaseEntity {
   @Column({
     default: false
   })
-  redWin: boolean
+  redWin: string
 }

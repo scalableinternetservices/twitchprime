@@ -108,15 +108,16 @@ export function PlayerDetailPage(props: HomePageProps) {
   return (
     <div>
       <ThemeProvider theme={theme}>
+        <title>Player Overview</title>
         <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}>{params.playerName}</div>
         <div style={{ marginBottom: 20, fontSize: 20, fontWeight: 700 }}>
-          <Button style={{ pointerEvents: "none", marginRight: 10, fontWeight: 700 }} variant="outlined" size="small" color="primary">{winsRender}</Button>
-          <Button style={{ pointerEvents: "none", marginRight: 10, fontWeight: 700 }} variant="outlined" size="small" color="primary">{lossesRender}</Button>
-          <Button style={{ pointerEvents: "none", marginRight: 10, fontWeight: 700 }} variant="outlined" size="small" color="primary">{winRateRender}</Button>
-          <Button style={{ pointerEvents: "none", marginRight: 10, fontWeight: 700 }} variant="outlined" size="small" color="primary">{rankRender}</Button>
-          <Button style={{ pointerEvents: "none", marginRight: 10, fontWeight: 700 }} variant="outlined" size="small" color="primary">{levelRender}</Button>
+          <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{winsRender}</Button>
+          <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{lossesRender}</Button>
+          <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{winRateRender}</Button>
+          <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{rankRender}</Button>
+          <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{levelRender}</Button>
         </div>
-        <Paper style={{ boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff", marginBottom: 100 }}>
+        <Paper style={{ boxShadow: "0px 0px 8px 3px #e0e0e0, 0px 0px 8px 3px #ffffff", marginBottom: 100 }}>
           <TableContainer>
             <Table aria-label="simple table">
               <TableHead>

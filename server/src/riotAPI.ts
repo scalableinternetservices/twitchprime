@@ -340,7 +340,7 @@ export class RiotAPI {
               newParticipant.totalDamageDealt = matchDetail.participants[i].stats.totalDamageDealt
               newParticipant.kills = matchDetail.participants[i].stats.kills
               newParticipant.deaths = matchDetail.participants[i].stats.deaths
-              newParticipant.assist = matchDetail.participants[i].stats.assist
+              newParticipant.assist = matchDetail.participants[i].stats.assists
               newParticipant.damageSelfMitigated = matchDetail.participants[i].stats.damageSelfMitigated
               newParticipant.totalMinionsKilled = matchDetail.participants[i].stats.totalMinionsKilled
               await MatchParticipant.save(newParticipant)
@@ -462,8 +462,8 @@ export class RiotAPI {
               + ',"blueFirstTower":' + result1.blueFirstTower
               + ',"blueVilemawKills":' + result1.blueVilemawKills
               + ',"blueFirstRiftHerald":' + result1.blueFirstRiftHerald
-              + ',"blueWin":' + result1.blueWin
-              + ',"redTowerKills":' + result1.redTowerKills
+              + ',"blueWin":"' + result1.blueWin
+              + '","redTowerKills":' + result1.redTowerKills
               + ',"redRiftHeraldKills":' + result1.redRiftHeraldKills
               + ',"redFirstBlood":' + result1.redFirstBlood
               + ',"redInhibitorKills":' + result1.redInhibitorKills
@@ -476,8 +476,8 @@ export class RiotAPI {
               + ',"redFirstTower":' + result1.redFirstTower
               + ',"redVilemawKills":' + result1.redVilemawKills
               + ',"redFirstRiftHerald":' + result1.redFirstRiftHerald
-              + ',"redWin":' + result1.redWin
-              + '},'
+              + ',"redWin":"' + result1.redWin
+              + '"},'
             var notFirst = false
             result2.forEach((element: any) => {
               if (notFirst) {

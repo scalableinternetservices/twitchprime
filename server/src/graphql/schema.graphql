@@ -89,7 +89,7 @@ type MatchDetail {
   blueFirstTower: Boolean
   blueVilemawKills: Int
   blueFirstRiftHerald: Boolean
-  blueWin: Boolean
+  blueWin: String
   redTowerKills: Int
   redRiftHeraldKills: Int
   redFirstBlood: Boolean
@@ -103,7 +103,7 @@ type MatchDetail {
   redFirstTower: Boolean
   redVilemawKills: Int
   redFirstRiftHerald: Boolean
-  redWin: Boolean
+  redWin: String
   participants: [Participant!]
 }
 

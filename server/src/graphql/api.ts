@@ -113,7 +113,7 @@ function createMatchDetail(config: MatchDetail): {
   blueFirstTower: boolean,
   blueVilemawKills: number,
   blueFirstRiftHerald: boolean,
-  blueWin: boolean,
+  blueWin: string,
   redTowerKills: number,
   redRiftHeraldKills: number,
   redFirstBlood: boolean,
@@ -127,7 +127,7 @@ function createMatchDetail(config: MatchDetail): {
   redFirstTower: boolean,
   redVilemawKills: number,
   redFirstRiftHerald: boolean,
-  redWin: boolean
+  redWin: string
   participants: Array<Participant>
 } {
   let defaultParticipant = createParticipant({})
@@ -144,12 +144,12 @@ function createMatchDetail(config: MatchDetail): {
     blueFirstBlood: false, blueInhibitorKills: -1, blueFirstBaron: false, blueFirstDragon: false,
     blueDominionVictoryScore: -1, blueDragonKills: -1, blueBaronKills: 1,
     blueFirstInhibitor: false, blueFirstTower: false, blueVilemawKills: 0,
-    blueFirstRiftHerald: false, blueWin: false,
+    blueFirstRiftHerald: false, blueWin: "null",
     redTowerKills: -1, redRiftHeraldKills: -1,
     redFirstBlood: false, redInhibitorKills: -1, redFirstBaron: false, redFirstDragon: false,
     redDominionVictoryScore: -1, redDragonKills: -1, redBaronKills: 1,
     redFirstInhibitor: false, redFirstTower: false, redVilemawKills: 0,
-    redFirstRiftHerald: false, redWin: false, participants: defaultParticipants
+    redFirstRiftHerald: false, redWin: "null", participants: defaultParticipants
   };
   if (config.gameId) { newMatchDetail.gameId = config.gameId }
   if (config.queueId) { newMatchDetail.queueId = config.queueId }
@@ -236,18 +236,18 @@ function createParticipant(config: Participant): {
     item4: -1,
     item5: -1,
     item6: -1,
-    goldEarned: -1,
-    goldSpent: -1,
-    totalDamageTaken: -1,
-    totalHeal: -1,
-    totalPlayerScore: -1,
-    champLevel: -1,
-    totalDamageDealt: -1,
-    kills: -1,
-    deaths: -1,
-    assist: -1,
-    damageSelfMitigated: -1,
-    totalMinionsKilled: -1
+    goldEarned: 0,
+    goldSpent: 0,
+    totalDamageTaken: 0,
+    totalHeal: 0,
+    totalPlayerScore: 0,
+    champLevel: 0,
+    totalDamageDealt: 0,
+    kills: 0,
+    deaths: 0,
+    assist: 0,
+    damageSelfMitigated: 0,
+    totalMinionsKilled: 0
   };
   if (config.gameId) { newParticipant.gameId = config.gameId }
   if (config.participantId) { newParticipant.participantId = config.participantId }
@@ -300,7 +300,6 @@ export const graphqlRoot: Resolvers<Context> = {
       var returnMatchDetail: any
       var returnParticipants: Participant[] = [];
       returnMatchDetail = JSON.parse(JSON.stringify(jsonObj))
-      console.log(returnMatchDetail)
       for (let i = 1; i < 11; i++) {
         let returnParticipant = createParticipant({
           gameId: returnMatchDetail[i].gameId,
@@ -332,6 +331,8 @@ export const graphqlRoot: Resolvers<Context> = {
         })
         returnParticipants.push(returnParticipant)
       }
+
+      console.log(returnMatchDetail[0].blueWin)
 
       let MatchDetail = createMatchDetail({
         gameId: returnMatchDetail[0].gameId,

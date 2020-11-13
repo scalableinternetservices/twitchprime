@@ -105,7 +105,7 @@ export interface MatchDetail {
   blueFirstTower?: Maybe<Scalars['Boolean']>
   blueVilemawKills?: Maybe<Scalars['Int']>
   blueFirstRiftHerald?: Maybe<Scalars['Boolean']>
-  blueWin?: Maybe<Scalars['Boolean']>
+  blueWin?: Maybe<Scalars['String']>
   redTowerKills?: Maybe<Scalars['Int']>
   redRiftHeraldKills?: Maybe<Scalars['Int']>
   redFirstBlood?: Maybe<Scalars['Boolean']>
@@ -119,7 +119,7 @@ export interface MatchDetail {
   redFirstTower?: Maybe<Scalars['Boolean']>
   redVilemawKills?: Maybe<Scalars['Int']>
   redFirstRiftHerald?: Maybe<Scalars['Boolean']>
-  redWin?: Maybe<Scalars['Boolean']>
+  redWin?: Maybe<Scalars['String']>
   participants?: Maybe<Array<Participant>>
 }
 
@@ -432,7 +432,7 @@ export type MatchDetailResolvers<
   blueFirstTower?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
   blueVilemawKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   blueFirstRiftHerald?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
-  blueWin?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  blueWin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   redTowerKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   redRiftHeraldKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   redFirstBlood?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
@@ -446,7 +446,7 @@ export type MatchDetailResolvers<
   redFirstTower?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
   redVilemawKills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   redFirstRiftHerald?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
-  redWin?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  redWin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   participants?: Resolver<Maybe<Array<ResolversTypes['Participant']>>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }

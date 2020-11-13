@@ -1,23 +1,14 @@
 import { gql, useQuery } from '@apollo/client';
-import Button from '@material-ui/core/Button';
 import { blue, red } from '@material-ui/core/colors';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
-import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
+import { RouteComponentProps, useParams } from '@reach/router';
 import * as React from 'react';
 import { AppRouteParams } from '../nav/route';
 import Error from './Error';
+import FailTable from './FailTable';
 import Loading from './Loading';
 import NotFound from './NotFound';
+import WinTable from './WinTable';
 
 interface HomePageProps extends RouteComponentProps, AppRouteParams { }
 
@@ -29,7 +20,6 @@ const theme = createMuiTheme({
 });
 
 export function MatchDetailPage(props: HomePageProps) {
-  const navigate = useNavigate();
   const params = useParams();
 
   const fetchMatchDetail = gql`
@@ -115,102 +105,70 @@ export function MatchDetailPage(props: HomePageProps) {
   if (!data) return <NotFound />;
   if (data) { console.log(data) }
 
-  function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-    return { name, calories, fat, carbs, protein };
+  let blueTowerKillsRender = "Tower Kills: " + (data.matchDetail.blueTowerKills == -1 ? 0 : data.matchDetail.blueTowerKills)
+  let blueRiftHeraldKillsRender = "RiftHerald Kills: " + (data.matchDetail.blueRiftHeraldKills == -1 ? 0 : data.matchDetail.blueRiftHeraldKills)
+  let blueInhibitorKillsRender = "Inhibitor Kills: " + (data.matchDetail.blueInhibitorKills == -1 ? 0 : data.matchDetail.blueInhibitorKills)
+  let blueDragonKillsRender = "Dragon Kills: " + (data.matchDetail.blueDragonKills == -1 ? 0 : data.matchDetail.blueDragonKills)
+  let blueBaronKillsRender = "Baron Kills: " + (data.matchDetail.blueBaronKills == - 1 ? 0 : data.matchDetail.blueBaronKills)
+  let blueVilemawKillsRender = "Vilema Kills: " + (data.matchDetail.blueVilemawKills == -1 ? 0 : data.matchDetail.blueVilemawKills)
+  let blue_attributes: string[] = [blueTowerKillsRender, blueRiftHeraldKillsRender, blueInhibitorKillsRender, blueDragonKillsRender, blueBaronKillsRender, blueVilemawKillsRender];
+  if (data.matchDetail.blueFirstBlood === true) { blue_attributes.push("FIRST BLOOD") }
+  if (data.matchDetail.blueFirstBaron === true) { blue_attributes.push("FIRST BARON") }
+  if (data.matchDetail.blueFirstDragon === true) { blue_attributes.push("FIRST DRAGON") }
+  if (data.matchDetail.blueFirstInhibitor === true) { blue_attributes.push("FIRST INHIBITOR") }
+  if (data.matchDetail.blueFirstTower === true) { blue_attributes.push("FIRST TOWER") }
+  if (data.matchDetail.blueFirstRiftHerald === true) { blue_attributes.push("FIRST RIFT HERALD") }
+  let blueParticipants: any[] = [];
+  for (let i = 0; i <= 4; i++) {
+    blueParticipants.push(data.matchDetail.participants[i])
   }
 
-  const rows = [
-    createData('player1', 159, 6.0, 24, 4.0),
-    createData('player2', 237, 9.0, 37, 4.3),
-    createData('player3', 262, 16.0, 24, 6.0),
-    createData('player4', 305, 3.7, 67, 4.3),
-    createData('player5', 356, 16.0, 49, 3.9),
-  ];
-
-  const goToPlayerDetailPage = (playerName: string) => {
-    navigate(`/app/player-detail/${playerName}`)
+  let redTowerKillsRender = "Tower Kills: " + (data.matchDetail.redTowerKills == -1 ? 0 : data.matchDetail.redTowerKills)
+  let redRiftHeraldKillsRender = "RiftHerald Kills: " + (data.matchDetail.redRiftHeraldKills == -1 ? 0 : data.matchDetail.redRiftHeraldKills)
+  let redInhibitorKillsRender = "Inhibitor Kills: " + (data.matchDetail.redInhibitorKills == -1 ? 0 : data.matchDetail.redInhibitorKills)
+  let redDragonKillsRender = "Dragon Kills: " + (data.matchDetail.redDragonKills == -1 ? 0 : data.matchDetail.redDragonKills)
+  let redBaronKillsRender = "Baron Kills: " + (data.matchDetail.redBaronKills == - 1 ? 0 : data.matchDetail.redBaronKills)
+  let redVilemawKillsRender = "Vilema Kills: " + (data.matchDetail.redVilemawKills == -1 ? 0 : data.matchDetail.redVilemawKills)
+  let red_attributes: string[] = [redTowerKillsRender, redRiftHeraldKillsRender, redInhibitorKillsRender, redDragonKillsRender, redBaronKillsRender, redVilemawKillsRender];
+  if (data.matchDetail.redFirstBlood === true) { red_attributes.push("FIRST BLOOD") }
+  if (data.matchDetail.redFirstBaron === true) { red_attributes.push("FIRST BARON") }
+  if (data.matchDetail.redFirstDragon === true) { red_attributes.push("FIRST DRAGON") }
+  if (data.matchDetail.redFirstInhibitor === true) { red_attributes.push("FIRST INHIBITOR") }
+  if (data.matchDetail.redFirstTower === true) { red_attributes.push("FIRST TOWER") }
+  if (data.matchDetail.redFirstRiftHerald === true) { red_attributes.push("FIRST RIFT HERALD") }
+  let redParticipants: any[] = [];
+  for (let i = 5; i <= 9; i++) {
+    redParticipants.push(data.matchDetail.participants[i])
   }
 
-  const goToSearchPage = () => {
-    navigate(`/app/index/`)
+  let winAttributes: any
+  let winParticipants: any
+  let failAttributes: any
+  let failParticipants: any
+  if (data.matchDetail.blueWin === "Win") {
+    winAttributes = blue_attributes;
+    winParticipants = blueParticipants;
+    failAttributes = red_attributes;
+    failParticipants = redParticipants;
+  } else {
+    winAttributes = red_attributes;
+    winParticipants = redParticipants;
+    failAttributes = blue_attributes;
+    failParticipants = blueParticipants;
   }
 
   return (
     <div>
       <ThemeProvider theme={theme}>
-        <Button style={{ marginBottom: 6 }} variant="contained" size="small" color="primary" onClick={goToSearchPage}><SearchRoundedIcon /></Button>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <div style={{ display: "flex", flexDirection: "column", marginRight: 16 }}>
-            <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", color: "#1e88e5" }}>VICTORY</div>
-            <Paper style={{ boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }}>
-              <TableContainer>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell>XXXXXXXXXXX</TableCell>
-                      <TableCell align="right">XXX</TableCell>
-                      <TableCell align="right">XXX</TableCell>
-                      <TableCell align="right">XXX</TableCell>
-                      <TableCell align="right">XXX</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow key={row.name}>
-                        <TableCell>
-                          <IconButton color="primary" size="small" onClick={() => { goToPlayerDetailPage(row.name); }}>
-                            <AccountBoxIcon />
-                          </IconButton>
-                        </TableCell>
-                        <TableCell component="th" scope="row">{row.name}</TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </div>
+        <title>Match Overview</title>
+        <div style={{ marginTop: -60, display: "flex", flexDirection: "column" }}>
+          <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", color: "#1e88e5" }}>VICTORY</div>
+          <WinTable attributes={winAttributes} participants={winParticipants}></WinTable>
+        </div>
 
-          <div style={{ display: "flex", flexDirection: "column", marginLeft: 16 }}>
-            <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", color: "#e53935" }}>DEFEAT</div>
-            <Paper style={{ boxShadow: "3px 3px 6px #e0e0e0, -3px -3px 6px #ffffff" }}>
-              <TableContainer>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell>XXXXXXXXXXX</TableCell>
-                      <TableCell align="right">XXX</TableCell>
-                      <TableCell align="right">XXX</TableCell>
-                      <TableCell align="right">XXX</TableCell>
-                      <TableCell align="right">XXX</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow key={row.name}>
-                        <TableCell>
-                          <IconButton color="secondary" size="small" onClick={() => { goToPlayerDetailPage(row.name); }}>
-                            <AccountBoxIcon />
-                          </IconButton>
-                        </TableCell>
-                        <TableCell component="th" scope="row">{row.name}</TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </div>
+        <div style={{ display: "flex", flexDirection: "column", marginTop: 30, marginBottom: 30 }}>
+          <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", color: "#e53935" }}>DEFEAT</div>
+          <FailTable attributes={failAttributes} participants={failParticipants}></FailTable>
         </div>
       </ThemeProvider>
     </div>

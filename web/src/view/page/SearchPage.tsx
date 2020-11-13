@@ -34,6 +34,7 @@ export function SearchPage(props: HomePageProps) {
   return (
     <div>
       <ThemeProvider theme={theme}>
+        <title>Player Search</title>
         <div style={{
           fontSize: 18, fontWeight: 700, fontStyle: "italic",
           marginBottom: 18
