@@ -19,12 +19,15 @@ export const options = {
       // name of the executor to use
       executor: 'ramping-arrival-rate',
       // common scenario configuration
-      startRate: '5',
+      startRate: '2',
       timeUnit: '1s',
       // executor-specific configuration
       preAllocatedVUs: 1,
-      maxVUs: 50,
+      maxVUs: 100,
       stages: [
+        //start only 1 instance at first to avoid multiple instances
+        //to fetch the summoner data from riot api and save it to the the db
+        { target: 1, duration: '5s'},
         { target: 100, duration: '30s' },
         { target: 0, duration: '30s' },
       ],
@@ -33,7 +36,7 @@ export const options = {
 }
 
 export default function () {
-  http.get('http://localhost:3000/app/player-detail/yassuo')
+  http.get('http://localhost:3000/app/player-detail/Yunbee2')
   //http.get('http://localhost:3000/app/assets/champion_small/Orianna.png')
   sleep(4)
 }
