@@ -89,7 +89,7 @@ export function PlayerDetailPage(props: HomePageProps) {
   if (loading) return <ThemeProvider theme={theme}><Loading /></ThemeProvider>;
   if (error) return <Error />;
   if (!data || (data.playerDetail.accountId === "null" && data.playerDetail.profileIconId === -1)) return <NotFound />;
-  if (data) { console.log(data) }
+  //if (data) { console.log(data) }
 
   let sortedRecentMatches = data.playerDetail.recentMatches.slice().sort((a: RecentMatch, b: RecentMatch) => {
     if (!a.timestamp || !b.timestamp) {

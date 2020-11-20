@@ -20,7 +20,7 @@ export const Config = {
   appName: process.env.APP_NAME || 'twitchprime',
   appserverPort: Number(process.env.APP_PORT || 3000),
   appserverTag: process.env.APPSERVER_TAG || 'local',
-  honeyKey: process.env.HONEYCOMB_KEY || 'd29d5f5ec24178320dae437383480737',
+  honeyKey: process.env.HONEYCOMB_KEY || '875b7a805b3ccca30e6544b3a14b5831',
   honeyDatasets: (process.env.HONEYCOMB_DATASETS || 'op').split(',').map(d => (isProd() ? d : 'dev-' + d)),
   backgroundService: isServiceEnabled(AppService.BACKGROUND) ? true : !isProd(),
   wsUrl: process.env.WS_URL || 'ws://localhost:3000/graphqlsubscription',
