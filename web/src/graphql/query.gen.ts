@@ -129,6 +129,7 @@ export interface getPlayerDetail_playerDetail {
   winRate: number | null;
   summonerLevel: number | null;
   leaguePoints: number | null;
+  tier: string | null;
   rank: string | null;
   wins: number | null;
   losses: number | null;

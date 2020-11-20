@@ -49,6 +49,11 @@ export class Summoner extends BaseEntity {
   leaguePoints: number
 
   @Column({
+    nullable: true
+  })
+  tier: string
+
+  @Column({
     length: 3,
     nullable: true
   })

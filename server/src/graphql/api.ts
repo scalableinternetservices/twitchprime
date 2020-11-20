@@ -44,7 +44,7 @@ function createRecentMatch(config: RecentMatch): {
 function createPlayerDetail(config: PlayerDetail): {
   timeStamp: number, summonerId: string,
   accountId: string, summonerName: string, profileIconId: number, summonerLevel: number,
-  leaguePoints: number, rank: string, wins: number, losses: number, winRate: float,
+  leaguePoints: number, tier: string, rank: string, wins: number, losses: number, winRate: float,
   veteran: boolean, inactive: boolean, hotStreak: boolean, recentMatches: Array<RecentMatch>
 } {
 
@@ -59,7 +59,7 @@ function createPlayerDetail(config: PlayerDetail): {
   let newPlayerDetail = {
     timeStamp: -1, summonerId: "null",
     accountId: "null", summonerName: "null", profileIconId: -1, summonerLevel: -1,
-    leaguePoints: -1, rank: "", wins: -1, losses: -1, winRate: -1,
+    leaguePoints: -1, tier: "", rank: "", wins: -1, losses: -1, winRate: -1,
     veteran: false, inactive: false, hotStreak: false, recentMatches: defaultRecentMatches
   };
 
@@ -70,6 +70,7 @@ function createPlayerDetail(config: PlayerDetail): {
   if (config.profileIconId) { newPlayerDetail.profileIconId = config.profileIconId; }
   if (config.summonerLevel) { newPlayerDetail.summonerLevel = config.summonerLevel; }
   if (config.leaguePoints) { newPlayerDetail.leaguePoints = config.leaguePoints; }
+  if (config.tier) { newPlayerDetail.tier = config.tier; }
   if (config.rank) { newPlayerDetail.rank = config.rank; }
   if (config.wins) { newPlayerDetail.wins = config.wins; }
   if (config.losses) { newPlayerDetail.losses = config.losses; }
@@ -424,7 +425,7 @@ export const graphqlRoot: Resolvers<Context> = {
         let returnPlayerDetail = createPlayerDetail({
           timeStamp: null, summonerId: null,
           accountId: null, summonerName: null, profileIconId: null,
-          summonerLevel: null, leaguePoints: null, rank: null,
+          summonerLevel: null, leaguePoints: null, tier: null, rank: null,
           wins: null, losses: null, winRate: null, veteran: null,
           inactive: null, hotStreak: null
         });
@@ -462,7 +463,7 @@ export const graphqlRoot: Resolvers<Context> = {
       let returnPlayerDetail = createPlayerDetail({
         timeStamp: playerDetail.timestamp, summonerId: playerDetail.summonerId,
         accountId: playerDetail.accountid, summonerName: playerDetail.summonername, profileIconId: playerDetail.profileiconid,
-        summonerLevel: playerDetail.summonerlevel, leaguePoints: playerDetail.leaguepoints, rank: playerDetail.rank,
+        summonerLevel: playerDetail.summonerlevel, leaguePoints: playerDetail.leaguepoints, tier: playerDetail.tier, rank: playerDetail.rank,
         wins: playerDetail.wins, losses: playerDetail.losses, winRate: playerDetail.winrate, veteran: playerDetail.veteran,
         inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak, recentMatches: returnRrecentMatches
       });

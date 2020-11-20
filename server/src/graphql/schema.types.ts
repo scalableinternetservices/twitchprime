@@ -56,6 +56,7 @@ export interface PlayerDetail {
   profileIconId?: Maybe<Scalars['Int']>
   summonerLevel?: Maybe<Scalars['Int']>
   leaguePoints?: Maybe<Scalars['Int']>
+  tier?: Maybe<Scalars['String']>
   rank?: Maybe<Scalars['String']>
   wins?: Maybe<Scalars['Int']>
   losses?: Maybe<Scalars['Int']>
@@ -388,6 +389,7 @@ export type PlayerDetailResolvers<
   profileIconId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   summonerLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   leaguePoints?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  tier?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   rank?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   wins?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   losses?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>

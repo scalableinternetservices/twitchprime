@@ -45,6 +45,7 @@ export class RiotAPI {
         }
         summoner.summonerName = element.summonerName
         summoner.leaguePoints = element.leaguePoints
+        summoner.tier = element.tier
         summoner.rank = element.rank
         summoner.wins = element.wins
         summoner.losses = element.losses
@@ -137,6 +138,7 @@ export class RiotAPI {
         if (summonerAllGameStat.length != 0) {
           const summonerGameStat = summonerAllGameStat[summonerAllGameStat.length - 1] //the last entry is the  stat of Ranked_solo_5x5
           summoner.leaguePoints = summonerGameStat.leaguePoints
+          summoner.tier = summonerGameStat.tier
           summoner.rank = summonerGameStat.rank
           summoner.wins = summonerGameStat.wins
           summoner.losses = summonerGameStat.losses
@@ -384,10 +386,10 @@ export class RiotAPI {
     }
     var ResStr = '{"winrate":' + winRate + ',"timestamp":' + summoner.timestamp + ',"summonerid":"' + summoner.summonerId +
       '","accountid":"' + summoner.accountId + '","profileiconid":' + summoner.profileIconId + ',"summonername":"' + summoner.summonerName +
-      '","summonerlevel":' + summoner.summonerLevel + ',"leaguepoints":' + summoner.leaguePoints + ',"rank":"' + summoner.rank +
+      '","summonerlevel":' + summoner.summonerLevel + ',"leaguepoints":' + summoner.leaguePoints + ',"tier":"' + summoner.tier + '","rank":"' + summoner.rank +
       '","wins":' + summoner.wins + ',"losses":' + summoner.losses + ',"veteran":' + summoner.veteran + ',"inactive":' + summoner.inactive +
       ',"freshblood":' + summoner.freshBlood + ',"hotstreak":' + summoner.hotStreak + '}'
-    //console.log(ResStr)
+    // console.log(ResStr)
     var jsonObj = JSON.parse(ResStr)
     //console.log(JSON.stringify(jsonObj))
     return jsonObj

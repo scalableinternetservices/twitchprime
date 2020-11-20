@@ -50,6 +50,7 @@ const fetchPlayerDetail = gql`
       winRate
       summonerLevel
       leaguePoints
+      tier
       rank
       wins
       losses
@@ -113,7 +114,8 @@ export function PlayerDetailPage(props: HomePageProps) {
     <div>
       <ThemeProvider theme={theme}>
         <title>Player Overview</title>
-        <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}>{params.playerName}</div>
+        <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}><img src={`/app/assets/profileicon/${data.playerDetail.profileIconId}.png`} style={{ width: '10%' }}></img> {params.playerName}</div>
+        <div style={{ fontSize: 30, fontWeight: 700, fontStyle: "italic", marginBottom: 10 }}><img src={`/app/assets/ranked-emblems/Emblem_${data.playerDetail.tier}.png`} style={{ width: '10%' }}></img>{data.playerDetail.tier} {data.playerDetail.rank} {data.playerDetail.leaguePoints} LP</div>
         <div style={{ marginBottom: 20, fontSize: 20, fontWeight: 700 }}>
           <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{winsRender}</Button>
           <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{lossesRender}</Button>
@@ -133,7 +135,7 @@ export function PlayerDetailPage(props: HomePageProps) {
                 {sortedRecentMatches.map((match: RecentMatch) => (
                   <TableRow key={match.gameId}>
                     <TableCell>
-                      <ButtonBase onClick={() => { goToMatchDetailPage(match.gameId!); }}><img src={`/app/assets/champion_small/${championIdNameDict[match.champion.toString()]}.png`} style={{width: '50%'}}></img></ButtonBase>
+                      <ButtonBase onClick={() => { goToMatchDetailPage(match.gameId!); }}><img src={`/app/assets/champion_small/${championIdNameDict[match.champion.toString()]}.png`} style={{ width: '50%' }}></img></ButtonBase>
                     </TableCell>
                     <TableCell component="th" scope="row">{getDate(match.timestamp!)}</TableCell>
                   </TableRow>

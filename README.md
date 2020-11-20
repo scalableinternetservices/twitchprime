@@ -14,8 +14,6 @@
 
 ---
 
-# bespin
-
 Welcome to Cloud City!
 
 ## Dependencies
