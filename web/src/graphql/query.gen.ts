@@ -17,8 +17,16 @@ export interface getMatchDetail_matchDetail_participants {
   spell1Id: number | null;
   spell2Id: number | null;
   perk0: number | null;
+  perk1: number | null;
+  perk2: number | null;
+  perk3: number | null;
+  perk4: number | null;
+  perk5: number | null;
   perkPrimaryStyle: number | null;
   perkSubStyle: number | null;
+  statPerk0: number | null;
+  statPerk1: number | null;
+  statPerk2: number | null;
   item0: number | null;
   item1: number | null;
   item2: number | null;

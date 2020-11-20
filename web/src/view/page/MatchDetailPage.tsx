@@ -72,8 +72,16 @@ export function MatchDetailPage(props: HomePageProps) {
           spell1Id
           spell2Id
           perk0
+          perk1
+          perk2
+          perk3
+          perk4
+          perk5
           perkPrimaryStyle
           perkSubStyle
+          statPerk0
+          statPerk1
+          statPerk2
           item0
           item1
           item2
@@ -191,7 +199,7 @@ export function MatchDetailPage(props: HomePageProps) {
       <ThemeProvider theme={theme}>
         <title>Match Overview</title>
         <div style={{ marginTop: -110, display: "flex", flexDirection: "column" }}>
-  <div style={{ fontSize: 20, fontWeight: 700, fontStyle: "italic", color: "1e88e5" }}>VICTORY ({winTeamName})</div>
+          <div style={{ fontSize: 20, fontWeight: 700, fontStyle: "italic", color: "1e88e5" }}>VICTORY ({winTeamName})</div>
           <WinTable attributes={winAttributes} participants={winParticipants}></WinTable>
         </div>
 

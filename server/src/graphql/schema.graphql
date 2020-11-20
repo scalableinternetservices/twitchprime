@@ -116,8 +116,16 @@ type Participant {
   spell1Id: Int
   spell2Id: Int
   perk0: Int
+  perk1: Int
+  perk2: Int
+  perk3: Int
+  perk4: Int
+  perk5: Int
   perkPrimaryStyle: Int
   perkSubStyle: Int
+  statPerk0: Int
+  statPerk1: Int
+  statPerk2: Int
   item0: Int
   item1: Int
   item2: Int

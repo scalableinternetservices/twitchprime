@@ -40,12 +40,52 @@ export class MatchParticipant extends BaseEntity {
   @Column({
     default: 0
   })
+  perk1: number
+
+  @Column({
+    default: 0
+  })
+  perk2: number
+
+  @Column({
+    default: 0
+  })
+  perk3: number
+
+  @Column({
+    default: 0
+  })
+  perk4: number
+
+  @Column({
+    default: 0
+  })
+  perk5: number
+
+  @Column({
+    default: 0
+  })
   perkPrimaryStyle: number
 
   @Column({
     default: 0
   })
   perkSubStyle: number
+
+  @Column({
+    default: 0
+  })
+  statPerk0: number
+
+  @Column({
+    default: 0
+  })
+  statPerk1: number
+
+  @Column({
+    default: 0
+  })
+  statPerk2: number
 
   @Column({
     default: 0

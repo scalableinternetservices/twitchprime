@@ -196,8 +196,16 @@ function createParticipant(config: Participant): {
   spell1Id: number,
   spell2Id: number,
   perk0: number,
+  perk1: number,
+  perk2: number,
+  perk3: number,
+  perk4: number,
+  perk5: number,
   perkPrimaryStyle: number,
   perkSubStyle: number,
+  statPerk0: number,
+  statPerk1: number,
+  statPerk2: number,
   item0: number,
   item1: number,
   item2: number,
@@ -227,8 +235,16 @@ function createParticipant(config: Participant): {
     spell1Id: -1,
     spell2Id: -1,
     perk0: -1,
+    perk1: -1,
+    perk2: -1,
+    perk3: -1,
+    perk4: -1,
+    perk5: -1,
     perkPrimaryStyle: -1,
     perkSubStyle: -1,
+    statPerk0: -1,
+    statPerk1: -1,
+    statPerk2: -1,
     item0: -1,
     item1: -1,
     item2: -1,
@@ -257,8 +273,16 @@ function createParticipant(config: Participant): {
   if (config.spell1Id) { newParticipant.spell1Id = config.spell1Id }
   if (config.spell2Id) { newParticipant.spell2Id = config.spell2Id }
   if (config.perk0) { newParticipant.perk0 = config.perk0 }
+  if (config.perk1) { newParticipant.perk1 = config.perk1 }
+  if (config.perk2) { newParticipant.perk2 = config.perk2 }
+  if (config.perk3) { newParticipant.perk3 = config.perk3 }
+  if (config.perk4) { newParticipant.perk4 = config.perk4 }
+  if (config.perk5) { newParticipant.perk5 = config.perk5 }
   if (config.perkPrimaryStyle) { newParticipant.perkPrimaryStyle = config.perkPrimaryStyle }
   if (config.perkSubStyle) { newParticipant.perkSubStyle = config.perkSubStyle }
+  if (config.statPerk0) { newParticipant.statPerk0 = config.statPerk0 }
+  if (config.statPerk1) { newParticipant.statPerk1 = config.statPerk1 }
+  if (config.statPerk2) { newParticipant.statPerk2 = config.statPerk2 }
   if (config.item0) { newParticipant.item0 = config.item0 }
   if (config.item1) { newParticipant.item1 = config.item1 }
   if (config.item2) { newParticipant.item2 = config.item2 }
@@ -309,8 +333,16 @@ export const graphqlRoot: Resolvers<Context> = {
           spell1Id: returnMatchDetail[i].spell1Id,
           spell2Id: returnMatchDetail[i].spell2Id,
           perk0: returnMatchDetail[i].perk0,
+          perk1: returnMatchDetail[i].perk1,
+          perk2: returnMatchDetail[i].perk2,
+          perk3: returnMatchDetail[i].perk3,
+          perk4: returnMatchDetail[i].perk4,
+          perk5: returnMatchDetail[i].perk5,
           perkPrimaryStyle: returnMatchDetail[i].perkPrimaryStyle,
           perkSubStyle: returnMatchDetail[i].perkSubStyle,
+          statPerk0: returnMatchDetail[i].statPerk0,
+          statPerk1: returnMatchDetail[i].statPerk1,
+          statPerk2: returnMatchDetail[i].statPerk2,
           item0: returnMatchDetail[i].item0,
           item1: returnMatchDetail[i].item1,
           item2: returnMatchDetail[i].item2,

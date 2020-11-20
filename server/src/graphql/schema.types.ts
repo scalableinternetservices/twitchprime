@@ -133,8 +133,16 @@ export interface Participant {
   spell1Id?: Maybe<Scalars['Int']>
   spell2Id?: Maybe<Scalars['Int']>
   perk0?: Maybe<Scalars['Int']>
+  perk1?: Maybe<Scalars['Int']>
+  perk2?: Maybe<Scalars['Int']>
+  perk3?: Maybe<Scalars['Int']>
+  perk4?: Maybe<Scalars['Int']>
+  perk5?: Maybe<Scalars['Int']>
   perkPrimaryStyle?: Maybe<Scalars['Int']>
   perkSubStyle?: Maybe<Scalars['Int']>
+  statPerk0?: Maybe<Scalars['Int']>
+  statPerk1?: Maybe<Scalars['Int']>
+  statPerk2?: Maybe<Scalars['Int']>
   item0?: Maybe<Scalars['Int']>
   item1?: Maybe<Scalars['Int']>
   item2?: Maybe<Scalars['Int']>
@@ -466,8 +474,16 @@ export type ParticipantResolvers<
   spell1Id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   spell2Id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   perk0?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  perk1?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  perk2?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  perk3?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  perk4?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  perk5?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   perkPrimaryStyle?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   perkSubStyle?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  statPerk0?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  statPerk1?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  statPerk2?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   item0?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   item1?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   item2?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>

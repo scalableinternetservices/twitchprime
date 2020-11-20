@@ -328,8 +328,16 @@ export class RiotAPI {
               newParticipant.spell1Id = matchDetail.participants[i].spell1Id
               newParticipant.spell2Id = matchDetail.participants[i].spell2Id
               newParticipant.perk0 = matchDetail.participants[i].stats.perk0
+              newParticipant.perk1 = matchDetail.participants[i].stats.perk1
+              newParticipant.perk2 = matchDetail.participants[i].stats.perk2
+              newParticipant.perk3 = matchDetail.participants[i].stats.perk3
+              newParticipant.perk4 = matchDetail.participants[i].stats.perk4
+              newParticipant.perk5 = matchDetail.participants[i].stats.perk5
               newParticipant.perkPrimaryStyle = matchDetail.participants[i].stats.perkPrimaryStyle
               newParticipant.perkSubStyle = matchDetail.participants[i].stats.perkSubStyle
+              newParticipant.statPerk0 = matchDetail.participants[i].stats.statPerk0
+              newParticipant.statPerk1 = matchDetail.participants[i].stats.statPerk1
+              newParticipant.statPerk2 = matchDetail.participants[i].stats.statPerk2
               newParticipant.item0 = matchDetail.participants[i].stats.item0
               newParticipant.item1 = matchDetail.participants[i].stats.item1
               newParticipant.item2 = matchDetail.participants[i].stats.item2
@@ -505,8 +513,16 @@ export class RiotAPI {
               + ',"spell1Id":' + element.spell1Id
               + ',"spell2Id":' + element.spell2Id
               + ',"perk0":' + element.perk0
+              + ',"perk1":' + element.perk1
+              + ',"perk2":' + element.perk2
+              + ',"perk3":' + element.perk3
+              + ',"perk4":' + element.perk4
+              + ',"perk5":' + element.perk5
               + ',"perkPrimaryStyle":' + element.perkPrimaryStyle
               + ',"perkSubStyle":' + element.perkSubStyle
+              + ',"statPerk0":' + element.statPerk0
+              + ',"statPerk1":' + element.statPerk1
+              + ',"statPerk2":' + element.statPerk2
               + ',"item0":' + element.item0
               + ',"item1":' + element.item1
               + ',"item2":' + element.item2
