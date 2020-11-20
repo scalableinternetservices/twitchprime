@@ -6,8 +6,8 @@ import { Counter, Rate } from 'k6/metrics'
 //   scenarios: {
 //     example_scenario: {
 //       executor: 'constant-vus',
-//       vus: 10,
-//       duration: '10s',
+//       vus: 20,
+//       duration: '15s',
 //     },
 //   },
 // }
@@ -19,13 +19,13 @@ export const options = {
       // name of the executor to use
       executor: 'ramping-arrival-rate',
       // common scenario configuration
-      startRate: '10',
+      startRate: '5',
       timeUnit: '1s',
       // executor-specific configuration
-      preAllocatedVUs: 5,
+      preAllocatedVUs: 1,
       maxVUs: 50,
       stages: [
-        { target: 50, duration: '30s' },
+        { target: 100, duration: '30s' },
         { target: 0, duration: '30s' },
       ],
     },
@@ -33,10 +33,9 @@ export const options = {
 }
 
 export default function () {
-
-  sleep(5)
-  http.get('http://localhost:3000/app/player-detail/yas')
+  http.get('http://localhost:3000/app/player-detail/yassuo')
   //http.get('http://localhost:3000/app/assets/champion_small/Orianna.png')
+  sleep(4)
 }
 
 const count200 = new Counter('status_code_2xx')

@@ -466,8 +466,8 @@ export const graphqlRoot: Resolvers<Context> = {
         wins: playerDetail.wins, losses: playerDetail.losses, winRate: playerDetail.winrate, veteran: playerDetail.veteran,
         inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak, recentMatches: returnRrecentMatches
       });
-      console.log("playerDetail: " + playerDetail)
-
+      //console.log("playerDetail: " + playerDetail)
+      console.log("sending back playerDetail")
       return returnPlayerDetail
     },
   },
