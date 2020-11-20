@@ -13,6 +13,11 @@ export class Summoner extends BaseEntity {
   timestamp: number
 
   @Column({
+    nullable: true
+  })
+  timeFetchedOfRecentMatch: string
+
+  @Column({
     length: 100,
   })
   summonerId: string

@@ -314,8 +314,8 @@ export const graphqlRoot: Resolvers<Context> = {
       var jsonObj: any
       await riotAPI.updateRecentMatchDetail(gameId)
       jsonObj = await riotAPI.getMatchDetail(gameId)
-      console.log(JSON.parse(JSON.stringify(jsonObj)))
-      console.log("got details")
+      //console.log(JSON.parse(JSON.stringify(jsonObj)))
+      console.log("got match details")
       if (!jsonObj) {
         let returnMatchDetail = createMatchDetail({})
         return returnMatchDetail
@@ -467,7 +467,7 @@ export const graphqlRoot: Resolvers<Context> = {
         inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak, recentMatches: returnRrecentMatches
       });
       //console.log("playerDetail: " + playerDetail)
-      console.log("sending back playerDetail")
+      console.log("sending back player's detail and recentMatches")
       return returnPlayerDetail
     },
   },

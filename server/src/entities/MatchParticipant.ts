@@ -6,7 +6,7 @@ export class MatchParticipant extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(()=> MatchDetail, matchDetail => matchDetail.matchParticipants)
+  @ManyToOne(()=> MatchDetail, matchDetail => matchDetail.matchParticipants, {onDelete: 'CASCADE'})
   @JoinColumn()
   matchDetail: MatchDetail
 
