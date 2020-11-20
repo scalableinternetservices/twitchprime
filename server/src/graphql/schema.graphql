@@ -115,6 +115,9 @@ type Participant {
   teamId: Int
   spell1Id: Int
   spell2Id: Int
+  perk0: Int
+  perkPrimaryStyle: Int
+  perkSubStyle: Int
   item0: Int
   item1: Int
   item2: Int
@@ -128,7 +131,7 @@ type Participant {
   totalHeal: Int
   totalPlayerScore: Int
   champLevel: Int
-  totalDamageDealt: Int
+  totalDamageDealtToChampions: Int
   kills: Int
   deaths: Int
   assist: Int

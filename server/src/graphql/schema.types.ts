@@ -132,6 +132,9 @@ export interface Participant {
   teamId?: Maybe<Scalars['Int']>
   spell1Id?: Maybe<Scalars['Int']>
   spell2Id?: Maybe<Scalars['Int']>
+  perk0?: Maybe<Scalars['Int']>
+  perkPrimaryStyle?: Maybe<Scalars['Int']>
+  perkSubStyle?: Maybe<Scalars['Int']>
   item0?: Maybe<Scalars['Int']>
   item1?: Maybe<Scalars['Int']>
   item2?: Maybe<Scalars['Int']>
@@ -145,7 +148,7 @@ export interface Participant {
   totalHeal?: Maybe<Scalars['Int']>
   totalPlayerScore?: Maybe<Scalars['Int']>
   champLevel?: Maybe<Scalars['Int']>
-  totalDamageDealt?: Maybe<Scalars['Int']>
+  totalDamageDealtToChampions?: Maybe<Scalars['Int']>
   kills?: Maybe<Scalars['Int']>
   deaths?: Maybe<Scalars['Int']>
   assist?: Maybe<Scalars['Int']>
@@ -462,6 +465,9 @@ export type ParticipantResolvers<
   teamId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   spell1Id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   spell2Id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  perk0?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  perkPrimaryStyle?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  perkSubStyle?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   item0?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   item1?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   item2?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
@@ -475,7 +481,7 @@ export type ParticipantResolvers<
   totalHeal?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   totalPlayerScore?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   champLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
-  totalDamageDealt?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  totalDamageDealtToChampions?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   kills?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   deaths?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   assist?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>

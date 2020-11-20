@@ -35,6 +35,21 @@ export class MatchParticipant extends BaseEntity {
   @Column({
     default: 0
   })
+  perk0: number
+
+  @Column({
+    default: 0
+  })
+  perkPrimaryStyle: number
+
+  @Column({
+    default: 0
+  })
+  perkSubStyle: number
+
+  @Column({
+    default: 0
+  })
   item0: number
 
   @Column({
@@ -100,7 +115,7 @@ export class MatchParticipant extends BaseEntity {
   @Column({
     default: 0
   })
-  totalDamageDealt: number
+  totalDamageDealtToChampions: number
 
   @Column({
     default: 0

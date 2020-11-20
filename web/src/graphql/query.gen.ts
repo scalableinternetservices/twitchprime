@@ -16,6 +16,9 @@ export interface getMatchDetail_matchDetail_participants {
   teamId: number | null;
   spell1Id: number | null;
   spell2Id: number | null;
+  perk0: number | null;
+  perkPrimaryStyle: number | null;
+  perkSubStyle: number | null;
   item0: number | null;
   item1: number | null;
   item2: number | null;
@@ -29,7 +32,7 @@ export interface getMatchDetail_matchDetail_participants {
   totalHeal: number | null;
   totalPlayerScore: number | null;
   champLevel: number | null;
-  totalDamageDealt: number | null;
+  totalDamageDealtToChampions: number | null;
   kills: number | null;
   deaths: number | null;
   assist: number | null;

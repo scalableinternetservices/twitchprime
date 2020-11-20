@@ -195,6 +195,9 @@ function createParticipant(config: Participant): {
   teamId: number,
   spell1Id: number,
   spell2Id: number,
+  perk0: number,
+  perkPrimaryStyle: number,
+  perkSubStyle: number,
   item0: number,
   item1: number,
   item2: number,
@@ -208,7 +211,7 @@ function createParticipant(config: Participant): {
   totalHeal: number,
   totalPlayerScore: number,
   champLevel: number,
-  totalDamageDealt: number,
+  totalDamageDealtToChampions: number,
   kills: number,
   deaths: number,
   assist: number,
@@ -223,6 +226,9 @@ function createParticipant(config: Participant): {
     teamId: -1,
     spell1Id: -1,
     spell2Id: -1,
+    perk0: -1,
+    perkPrimaryStyle: -1,
+    perkSubStyle: -1,
     item0: -1,
     item1: -1,
     item2: -1,
@@ -236,7 +242,7 @@ function createParticipant(config: Participant): {
     totalHeal: 0,
     totalPlayerScore: 0,
     champLevel: 0,
-    totalDamageDealt: 0,
+    totalDamageDealtToChampions: 0,
     kills: 0,
     deaths: 0,
     assist: 0,
@@ -250,6 +256,9 @@ function createParticipant(config: Participant): {
   if (config.teamId) { newParticipant.teamId = config.teamId }
   if (config.spell1Id) { newParticipant.spell1Id = config.spell1Id }
   if (config.spell2Id) { newParticipant.spell2Id = config.spell2Id }
+  if (config.perk0) { newParticipant.perk0 = config.perk0 }
+  if (config.perkPrimaryStyle) { newParticipant.perkPrimaryStyle = config.perkPrimaryStyle }
+  if (config.perkSubStyle) { newParticipant.perkSubStyle = config.perkSubStyle }
   if (config.item0) { newParticipant.item0 = config.item0 }
   if (config.item1) { newParticipant.item1 = config.item1 }
   if (config.item2) { newParticipant.item2 = config.item2 }
@@ -263,7 +272,7 @@ function createParticipant(config: Participant): {
   if (config.totalHeal) { newParticipant.totalHeal = config.totalHeal }
   if (config.totalPlayerScore) { newParticipant.totalPlayerScore = config.totalPlayerScore }
   if (config.champLevel) { newParticipant.champLevel = config.champLevel }
-  if (config.totalDamageDealt) { newParticipant.totalDamageDealt = config.totalDamageDealt }
+  if (config.totalDamageDealtToChampions) { newParticipant.totalDamageDealtToChampions = config.totalDamageDealtToChampions }
   if (config.kills) { newParticipant.kills = config.kills }
   if (config.deaths) { newParticipant.deaths = config.deaths }
   if (config.assist) { newParticipant.assist = config.assist }
@@ -299,6 +308,9 @@ export const graphqlRoot: Resolvers<Context> = {
           teamId: returnMatchDetail[i].teamId,
           spell1Id: returnMatchDetail[i].spell1Id,
           spell2Id: returnMatchDetail[i].spell2Id,
+          perk0: returnMatchDetail[i].perk0,
+          perkPrimaryStyle: returnMatchDetail[i].perkPrimaryStyle,
+          perkSubStyle: returnMatchDetail[i].perkSubStyle,
           item0: returnMatchDetail[i].item0,
           item1: returnMatchDetail[i].item1,
           item2: returnMatchDetail[i].item2,
@@ -312,7 +324,7 @@ export const graphqlRoot: Resolvers<Context> = {
           totalHeal: returnMatchDetail[i].totalHeal,
           totalPlayerScore: returnMatchDetail[i].totalPlayerScore,
           champLevel: returnMatchDetail[i].champLevel,
-          totalDamageDealt: returnMatchDetail[i].totalDamageDealt,
+          totalDamageDealtToChampions: returnMatchDetail[i].totalDamageDealtToChampions,
           kills: returnMatchDetail[i].kills,
           deaths: returnMatchDetail[i].deaths,
           assist: returnMatchDetail[i].assist,

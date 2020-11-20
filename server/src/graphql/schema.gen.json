@@ -1999,6 +1999,42 @@
             "deprecationReason": null
           },
           {
+            "name": "perk0",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "perkPrimaryStyle",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "perkSubStyle",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "item0",
             "description": null,
             "args": [],
@@ -2155,7 +2191,7 @@
             "deprecationReason": null
           },
           {
-            "name": "totalDamageDealt",
+            "name": "totalDamageDealtToChampions",
             "description": null,
             "args": [],
             "type": {

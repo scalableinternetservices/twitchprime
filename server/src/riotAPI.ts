@@ -327,6 +327,9 @@ export class RiotAPI {
               newParticipant.teamId = matchDetail.participants[i].teamId
               newParticipant.spell1Id = matchDetail.participants[i].spell1Id
               newParticipant.spell2Id = matchDetail.participants[i].spell2Id
+              newParticipant.perk0 = matchDetail.participants[i].stats.perk0
+              newParticipant.perkPrimaryStyle = matchDetail.participants[i].stats.perkPrimaryStyle
+              newParticipant.perkSubStyle = matchDetail.participants[i].stats.perkSubStyle
               newParticipant.item0 = matchDetail.participants[i].stats.item0
               newParticipant.item1 = matchDetail.participants[i].stats.item1
               newParticipant.item2 = matchDetail.participants[i].stats.item2
@@ -340,7 +343,7 @@ export class RiotAPI {
               newParticipant.totalHeal = matchDetail.participants[i].stats.totalHeal
               newParticipant.totalPlayerScore = matchDetail.participants[i].stats.totalPlayerScore
               newParticipant.champLevel = matchDetail.participants[i].stats.champLevel
-              newParticipant.totalDamageDealt = matchDetail.participants[i].stats.totalDamageDealt
+              newParticipant.totalDamageDealtToChampions = matchDetail.participants[i].stats.totalDamageDealtToChampions
               newParticipant.kills = matchDetail.participants[i].stats.kills
               newParticipant.deaths = matchDetail.participants[i].stats.deaths
               newParticipant.assist = matchDetail.participants[i].stats.assists
@@ -501,6 +504,9 @@ export class RiotAPI {
               + ',"teamId":' + element.teamId
               + ',"spell1Id":' + element.spell1Id
               + ',"spell2Id":' + element.spell2Id
+              + ',"perk0":' + element.perk0
+              + ',"perkPrimaryStyle":' + element.perkPrimaryStyle
+              + ',"perkSubStyle":' + element.perkSubStyle
               + ',"item0":' + element.item0
               + ',"item1":' + element.item1
               + ',"item2":' + element.item2
@@ -514,7 +520,7 @@ export class RiotAPI {
               + ',"totalHeal":' + element.totalHeal
               + ',"totalPlayerScore":' + element.totalPlayerScore
               + ',"champLevel":' + element.champLevel
-              + ',"totalDamageDealt":' + element.totalDamageDealt
+              + ',"totalDamageDealtToChampions":' + element.totalDamageDealtToChampions
               + ',"kills":' + element.kills
               + ',"deaths":' + element.deaths
               + ',"assist":' + element.assist

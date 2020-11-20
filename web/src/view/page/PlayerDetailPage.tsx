@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import Button from '@material-ui/core/Button';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import { blue } from '@material-ui/core/colors';
-import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import {
   createMuiTheme, ThemeProvider
@@ -12,14 +12,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import AssessmentIcon from '@material-ui/icons/Assessment';
 import { RouteComponentProps, useNavigate, useParams } from '@reach/router';
 import * as React from 'react';
+import championInfo from '../../../../public/assets/championFull.json';
 import { AppRouteParams } from '../nav/route';
 import Error from './Error';
 import Loading from './Loading';
 import NotFound from './NotFound';
-
 
 interface HomePageProps extends RouteComponentProps, AppRouteParams { }
 
@@ -34,7 +33,7 @@ interface RecentMatch {
   summonerName?: string
   platformId?: string
   gameId?: string
-  champion?: Number
+  champion: Number
   queue?: string
   season?: Number
   timestamp?: string
@@ -102,8 +101,13 @@ export function PlayerDetailPage(props: HomePageProps) {
   let winsRender = "WINS: " + data.playerDetail.wins
   let lossesRender = "LOSSES: " + data.playerDetail.losses
   let winRateRender = "WIN RATE: " + data.playerDetail.winRate + "%"
-  let rankRender = "RANK: " + data.playerDetail.rank
-  let levelRender = "LEVEL: " + data.playerDetail.summonerLevel
+  let levelRender = "SUMMONER LEVEL: " + data.playerDetail.summonerLevel
+
+  interface IDictionary {
+    [index: string]: string;
+  }
+
+  var championIdNameDict = championInfo.keys as IDictionary;
 
   return (
     <div>
@@ -114,7 +118,6 @@ export function PlayerDetailPage(props: HomePageProps) {
           <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{winsRender}</Button>
           <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{lossesRender}</Button>
           <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{winRateRender}</Button>
-          <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{rankRender}</Button>
           <Button style={{ pointerEvents: "none", marginRight: 6, fontWeight: 700 }} variant="outlined" size="small" color="primary">{levelRender}</Button>
         </div>
         <Paper style={{ boxShadow: "0px 0px 8px 3px #e0e0e0, 0px 0px 8px 3px #ffffff", marginBottom: 100 }}>
@@ -124,25 +127,15 @@ export function PlayerDetailPage(props: HomePageProps) {
                 <TableRow>
                   <TableCell></TableCell>
                   <TableCell style={{ fontWeight: 700 }}>GAME DATE</TableCell>
-                  <TableCell style={{ fontWeight: 700 }} align="right">CHAMPION</TableCell>
-                  <TableCell style={{ fontWeight: 700 }} align="right">LANE</TableCell>
-                  <TableCell style={{ fontWeight: 700 }} align="right">ROLE</TableCell>
-                  <TableCell style={{ fontWeight: 700 }} align="right">SEASON</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {sortedRecentMatches.map((match: RecentMatch) => (
                   <TableRow key={match.gameId}>
                     <TableCell>
-                      <IconButton color="primary" size="small" onClick={() => { goToMatchDetailPage(match.gameId!); }}>
-                        <AssessmentIcon />
-                      </IconButton>
+                      <ButtonBase onClick={() => { goToMatchDetailPage(match.gameId!); }}><img src={`/app/assets/champion_small/${championIdNameDict[match.champion.toString()]}.png`} style={{width: '50%'}}></img></ButtonBase>
                     </TableCell>
                     <TableCell component="th" scope="row">{getDate(match.timestamp!)}</TableCell>
-                    <TableCell align="right">{match.champion}</TableCell>
-                    <TableCell align="right">{match.lane}</TableCell>
-                    <TableCell align="right">{match.role}</TableCell>
-                    <TableCell align="right">{match.season}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
