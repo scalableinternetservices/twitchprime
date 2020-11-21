@@ -110,6 +110,15 @@ export function PlayerDetailPage(props: HomePageProps) {
 
   var championIdNameDict = championInfo.keys as IDictionary;
 
+  var queueIdNameDict = {} as IDictionary;
+  queueIdNameDict = {
+    "400": "Summoner's Rift Draft Pick",
+    "420": "Summoner's Rift Ranked Solo",
+    "430": "Summoner's Rift Blink Pick",
+    "440": "Summoner's Rift Ranked Flex",
+    "450": "Howling Abyss ARAM",
+  }
+
   return (
     <div>
       <ThemeProvider theme={theme}>
@@ -128,6 +137,7 @@ export function PlayerDetailPage(props: HomePageProps) {
               <TableHead>
                 <TableRow>
                   <TableCell></TableCell>
+                  <TableCell style={{ fontWeight: 700 }}>GAME MODE</TableCell>
                   <TableCell style={{ fontWeight: 700 }}>GAME DATE</TableCell>
                 </TableRow>
               </TableHead>
@@ -137,6 +147,7 @@ export function PlayerDetailPage(props: HomePageProps) {
                     <TableCell>
                       <ButtonBase onClick={() => { goToMatchDetailPage(match.gameId!); }}><img src={`/app/assets/champion_small/${championIdNameDict[match.champion.toString()]}.png`} style={{ width: '50%' }}></img></ButtonBase>
                     </TableCell>
+                    <TableCell component="th" scope="row">{queueIdNameDict[match.queue!]}</TableCell>
                     <TableCell component="th" scope="row">{getDate(match.timestamp!)}</TableCell>
                   </TableRow>
                 ))}

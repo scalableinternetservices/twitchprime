@@ -176,24 +176,6 @@ export function MatchDetailPage(props: HomePageProps) {
     failTeamName = "Blue Team";
   }
 
-  // interface intDictionary {
-  //   [index: number]: any;
-  // }
-
-  // var mapIdNameDict = {} as intDictionary;
-  // mapIdNameDict = {
-  //   11: "Summoner's Rift",
-  //   12: "Howliing Abyss",
-  // }
-  // var queueIdNameDict = {} as intDictionary;
-  // queueIdNameDict = {
-  //   400: "Draft Pick",
-  //   420: "Ranked Solo",
-  //   430: "Blink Pick",
-  //   440: "Ranked Flex",
-  //   450: "Holwing Abyss",
-  // }
-
   return (
     <div>
       <ThemeProvider theme={theme}>

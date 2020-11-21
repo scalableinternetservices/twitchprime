@@ -62,6 +62,11 @@ server.express.get('/app/player-detail/*', (req, res) => {
   // riotAPI.getSummonerByName('Yassuo')
 })
 
+server.express.get('/app/match-detail/*', (req, res) => {
+  console.log('GET /app/match-detail')
+  console.log(req.url);
+  renderApp(req, res)
+})
 
 server.express.get(
   '/api/:function',
