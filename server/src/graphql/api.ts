@@ -313,7 +313,6 @@ export const graphqlRoot: Resolvers<Context> = {
       console.log("Received gameId: " + gameId);
       var riotAPI = new RiotAPI("")
       var jsonObj: any
-      await riotAPI.updateRecentMatchDetail(gameId)
       jsonObj = await riotAPI.getMatchDetail(gameId)
       //console.log(JSON.parse(JSON.stringify(jsonObj)))
       console.log("got match details")

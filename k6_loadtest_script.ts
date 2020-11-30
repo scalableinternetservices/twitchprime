@@ -20,7 +20,7 @@ export const options = {
       executor: 'ramping-arrival-rate',
       // common scenario configuration
       startRate: '2',
-      timeUnit: '1s',
+      timeUnit: '2s',
       // executor-specific configuration
       preAllocatedVUs: 1,
       maxVUs: 100,
@@ -28,7 +28,7 @@ export const options = {
         //start only 1 instance at first to avoid multiple instances
         //to fetch the summoner data from riot api and save it to the the db
         { target: 1, duration: '5s'},
-        { target: 100, duration: '30s' },
+        { target: 200, duration: '30s' },
         { target: 0, duration: '30s' },
       ],
     },
@@ -38,7 +38,7 @@ export const options = {
 export default function () {
   http.get('http://localhost:3000/app/player-detail/Yunbee2')
   //http.get('http://localhost:3000/app/assets/champion_small/Orianna.png')
-  sleep(4)
+  sleep(3 * Math.random()*3)
 }
 
 const count200 = new Counter('status_code_2xx')

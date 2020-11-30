@@ -28,7 +28,7 @@ export async function initORM() {
     //entities: [User, Session, Survey, SurveyQuestion, SurveyAnswer, Summoner],
     entities: [Summoner, RecentMatch, MatchDetail, MatchParticipant],
     extra: {
-      connectionLimit: 5,
+      connectionLimit: 100,
     },
   })
 }
