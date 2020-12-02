@@ -315,7 +315,7 @@ export const graphqlRoot: Resolvers<Context> = {
     /* received graphQL call to fetch playerDetail */
     matchDetail: async (_, { gameId }) => {
       console.log("Received gameId: " + gameId);
-      var riotAPI = new RiotAPI("RGAPI-86b43c1b-fa96-41b0-a4e2-2319d7653b90")
+      var riotAPI = new RiotAPI("")
       var jsonObj: any
       jsonObj = await riotAPI.getMatchDetail(gameId)
       //console.log(JSON.parse(JSON.stringify(jsonObj)))
@@ -469,7 +469,7 @@ export const graphqlRoot: Resolvers<Context> = {
         playerNameCntMap.set(playerName, playerNameCnt);
       }
 
-      var riotAPI = new RiotAPI("RGAPI-86b43c1b-fa96-41b0-a4e2-2319d7653b90")
+      var riotAPI = new RiotAPI("")
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner
