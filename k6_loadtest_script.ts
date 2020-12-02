@@ -23,13 +23,13 @@ export const options = {
       timeUnit: '2s',
       // executor-specific configuration
       preAllocatedVUs: 1,
-      maxVUs: 100,
+      maxVUs: 5000,
       stages: [
         //start only 1 instance at first to avoid multiple instances
         //to fetch the summoner data from riot api and save it to the the db
-        { target: 1, duration: '5s'},
-        { target: 200, duration: '30s' },
-        { target: 0, duration: '30s' },
+        { target: 1, duration: '5s' },
+        { target: 5000, duration: '60s' },
+        { target: 0, duration: '60s' },
       ],
     },
   },
@@ -38,7 +38,7 @@ export const options = {
 export default function () {
   http.get('http://localhost:3000/app/player-detail/Yunbee2')
   //http.get('http://localhost:3000/app/assets/champion_small/Orianna.png')
-  sleep(3 * Math.random()*3)
+  sleep(3 * Math.random() * 3)
 }
 
 const count200 = new Counter('status_code_2xx')
