@@ -114,7 +114,7 @@ export function MatchDetailPage(props: HomePageProps) {
   if (loading) return <ThemeProvider theme={theme}><Loading /></ThemeProvider>;
   if (error) return <Error />;
   if (!data) return <NotFound />;
-  if (data) { console.log(data) }
+  // if (data) { console.log(data) }
 
   // let blueTowerKillsRender = "Tower Kills: " + (data.matchDetail.blueTowerKills == -1 ? 0 : data.matchDetail.blueTowerKills)
   // let blueRiftHeraldKillsRender = "RiftHerald Kills: " + (data.matchDetail.blueRiftHeraldKills == -1 ? 0 : data.matchDetail.blueRiftHeraldKills)
