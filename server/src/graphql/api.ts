@@ -323,7 +323,7 @@ export const graphqlRoot: Resolvers<Context> = {
       let matchDetailCnt = 1;
       let matchDetailThreshold = 30
       let secondsSinceEpoch = Math.round(new Date().getTime() / 1000)
-      if (matchDetailCntMap.has(gameId)) {
+      if (matchDetailTimestampMap.has(gameId) && secondsSinceEpoch - matchDetailTimestampMap.get(gameId) <= 1800 && matchDetailCntMap.has(gameId)) {
         matchDetailCnt = matchDetailCntMap.get(gameId) + 1;
         if (matchDetailCnt > matchDetailThreshold) {
           console.log("####### get gameid " + gameId + " from redis!")
@@ -425,7 +425,7 @@ export const graphqlRoot: Resolvers<Context> = {
       matchDetailCntMap.set(gameId, matchDetailCnt);
       matchDetailTimestampMap.set(gameId, secondsSinceEpoch)
 
-      var riotAPI = new RiotAPI("RGAPI-8a655989-11e9-4c56-b676-c3371cc8c60a")
+      var riotAPI = new RiotAPI("")
       var jsonObj: any
       jsonObj = await riotAPI.getMatchDetail(gameId)
       if (!jsonObj) {
@@ -576,7 +576,7 @@ export const graphqlRoot: Resolvers<Context> = {
       playerNameCntMap.set(playerName, playerNameCnt);
       playerNameTimestampMap.set(playerName, secondsSinceEpoch)
 
-      var riotAPI = new RiotAPI("RGAPI-8a655989-11e9-4c56-b676-c3371cc8c60a")
+      var riotAPI = new RiotAPI("")
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner
