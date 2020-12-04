@@ -11,7 +11,6 @@ import * as React from 'react';
 import { AppRouteParams } from '../nav/route';
 import Loading from './Loading';
 
-
 interface HomePageProps extends RouteComponentProps, AppRouteParams { }
 
 const theme = createMuiTheme({

@@ -318,14 +318,120 @@ let API = {key: "null"}
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     saveAPI: async(_, { apiKey }) => {
-      API.key = apiKey
-      return API
-    },
-
+            API.key = apiKey
+            return API
+          },
     /* received graphQL call to fetch playerDetail */
     matchDetail: async (_, { gameId }) => {
       // console.log("Received gameId: " + gameId);
-      var riotAPI = new RiotAPI(API.key)
+
+      // update how many times the gameId has been searched
+      let matchDetailCnt = 1;
+      let matchDetailThreshold = 30
+      let secondsSinceEpoch = Math.round(new Date().getTime() / 1000)
+      if (matchDetailTimestampMap.has(gameId) && secondsSinceEpoch - matchDetailTimestampMap.get(gameId) <= 1800 && matchDetailCntMap.has(gameId)) {
+        matchDetailCnt = matchDetailCntMap.get(gameId) + 1;
+        if (matchDetailCnt > matchDetailThreshold) {
+          console.log("####### get gameid " + gameId + " from redis!")
+          var returnMatchDetail: any
+          var returnParticipants: Participant[] = [];
+
+          await redis.get(gameId).then(function (result: any) {
+            returnMatchDetail = JSON.parse(result)
+          });
+
+          for (let i = 1; i < 11; i++) {
+            let returnParticipant = createParticipant({
+              gameId: returnMatchDetail[i].gameId,
+              participantId: returnMatchDetail[i].participantId,
+              participantName: returnMatchDetail[i].participantName,
+              championId: returnMatchDetail[i].championId,
+              teamId: returnMatchDetail[i].teamId,
+              spell1Id: returnMatchDetail[i].spell1Id,
+              spell2Id: returnMatchDetail[i].spell2Id,
+              perk0: returnMatchDetail[i].perk0,
+              perk1: returnMatchDetail[i].perk1,
+              perk2: returnMatchDetail[i].perk2,
+              perk3: returnMatchDetail[i].perk3,
+              perk4: returnMatchDetail[i].perk4,
+              perk5: returnMatchDetail[i].perk5,
+              perkPrimaryStyle: returnMatchDetail[i].perkPrimaryStyle,
+              perkSubStyle: returnMatchDetail[i].perkSubStyle,
+              statPerk0: returnMatchDetail[i].statPerk0,
+              statPerk1: returnMatchDetail[i].statPerk1,
+              statPerk2: returnMatchDetail[i].statPerk2,
+              item0: returnMatchDetail[i].item0,
+              item1: returnMatchDetail[i].item1,
+              item2: returnMatchDetail[i].item2,
+              item3: returnMatchDetail[i].item3,
+              item4: returnMatchDetail[i].item4,
+              item5: returnMatchDetail[i].item5,
+              item6: returnMatchDetail[i].item6,
+              goldEarned: returnMatchDetail[i].goldEarned,
+              goldSpent: returnMatchDetail[i].goldSpent,
+              totalDamageTaken: returnMatchDetail[i].totalDamageTaken,
+              totalHeal: returnMatchDetail[i].totalHeal,
+              totalPlayerScore: returnMatchDetail[i].totalPlayerScore,
+              champLevel: returnMatchDetail[i].champLevel,
+              totalDamageDealtToChampions: returnMatchDetail[i].totalDamageDealtToChampions,
+              kills: returnMatchDetail[i].kills,
+              deaths: returnMatchDetail[i].deaths,
+              assist: returnMatchDetail[i].assist,
+              damageSelfMitigated: returnMatchDetail[i].damageSelfMitigated,
+              totalMinionsKilled: returnMatchDetail[i].totalMinionsKilled
+            })
+            returnParticipants.push(returnParticipant)
+          }
+
+          let MatchDetail = createMatchDetail({
+            gameId: returnMatchDetail[0].gameId,
+            queueId: returnMatchDetail[0].queueId,
+            gameType: returnMatchDetail[0].gameType,
+            gameDuration: returnMatchDetail[0].gameDuration,
+            platformId: returnMatchDetail[0].platformId,
+            gameCreation: returnMatchDetail[0].gameCreation,
+            seasonId: returnMatchDetail[0].seasonId,
+            gameVersion: returnMatchDetail[0].gameVersion,
+            mapId: returnMatchDetail[0].mapId,
+            gameMode: returnMatchDetail[0].gameMode,
+            blueTowerKills: returnMatchDetail[0].blueTowerKills,
+            blueRiftHeraldKills: returnMatchDetail[0].blueRiftHeraldKills,
+            blueFirstBlood: returnMatchDetail[0].blueFirstBlood,
+            blueInhibitorKills: returnMatchDetail[0].blueInhibitorKills,
+            blueFirstBaron: returnMatchDetail[0].blueFirstBaron,
+            blueFirstDragon: returnMatchDetail[0].blueFirstDragon,
+            blueDominionVictoryScore: returnMatchDetail[0].blueDominionVictoryScore,
+            blueDragonKills: returnMatchDetail[0].blueDragonKills,
+            blueBaronKills: returnMatchDetail[0].blueBaronKills,
+            blueFirstInhibitor: returnMatchDetail[0].blueFirstInhibitor,
+            blueFirstTower: returnMatchDetail[0].blueFirstTower,
+            blueVilemawKills: returnMatchDetail[0].blueVilemawKills,
+            blueFirstRiftHerald: returnMatchDetail[0].blueFirstRiftHerald,
+            blueWin: returnMatchDetail[0].blueWin,
+            redTowerKills: returnMatchDetail[0].redTowerKills,
+            redRiftHeraldKills: returnMatchDetail[0].redRiftHeraldKills,
+            redFirstBlood: returnMatchDetail[0].redFirstBlood,
+            redInhibitorKills: returnMatchDetail[0].redInhibitorKills,
+            redFirstBaron: returnMatchDetail[0].redFirstBaron,
+            redFirstDragon: returnMatchDetail[0].redFirstDragon,
+            redDominionVictoryScore: returnMatchDetail[0].redDominionVictoryScore,
+            redDragonKills: returnMatchDetail[0].redDragonKills,
+            redBaronKills: returnMatchDetail[0].redBaronKills,
+            redFirstInhibitor: returnMatchDetail[0].redFirstInhibitor,
+            redFirstTower: returnMatchDetail[0].redFirstTower,
+            redVilemawKills: returnMatchDetail[0].redVilemawKills,
+            redFirstRiftHerald: returnMatchDetail[0].redFirstRiftHerald,
+            redWin: returnMatchDetail[0].redWin,
+            participants: returnParticipants
+          })
+
+          return MatchDetail;
+        }
+      }
+      matchDetailCntMap.set(gameId, matchDetailCnt);
+      matchDetailTimestampMap.set(gameId, secondsSinceEpoch)
+
+      var riotAPI = new RiotAPI("")
       var jsonObj: any
       jsonObj = await riotAPI.getMatchDetail(gameId)
       if (!jsonObj) {
@@ -476,7 +582,7 @@ export const graphqlRoot: Resolvers<Context> = {
       playerNameCntMap.set(playerName, playerNameCnt);
       playerNameTimestampMap.set(playerName, secondsSinceEpoch)
 
-      var riotAPI = new RiotAPI(API.key)
+      var riotAPI = new RiotAPI("")
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner
