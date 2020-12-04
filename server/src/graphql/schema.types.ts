@@ -19,6 +19,7 @@ export interface Query {
   survey?: Maybe<Survey>
   playerDetail: PlayerDetail
   matchDetail: MatchDetail
+  saveAPI: Api
 }
 
 export interface QuerySurveyArgs {
@@ -33,6 +34,10 @@ export interface QueryMatchDetailArgs {
   gameId: Scalars['String']
 }
 
+export interface QuerySaveApiArgs {
+  apiKey: Scalars['String']
+}
+
 export interface Mutation {
   __typename?: 'Mutation'
   answerSurvey: Scalars['Boolean']
@@ -45,6 +50,11 @@ export interface MutationAnswerSurveyArgs {
 
 export interface MutationNextSurveyQuestionArgs {
   surveyId: Scalars['Int']
+}
+
+export interface Api {
+  __typename?: 'API'
+  key?: Maybe<Scalars['String']>
 }
 
 export interface PlayerDetail {
@@ -300,6 +310,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>
   Mutation: ResolverTypeWrapper<{}>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
+  API: ResolverTypeWrapper<Api>
   PlayerDetail: ResolverTypeWrapper<PlayerDetail>
   Float: ResolverTypeWrapper<Scalars['Float']>
   RecentMatch: ResolverTypeWrapper<RecentMatch>
@@ -321,6 +332,7 @@ export type ResolversParentTypes = {
   String: Scalars['String']
   Mutation: {}
   Boolean: Scalars['Boolean']
+  API: Api
   PlayerDetail: PlayerDetail
   Float: Scalars['Float']
   RecentMatch: RecentMatch
@@ -358,6 +370,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryMatchDetailArgs, 'gameId'>
   >
+  saveAPI?: Resolver<ResolversTypes['API'], ParentType, ContextType, RequireFields<QuerySaveApiArgs, 'apiKey'>>
 }
 
 export type MutationResolvers<
@@ -376,6 +389,14 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationNextSurveyQuestionArgs, 'surveyId'>
   >
+}
+
+export type ApiResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['API'] = ResolversParentTypes['API']
+> = {
+  key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
 export type PlayerDetailResolvers<
@@ -570,6 +591,7 @@ export type SurveyAnswerResolvers<
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
+  API?: ApiResolvers<ContextType>
   PlayerDetail?: PlayerDetailResolvers<ContextType>
   RecentMatch?: RecentMatchResolvers<ContextType>
   MatchDetail?: MatchDetailResolvers<ContextType>

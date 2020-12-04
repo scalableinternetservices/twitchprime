@@ -311,12 +311,19 @@ function createParticipant(config: Participant): {
   return newParticipant
 }
 
+let API = {key: "null"}
+
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
+    saveAPI: async(_, { apiKey }) => {
+      API.key = apiKey
+      return API
+    },
+
     /* received graphQL call to fetch playerDetail */
     matchDetail: async (_, { gameId }) => {
       // console.log("Received gameId: " + gameId);
-      var riotAPI = new RiotAPI("")
+      var riotAPI = new RiotAPI(API.key)
       var jsonObj: any
       jsonObj = await riotAPI.getMatchDetail(gameId)
       //console.log(JSON.parse(JSON.stringify(jsonObj)))
@@ -467,7 +474,7 @@ export const graphqlRoot: Resolvers<Context> = {
       playerNameCntMap.set(playerName, playerNameCnt);
       playerNameTimeStampMap.set(playerName, secondsSinceEpoch)
 
-      var riotAPI = new RiotAPI("")
+      var riotAPI = new RiotAPI(API.key)
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner

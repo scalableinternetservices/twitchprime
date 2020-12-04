@@ -23,6 +23,7 @@ type Query {
   # Returns an PlayerDeatil according to playerName param
   playerDetail (playerName: String!): PlayerDetail!
   matchDetail (gameId: String!): MatchDetail!
+  saveAPI (apiKey: String!): API!
 }
 
 type Mutation {
@@ -31,6 +32,10 @@ type Mutation {
 
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
+}
+
+type API {
+  key: String
 }
 
 # GraphQL type of PlayerDetail, npm run gen to generate real TypeScript PlayerDetail type
