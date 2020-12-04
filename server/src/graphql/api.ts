@@ -21,7 +21,9 @@ interface Context {
 }
 
 let playerNameCntMap = new Map();
-let playerNameTimeStampMap = new Map();
+let playerNameTimestampMap = new Map();
+let matchDetailCntMap = new Map();
+let matchDetailTimestampMap = new Map();
 
 /* create an RecentMatch obj */
 function createRecentMatch(config: RecentMatch): {
@@ -316,11 +318,116 @@ export const graphqlRoot: Resolvers<Context> = {
     /* received graphQL call to fetch playerDetail */
     matchDetail: async (_, { gameId }) => {
       // console.log("Received gameId: " + gameId);
+
+      // update how many times the gameId has been searched
+      let matchDetailCnt = 1;
+      let matchDetailThreshold = 30
+      let secondsSinceEpoch = Math.round(new Date().getTime() / 1000)
+      if (matchDetailTimestampMap.has(gameId) && secondsSinceEpoch - matchDetailTimestampMap.get(gameId) <= 1800 && matchDetailCntMap.has(gameId)) {
+        matchDetailCnt = matchDetailCntMap.get(gameId) + 1;
+        if (matchDetailCnt > matchDetailThreshold) {
+          console.log("####### get gameid " + gameId + " from redis!")
+          var returnMatchDetail: any
+          var returnParticipants: Participant[] = [];
+
+          await redis.get(gameId).then(function (result: any) {
+            returnMatchDetail = JSON.parse(result)
+          });
+
+          for (let i = 1; i < 11; i++) {
+            let returnParticipant = createParticipant({
+              gameId: returnMatchDetail[i].gameId,
+              participantId: returnMatchDetail[i].participantId,
+              participantName: returnMatchDetail[i].participantName,
+              championId: returnMatchDetail[i].championId,
+              teamId: returnMatchDetail[i].teamId,
+              spell1Id: returnMatchDetail[i].spell1Id,
+              spell2Id: returnMatchDetail[i].spell2Id,
+              perk0: returnMatchDetail[i].perk0,
+              perk1: returnMatchDetail[i].perk1,
+              perk2: returnMatchDetail[i].perk2,
+              perk3: returnMatchDetail[i].perk3,
+              perk4: returnMatchDetail[i].perk4,
+              perk5: returnMatchDetail[i].perk5,
+              perkPrimaryStyle: returnMatchDetail[i].perkPrimaryStyle,
+              perkSubStyle: returnMatchDetail[i].perkSubStyle,
+              statPerk0: returnMatchDetail[i].statPerk0,
+              statPerk1: returnMatchDetail[i].statPerk1,
+              statPerk2: returnMatchDetail[i].statPerk2,
+              item0: returnMatchDetail[i].item0,
+              item1: returnMatchDetail[i].item1,
+              item2: returnMatchDetail[i].item2,
+              item3: returnMatchDetail[i].item3,
+              item4: returnMatchDetail[i].item4,
+              item5: returnMatchDetail[i].item5,
+              item6: returnMatchDetail[i].item6,
+              goldEarned: returnMatchDetail[i].goldEarned,
+              goldSpent: returnMatchDetail[i].goldSpent,
+              totalDamageTaken: returnMatchDetail[i].totalDamageTaken,
+              totalHeal: returnMatchDetail[i].totalHeal,
+              totalPlayerScore: returnMatchDetail[i].totalPlayerScore,
+              champLevel: returnMatchDetail[i].champLevel,
+              totalDamageDealtToChampions: returnMatchDetail[i].totalDamageDealtToChampions,
+              kills: returnMatchDetail[i].kills,
+              deaths: returnMatchDetail[i].deaths,
+              assist: returnMatchDetail[i].assist,
+              damageSelfMitigated: returnMatchDetail[i].damageSelfMitigated,
+              totalMinionsKilled: returnMatchDetail[i].totalMinionsKilled
+            })
+            returnParticipants.push(returnParticipant)
+          }
+
+          let MatchDetail = createMatchDetail({
+            gameId: returnMatchDetail[0].gameId,
+            queueId: returnMatchDetail[0].queueId,
+            gameType: returnMatchDetail[0].gameType,
+            gameDuration: returnMatchDetail[0].gameDuration,
+            platformId: returnMatchDetail[0].platformId,
+            gameCreation: returnMatchDetail[0].gameCreation,
+            seasonId: returnMatchDetail[0].seasonId,
+            gameVersion: returnMatchDetail[0].gameVersion,
+            mapId: returnMatchDetail[0].mapId,
+            gameMode: returnMatchDetail[0].gameMode,
+            blueTowerKills: returnMatchDetail[0].blueTowerKills,
+            blueRiftHeraldKills: returnMatchDetail[0].blueRiftHeraldKills,
+            blueFirstBlood: returnMatchDetail[0].blueFirstBlood,
+            blueInhibitorKills: returnMatchDetail[0].blueInhibitorKills,
+            blueFirstBaron: returnMatchDetail[0].blueFirstBaron,
+            blueFirstDragon: returnMatchDetail[0].blueFirstDragon,
+            blueDominionVictoryScore: returnMatchDetail[0].blueDominionVictoryScore,
+            blueDragonKills: returnMatchDetail[0].blueDragonKills,
+            blueBaronKills: returnMatchDetail[0].blueBaronKills,
+            blueFirstInhibitor: returnMatchDetail[0].blueFirstInhibitor,
+            blueFirstTower: returnMatchDetail[0].blueFirstTower,
+            blueVilemawKills: returnMatchDetail[0].blueVilemawKills,
+            blueFirstRiftHerald: returnMatchDetail[0].blueFirstRiftHerald,
+            blueWin: returnMatchDetail[0].blueWin,
+            redTowerKills: returnMatchDetail[0].redTowerKills,
+            redRiftHeraldKills: returnMatchDetail[0].redRiftHeraldKills,
+            redFirstBlood: returnMatchDetail[0].redFirstBlood,
+            redInhibitorKills: returnMatchDetail[0].redInhibitorKills,
+            redFirstBaron: returnMatchDetail[0].redFirstBaron,
+            redFirstDragon: returnMatchDetail[0].redFirstDragon,
+            redDominionVictoryScore: returnMatchDetail[0].redDominionVictoryScore,
+            redDragonKills: returnMatchDetail[0].redDragonKills,
+            redBaronKills: returnMatchDetail[0].redBaronKills,
+            redFirstInhibitor: returnMatchDetail[0].redFirstInhibitor,
+            redFirstTower: returnMatchDetail[0].redFirstTower,
+            redVilemawKills: returnMatchDetail[0].redVilemawKills,
+            redFirstRiftHerald: returnMatchDetail[0].redFirstRiftHerald,
+            redWin: returnMatchDetail[0].redWin,
+            participants: returnParticipants
+          })
+
+          return MatchDetail;
+        }
+      }
+      matchDetailCntMap.set(gameId, matchDetailCnt);
+      matchDetailTimestampMap.set(gameId, secondsSinceEpoch)
+
       var riotAPI = new RiotAPI("")
       var jsonObj: any
       jsonObj = await riotAPI.getMatchDetail(gameId)
-      //console.log(JSON.parse(JSON.stringify(jsonObj)))
-      // console.log("got match details")
       if (!jsonObj) {
         let returnMatchDetail = createMatchDetail({})
         return returnMatchDetail
@@ -371,8 +478,6 @@ export const graphqlRoot: Resolvers<Context> = {
         returnParticipants.push(returnParticipant)
       }
 
-      //console.log(returnMatchDetail[0].blueWin)
-
       let MatchDetail = createMatchDetail({
         gameId: returnMatchDetail[0].gameId,
         queueId: returnMatchDetail[0].queueId,
@@ -415,7 +520,11 @@ export const graphqlRoot: Resolvers<Context> = {
         participants: returnParticipants
       })
 
-      //console.log(MatchDetail)
+      if (matchDetailCnt === matchDetailThreshold) {
+        console.log(gameId + " has been searched for 2 times, save it to redis!")
+        await redis.set(gameId, JSON.stringify(jsonObj));
+      }
+
       return MatchDetail
     },
 
@@ -427,7 +536,7 @@ export const graphqlRoot: Resolvers<Context> = {
       let playerNameCnt = 1;
       let playerNameThreshold = 30
       let secondsSinceEpoch = Math.round(new Date().getTime() / 1000)
-      if (playerNameTimeStampMap.has(playerName) && secondsSinceEpoch - playerNameTimeStampMap.get(playerName) <= 1800 && playerNameCntMap.has(playerName)) {
+      if (playerNameTimestampMap.has(playerName) && secondsSinceEpoch - playerNameTimestampMap.get(playerName) <= 1800 && playerNameCntMap.has(playerName)) {
         playerNameCnt = playerNameCntMap.get(playerName) + 1;
         // get from redis
         if (playerNameCnt > playerNameThreshold) {
@@ -465,7 +574,7 @@ export const graphqlRoot: Resolvers<Context> = {
         }
       }
       playerNameCntMap.set(playerName, playerNameCnt);
-      playerNameTimeStampMap.set(playerName, secondsSinceEpoch)
+      playerNameTimestampMap.set(playerName, secondsSinceEpoch)
 
       var riotAPI = new RiotAPI("")
       var jsonObj: any
@@ -519,7 +628,7 @@ export const graphqlRoot: Resolvers<Context> = {
       //console.log("playerDetail: " + playerDetail)
       // console.log("sending back player's detail and recentMatches")
 
-      // player name has been searched for 2 times, store it to redis
+      // reached threshold, store player name to redis
       if (playerNameCnt === playerNameThreshold) {
         // console.log(playerName + " has been searched for 2 times, save it to redis!")
         await redis.set(playerName, JSON.stringify(jsonObj));
