@@ -21,7 +21,9 @@ interface Context {
 }
 
 let playerNameCntMap = new Map();
-let playerNameTimeStampMap = new Map();
+let playerNameTimestampMap = new Map();
+let matchDetailCntMap = new Map();
+let matchDetailTimestampMap = new Map();
 
 /* create an RecentMatch obj */
 function createRecentMatch(config: RecentMatch): {
@@ -326,8 +328,6 @@ export const graphqlRoot: Resolvers<Context> = {
       var riotAPI = new RiotAPI(API.key)
       var jsonObj: any
       jsonObj = await riotAPI.getMatchDetail(gameId)
-      //console.log(JSON.parse(JSON.stringify(jsonObj)))
-      // console.log("got match details")
       if (!jsonObj) {
         let returnMatchDetail = createMatchDetail({})
         return returnMatchDetail
@@ -378,8 +378,6 @@ export const graphqlRoot: Resolvers<Context> = {
         returnParticipants.push(returnParticipant)
       }
 
-      //console.log(returnMatchDetail[0].blueWin)
-
       let MatchDetail = createMatchDetail({
         gameId: returnMatchDetail[0].gameId,
         queueId: returnMatchDetail[0].queueId,
@@ -422,7 +420,11 @@ export const graphqlRoot: Resolvers<Context> = {
         participants: returnParticipants
       })
 
-      //console.log(MatchDetail)
+      if (matchDetailCnt === matchDetailThreshold) {
+        console.log(gameId + " has been searched for 2 times, save it to redis!")
+        await redis.set(gameId, JSON.stringify(jsonObj));
+      }
+
       return MatchDetail
     },
 
@@ -434,7 +436,7 @@ export const graphqlRoot: Resolvers<Context> = {
       let playerNameCnt = 1;
       let playerNameThreshold = 30
       let secondsSinceEpoch = Math.round(new Date().getTime() / 1000)
-      if (playerNameTimeStampMap.has(playerName) && secondsSinceEpoch - playerNameTimeStampMap.get(playerName) <= 1800 && playerNameCntMap.has(playerName)) {
+      if (playerNameTimestampMap.has(playerName) && secondsSinceEpoch - playerNameTimestampMap.get(playerName) <= 1800 && playerNameCntMap.has(playerName)) {
         playerNameCnt = playerNameCntMap.get(playerName) + 1;
         // get from redis
         if (playerNameCnt > playerNameThreshold) {
@@ -472,7 +474,7 @@ export const graphqlRoot: Resolvers<Context> = {
         }
       }
       playerNameCntMap.set(playerName, playerNameCnt);
-      playerNameTimeStampMap.set(playerName, secondsSinceEpoch)
+      playerNameTimestampMap.set(playerName, secondsSinceEpoch)
 
       var riotAPI = new RiotAPI(API.key)
       var jsonObj: any
@@ -526,7 +528,7 @@ export const graphqlRoot: Resolvers<Context> = {
       //console.log("playerDetail: " + playerDetail)
       // console.log("sending back player's detail and recentMatches")
 
-      // player name has been searched for 2 times, store it to redis
+      // reached threshold, store player name to redis
       if (playerNameCnt === playerNameThreshold) {
         // console.log(playerName + " has been searched for 2 times, save it to redis!")
         await redis.set(playerName, JSON.stringify(jsonObj));
