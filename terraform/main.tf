@@ -2,9 +2,9 @@ module "mysql" {
   source = "./modules/mysql"
 }
 
-# module "redis" {
-#   source = "./modules/redis"
-# }
+module "redis" {
+  source = "./modules/redis"
+}
 
 resource "aws_ecs_cluster" "twitchprime" {
   name = "twitchprime"
@@ -23,10 +23,10 @@ module "webserver" {
   ecs_cluster    = aws_ecs_cluster.twitchprime.id
 
   mysql_host = module.mysql.host
-  # redis_host = module.redis.host
+  redis_host = module.redis.host
 
   services      = "BACKGROUND"
-  honeycomb_key = <insert key here>
+  honeycomb_key = ""
 
   # ws_url = module.websocket_api.url
 }
