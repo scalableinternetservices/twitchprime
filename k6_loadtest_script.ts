@@ -37,7 +37,7 @@ export const options = {
 
 export default function () {
   http.get('http://localhost:3000/app/player-detail/Yunbee2')
-  //http.get('http://localhost:3000/app/assets/champion_small/Orianna.png')
+
   sleep(3 * Math.random() * 3)
 }
 

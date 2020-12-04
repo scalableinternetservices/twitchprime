@@ -83,7 +83,7 @@ export class RiotAPI {
         }
       }).then(async function (response) {
         // console.log("Called riotAPI /summoners/by-name/")
-        // console.log("Account info Update for summoner " + searchName)
+        console.log("Account info Update for summoner " + searchName)
         const summonerByName = JSON.parse(JSON.stringify(response.data))
         const now = new Date()
         const secondsSinceEpoch = Math.round(now.getTime() / 1000)
@@ -91,7 +91,7 @@ export class RiotAPI {
         var need_update = false
         if (summonerIn != null) {
           if (secondsSinceEpoch - summoner.timestamp < 600) {//No need to update summoner with in 10 mins
-            // console.log("The Summoner data just updated within 10 mins")
+            console.log("The Summoner data just updated within 10 mins")
           } else {
             need_update = true
           }
@@ -113,7 +113,7 @@ export class RiotAPI {
       })
     }
     catch (e) {
-      // console.log("Summoner not found by riot API")
+      console.log("Summoner not found by riot API")
       // console.log(e)
       notFound = true
     }
@@ -132,8 +132,8 @@ export class RiotAPI {
           "X-Riot-Token": this.riotToken
         }
       }).then(function (response) {
-        // console.log("Called /entries/by-summoner")
-        // console.log("Game stat Update for summoner " + searchName)
+        //console.log("Called /entries/by-summoner")
+        console.log("Game stat Update for summoner " + searchName)
         const summonerAllGameStat = JSON.parse(JSON.stringify(response.data))
         if (summonerAllGameStat.length != 0 && summoner != null) {
           const summonerGameStat = summonerAllGameStat[summonerAllGameStat.length - 1] //the last entry is the  stat of Ranked_solo_5x5
@@ -160,7 +160,7 @@ export class RiotAPI {
   // For individual player search, first find accountId by summonerName
   async updateRecentMatchForSummoner(summoner: Summoner) {
     const playerAccountID = summoner.accountId
-    // const playerName = summoner.summonerName
+    const playerName = summoner.summonerName
 
     var updateRecentMatchPromise = new Promise(async (resolve) => {
       await this.instance({
@@ -176,14 +176,14 @@ export class RiotAPI {
         }
       })
         .then(async function (response) {
-          // console.log("Called: /matchlists/by-account/playerAccountID")
+          //console.log("Called: /matchlists/by-account/playerAccountID")
           const parsed = JSON.parse(JSON.stringify(response.data))
           const recentMatches = parsed.matches
-          // console.log("Removing old matches for player: " + playerName)
+          console.log("Removing old matches for player: " + playerName)
           var oldRecentMatches = summoner.recentMatches
           await RecentMatch.remove(oldRecentMatches).then(() => {
             //add new recent match
-            // console.log("Saving player: \"" + playerName + "\" recent 10 matches")
+            console.log("Saving player: \"" + playerName + "\" recent 10 matches")
             var index = 0
             recentMatches.forEach(async (element: any) => {
 
@@ -208,7 +208,7 @@ export class RiotAPI {
                 summoner.timeFetchedOfRecentMatch = secondsSinceEpoch.toString();
                 await summoner.save()
 
-                // console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
+                console.log("Recent 10 matches of player: \"" + playerName + "\" are saved")
                 resolve(summoner);
               }
               index += 1;
@@ -221,14 +221,15 @@ export class RiotAPI {
 
   //call this func only when the matchDetail is not exist previously
   async updateRecentMatchDetail(matchId: String) {
-    // console.log("updating details")
+    console.log("updating details")
     var newMatchDetail: any
     var recentMatch = check(await RecentMatch.findOne({ where: { gameId: matchId }, relations: ['matchDetail'] }))
+
     newMatchDetail = recentMatch.matchDetail
     var updateMatchDetailPromise = new Promise(async (resolve) => {
       if (newMatchDetail == null) {
         //MatchDetail.remove(matchFromDB)
-        // console.log("detail not found in db")
+        //console.log("detail not found in db")
         await this.instance({
           method: 'get',
           url: '/match/v4/matches/' + matchId, // can be any accountId, i.e. /match/v4/matchlists/by-account/{accountId}
@@ -242,7 +243,7 @@ export class RiotAPI {
           }
         })
           .then(async function (response) {
-            // console.log("Called: /matched/matchId")
+            //console.log("Called: /matched/matchId")
             const matchDetail = JSON.parse(JSON.stringify(response.data))
 
             var newMatchDetail = new MatchDetail()
@@ -294,11 +295,10 @@ export class RiotAPI {
             await newMatchDetail.save()
             recentMatch.matchDetail = newMatchDetail
             await recentMatch.save()
-            // console.log("matchDetail is saved")
+            console.log("matchDetail is saved")
 
             // const toRemove = await MatchParticipant.find()
             // MatchParticipant.remove(toRemove)
-
             newMatchDetail = check(await MatchDetail.findOne({ where: { gameId: matchId }, relations: ['matchParticipants'] }))
             var map = new Map<number, String>()
             for (let i = 0; i < matchDetail.participantIdentities.length; i++) {
@@ -350,10 +350,10 @@ export class RiotAPI {
               newParticipant.totalMinionsKilled = matchDetail.participants[i].stats.totalMinionsKilled
               await newParticipant.save()
               newMatchDetail.matchParticipants.push(newParticipant)
-              //console.log("participant saved")
+              console.log("participant saved")
             }
             await newMatchDetail.save()
-            // console.log("resolving")
+            console.log("resolving")
             resolve(newMatchDetail)
           });
       }
@@ -366,7 +366,7 @@ export class RiotAPI {
     var summoner: any
     summoner = await Summoner.findOne({ where: { summonerName: searchName } })//search in db first
     if (!summoner) {//if not found, make a new request
-      // console.log("summoner not found in db, fetching summer data from riot api")
+      console.log("summoner not found in db, fetching summer data from riot api")
       summoner = await this.updateSummonerByName(searchName, null)
       if (!summoner) {//cannot find summoner with API
         return null
@@ -374,9 +374,11 @@ export class RiotAPI {
     }
     const now = new Date()
     const secondsSinceEpoch = Math.round(now.getTime() / 1000)
-    if (secondsSinceEpoch - summoner.timestamp > 86400) {//864000 seconds in a day, update if the data is from more than a day ago
-      // console.log("updating data")
+    if (secondsSinceEpoch - summoner.timestamp > 3600) {//3600 seconds in an hour, update if the data is from more than an hour ago
+      console.log("the summoner's data is more than 30 mins ago, updating summoner data")
       summoner = await this.updateSummonerByName(searchName, summoner)
+    }else{
+      console.log("the summoner's data was updated with in 30 mins, no update is needed.")
     }
 
     //winrate is expressed as XX.XX%  ex.50.21%
@@ -409,14 +411,14 @@ export class RiotAPI {
 
     summoner = check(await Summoner.findOne({ where: { summonerName: searchName }, relations: ['recentMatches'] }))//search in db first
     if (!summoner) {//if not found, make a new request
-      // console.log("summoner not found in db, fetching summer data from riot api")
+      console.log("summoner not found in db, fetching summer data from riot api")
       summoner = await this.updateSummonerByName(searchName, null)
       if (!summoner) {//cannot find summoner with API
         return null
       }
     } else {
-      if (secondsSinceEpoch - summoner.timestamp > 86400) {//864000 seconds in a day, update if the data is from more than a day ago
-        // console.log("The summoner data is more than 1 day ago, updating summoner data")
+      if (secondsSinceEpoch - summoner.timestamp > 3600) {//3600 seconds in an hour, update if the data is from more than an hour ago
+        console.log("The summoner data is more than 1 hours ago, updating summoner data")
         summoner = await this.updateSummonerByName(searchName, summoner)
       }
 
@@ -426,14 +428,14 @@ export class RiotAPI {
     const lastTimeFetchRecentMatch = summoner.timeFetchedOfRecentMatch
 
     if (lastTimeFetchRecentMatch != null) {
-      if (secondsSinceEpoch - parseInt(lastTimeFetchRecentMatch) < 86400) {
-        // console.log("The summoner's RecentMatch data are fetched within 1 day, no update is need")
+      if (secondsSinceEpoch - parseInt(lastTimeFetchRecentMatch) < 1800) {
+        console.log("The summoner's RecentMatch data are fetched within 30 mins, no update is need")
         updateRecentMatch = false
       } else {
-        // console.log("The summoner's RecentMatch data are more than 1 day ago, updating recentMatches")
+        console.log("The summoner's RecentMatch data are more than 30 mins ago, updating recentMatches")
       }
     } else {
-      // console.log("The summoner does not have recentMatch data in db yet, fetching recentMatch data")
+      console.log("The summoner does not have recentMatch data in db yet, fetching recentMatch data")
     }
 
 
@@ -504,10 +506,10 @@ export class RiotAPI {
         matchDetail = result
 
         if (matchDetail == null) {
-          // console.log("the match detail is not found in db, fetching from riot api")
+           console.log("the match detail is not found in db, fetching from riot api")
           matchDetail = await this.updateRecentMatchDetail(matchId)
         } else {
-          // console.log("the match detail is found in db")
+           console.log("the match detail is found in db")
         }
 
         if (matchDetail != null) {
