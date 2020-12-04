@@ -8,7 +8,7 @@ export class MatchDetail extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @OneToOne(() => RecentMatch, recentMatch => recentMatch.matchDetail, {onDelete: 'CASCADE'})
+  @OneToOne(() => RecentMatch, recentMatch => recentMatch.matchDetail, {onDelete: 'CASCADE', eager: false})
   @JoinColumn()
   recentMatch : RecentMatch
 

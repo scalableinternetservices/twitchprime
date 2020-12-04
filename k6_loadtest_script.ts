@@ -27,8 +27,8 @@ export const options = {
       stages: [
         //start only 1 instance at first to avoid multiple instances
         //to fetch the summoner data from riot api and save it to the the db
-        { target: 1, duration: '5s' },
-        { target: 2000, duration: '60s' },
+        { target: 1, duration: '10s' },
+        { target: 5000, duration: '80s' },
         { target: 0, duration: '60s' },
       ],
     },
@@ -37,9 +37,11 @@ export const options = {
 
 export default function () {
   http.get('http://localhost:3000/app/player-detail/Yunbee2')
-  //sleep(2)
+  sleep(2)
+  http.get('http://localhost:3000/app/player-detail/yassuo')
+  sleep(2)
+  http.get('http://localhost:3000/app/player-detail/Revenge')
   //http.get('http://localhost:3000/app/match-detail/3688675482')
-
   sleep(3 * Math.random() * 3)
 
 }
