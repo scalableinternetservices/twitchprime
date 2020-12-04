@@ -51,7 +51,6 @@ export class RiotAPI {
         summoner.losses = element.losses
         summoner.veteran = element.veteran
         summoner.inactive = element.inactive
-        summoner.freshBlood = element.freshBlood
         summoner.hotStreak = element.hotStreak
 
         Summoner.save(summoner)//.then(s => console.log('saved summoner: ' + s.summonerName))
@@ -144,7 +143,6 @@ export class RiotAPI {
           summoner.losses = summonerGameStat.losses
           summoner.veteran = summonerGameStat.veteran
           summoner.inactive = summonerGameStat.inactive
-          summoner.freshBlood = summonerGameStat.freshBlood
           summoner.hotStreak = summonerGameStat.hotStreak
         }
       });
@@ -392,8 +390,8 @@ export class RiotAPI {
     var ResStr = '{"winrate":' + winRate + ',"timestamp":' + summoner.timestamp + ',"summonerid":"' + summoner.summonerId +
       '","accountid":"' + summoner.accountId + '","profileiconid":' + summoner.profileIconId + ',"summonername":"' + summoner.summonerName +
       '","summonerlevel":' + summoner.summonerLevel + ',"leaguepoints":' + summoner.leaguePoints + ',"tier":"' + summoner.tier + '","rank":"' + summoner.rank +
-      '","wins":' + summoner.wins + ',"losses":' + summoner.losses + ',"veteran":' + summoner.veteran + ',"inactive":' + summoner.inactive +
-      ',"freshblood":' + summoner.freshBlood + ',"hotstreak":' + summoner.hotStreak + '}'
+      '","wins":' + summoner.wins + ',"losses":' + summoner.losses + ',"veteran":' + summoner.veteran + ',"inactive":' + summoner.inactive
+      + ',"hotstreak":' + summoner.hotStreak + '}'
     // console.log(ResStr)
     var jsonObj = JSON.parse(ResStr)
     //console.log(JSON.stringify(jsonObj))

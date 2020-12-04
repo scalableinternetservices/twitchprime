@@ -82,11 +82,6 @@ export class Summoner extends BaseEntity {
   @Column({
     nullable: true
   })
-  freshBlood: boolean
-
-  @Column({
-    nullable: true
-  })
   hotStreak: boolean
 
   @OneToMany(() => RecentMatch, recentMatch => recentMatch.summoner, {eager: true})
