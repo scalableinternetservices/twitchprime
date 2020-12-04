@@ -37,8 +37,8 @@ export const options = {
 
 export default function () {
   http.get('http://localhost:3000/app/player-detail/Yunbee2')
-  sleep(2)
-  http.get('http://localhost:3000/app/match-detail/3688675482')
+  //sleep(2)
+  //http.get('http://localhost:3000/app/match-detail/3688675482')
 
   sleep(3 * Math.random() * 3)
 
