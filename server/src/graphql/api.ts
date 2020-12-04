@@ -431,7 +431,7 @@ export const graphqlRoot: Resolvers<Context> = {
       matchDetailCntMap.set(gameId, matchDetailCnt);
       matchDetailTimestampMap.set(gameId, secondsSinceEpoch)
 
-      var riotAPI = new RiotAPI("")
+      var riotAPI = new RiotAPI(API.key)
       var jsonObj: any
       jsonObj = await riotAPI.getMatchDetail(gameId)
       if (!jsonObj) {
@@ -582,7 +582,7 @@ export const graphqlRoot: Resolvers<Context> = {
       playerNameCntMap.set(playerName, playerNameCnt);
       playerNameTimestampMap.set(playerName, secondsSinceEpoch)
 
-      var riotAPI = new RiotAPI("")
+      var riotAPI = new RiotAPI(API.key)
       var jsonObj: any
       jsonObj = await riotAPI.getSummonerByName(playerName)
       if (!jsonObj) {//failed to search for summoner
