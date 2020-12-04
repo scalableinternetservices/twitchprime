@@ -61,95 +61,91 @@ export class RiotAPI {
 
   //update summoner AccountID, return summoner obj
   async updateSummonerByName(searchName: String, summonerIn: Summoner | null) {
-    var need_update = false
-    var notFound = false
-    var summoner: any
+    var need_update = true
+    var summoner : any
+    const now = new Date()
+    const secondsSinceEpoch = Math.round(now.getTime() / 1000)
+
     if (summonerIn != null) {
       summoner = summonerIn
-    }
-
-    //update account info
-    try {
-      await this.instance({
-        method: 'get',
-        url: '/summoner/v4/summoners/by-name/' + searchName, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
-        headers:
-        {
-          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
-          "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
-          "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-          "Origin": "https://developer.riotgames.com",
-          "X-Riot-Token": this.riotToken
-        }
-      }).then(async function (response) {
-        // console.log("Called riotAPI /summoners/by-name/")
-        console.log("Account info Update for summoner " + searchName)
-        const summonerByName = JSON.parse(JSON.stringify(response.data))
-        const now = new Date()
-        const secondsSinceEpoch = Math.round(now.getTime() / 1000)
-
-        if (summonerIn != null) {
-          if (secondsSinceEpoch - summoner.timestamp < 600) {//No need to update summoner with in 10 mins
-            console.log("The Summoner data just updated within 10 mins")
-          } else {
-            need_update = true
-          }
-        } else {
-          summoner = new Summoner()
-          summoner.summonerId = summonerByName.id
-          need_update = true;
-        }
-
-        if (need_update) {
-          summoner.timestamp = secondsSinceEpoch
-          summoner.accountId = summonerByName.accountId
-          summoner.summonerName = summonerByName.name
-          summoner.profileIconId = summonerByName.profileIconId
-          summoner.summonerLevel = summonerByName.summonerLevel
-        }
-
-      })
-
-          //update game stat
-      if (!notFound && need_update) {
-        await this.instance({
-          method: 'get',
-          url: '/league/v4/entries/by-summoner/' + summoner.summonerId, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
-          headers:
-          {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
-            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja-JP;q=0.6,ja;q=0.5",
-            "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-            "Origin": "https://developer.riotgames.com",
-            "X-Riot-Token": this.riotToken
-          }
-        }).then(async function (response) {
-          //console.log("Called /entries/by-summoner")
-          console.log("Game stat Update for summoner " + searchName)
-          const summonerAllGameStat = JSON.parse(JSON.stringify(response.data))
-          if (summonerAllGameStat.length != 0 && summoner != null) {
-            const summonerGameStat = summonerAllGameStat[summonerAllGameStat.length - 1] //the last entry is the  stat of Ranked_solo_5x5
-            summoner.leaguePoints = summonerGameStat.leaguePoints
-            summoner.tier = summonerGameStat.tier
-            summoner.rank = summonerGameStat.rank
-            summoner.wins = summonerGameStat.wins
-            summoner.losses = summonerGameStat.losses
-            summoner.veteran = summonerGameStat.veteran
-            summoner.inactive = summonerGameStat.inactive
-            summoner.hotStreak = summonerGameStat.hotStreak
-          }
-        });
-        await summoner.save()
-        return summoner
+      if (secondsSinceEpoch - summoner.timestamp < 600) {//No need to update summoner with in 10 mins
+        console.log("The Summoner data just updated within 10 mins")
+        need_update = false
       }
-    }
-    catch (e) {
-      console.log("Summoner not found by riot API")
-      // console.log(e)
-      notFound = true
-      return null;
+    }else{
+      summoner = new Summoner()
     }
 
+    var updateSummonerPromise = new Promise(async (resolve) => {
+      if(need_update){
+        try{
+          await this.instance({
+            method: 'get',
+            url: '/summoner/v4/summoners/by-name/' + searchName, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
+            headers:
+            {
+              "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
+              "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
+              "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+              "Origin": "https://developer.riotgames.com",
+              "X-Riot-Token": this.riotToken
+            }
+          }).then(async function (response) {
+            // console.log("Called riotAPI /summoners/by-name/")
+            const summonerByName = JSON.parse(JSON.stringify(response.data))
+            console.log("Account info Update for summoner " + searchName)
+            summoner.summonerId = summonerByName.id
+            summoner.timestamp = secondsSinceEpoch
+            summoner.accountId = summonerByName.accountId
+            summoner.summonerName = summonerByName.name
+            summoner.profileIconId = summonerByName.profileIconId
+            summoner.summonerLevel = summonerByName.summonerLevel
+          }).then(async ()=>{
+            //update game stat
+            await this.instance({
+              method: 'get',
+              url: '/league/v4/entries/by-summoner/' + summoner.summonerId,
+              headers:
+              {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
+                "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja-JP;q=0.6,ja;q=0.5",
+                "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Origin": "https://developer.riotgames.com",
+                "X-Riot-Token": this.riotToken
+              }
+            }).then(async function (response) {
+              console.log("Game stat Update for summoner " + searchName)
+              const summonerAllGameStat = JSON.parse(JSON.stringify(response.data))
+              if (summonerAllGameStat.length != 0 && summoner != null) {
+                for(let i = 0; i < summonerAllGameStat.length; i++){
+                  if(summonerAllGameStat[i].queueType === "RANKED_SOLO_5x5"){
+                    const RANKED_SOLO_5x5 = summonerAllGameStat[i]
+                    summoner.leaguePoints = RANKED_SOLO_5x5.leaguePoints
+                    summoner.tier = RANKED_SOLO_5x5.tier
+                    summoner.rank = RANKED_SOLO_5x5.rank
+                    summoner.wins = RANKED_SOLO_5x5.wins
+                    summoner.losses = RANKED_SOLO_5x5.losses
+                    summoner.veteran = RANKED_SOLO_5x5.veteran
+                    summoner.inactive = RANKED_SOLO_5x5.inactive
+                    summoner.hotStreak = RANKED_SOLO_5x5.hotStreak
+                  }
+                }
+              }
+              await summoner.save()
+              resolve(summoner);
+            });
+          })
+        }catch(e){
+          console.log("Summoner not found by riot API")
+          //console.log(e)
+          resolve(null)
+        }
+      }else{
+        resolve(summoner)
+      }
+    })
+
+    return updateSummonerPromise
 
   }
 
@@ -365,6 +361,7 @@ export class RiotAPI {
       console.log("summoner not found in db, fetching summer data from riot api")
       summoner = await this.updateSummonerByName(searchName, null)
       if (!summoner) {//cannot find summoner with API
+        console.log("null summoner")
         return null
       }
     }
@@ -390,25 +387,26 @@ export class RiotAPI {
       '","summonerlevel":' + summoner.summonerLevel + ',"leaguepoints":' + summoner.leaguePoints + ',"tier":"' + summoner.tier + '","rank":"' + summoner.rank +
       '","wins":' + summoner.wins + ',"losses":' + summoner.losses + ',"veteran":' + summoner.veteran + ',"inactive":' + summoner.inactive
       + ',"hotstreak":' + summoner.hotStreak + '}'
-    // console.log(ResStr)
     var jsonObj = JSON.parse(ResStr)
     //console.log(JSON.stringify(jsonObj))
     return jsonObj
   }
 
   async getRecentMatches(searchName: string) {
-    var summoner: Summoner
+    var summoner: any
     var returnStr: string
     var jsonObj: any
     returnStr = ""
 
     const now = new Date()
     const secondsSinceEpoch = Math.round(now.getTime() / 1000)
+    var updateSummoner = false;
 
     summoner = check(await Summoner.findOne({ where: { summonerName: searchName }, relations: ['recentMatches'] }))//search in db first
     if (!summoner) {//if not found, make a new request
       console.log("summoner not found in db, fetching summer data from riot api")
       summoner = await this.updateSummonerByName(searchName, null)
+      console.log(summoner.summonerName)
       if (!summoner) {//cannot find summoner with API
         return null
       }
@@ -416,6 +414,7 @@ export class RiotAPI {
       if (secondsSinceEpoch - summoner.timestamp > 3600) {//3600 seconds in an hour, update if the data is from more than an hour ago
         console.log("The summoner data is more than 1 hours ago, updating summoner data")
         summoner = await this.updateSummonerByName(searchName, summoner)
+        updateSummoner = true;
       }
 
     }
@@ -423,7 +422,7 @@ export class RiotAPI {
     var updateRecentMatch = true
     const lastTimeFetchRecentMatch = summoner.timeFetchedOfRecentMatch
 
-    if (lastTimeFetchRecentMatch != null) {
+    if (lastTimeFetchRecentMatch != null && !updateSummoner) {
       if (secondsSinceEpoch - parseInt(lastTimeFetchRecentMatch) < 1800) {
         console.log("The summoner's RecentMatch data are fetched within 30 mins, no update is need")
         updateRecentMatch = false
@@ -436,7 +435,7 @@ export class RiotAPI {
 
 
     var jsonObjPromise = new Promise(async (resolve, reject) => {
-      if (updateRecentMatch) {
+      if (updateRecentMatch || updateSummoner) {
         await this.updateRecentMatchForSummoner(summoner).then(async (result) => {
           const updatedSummoner = result as Summoner
           var getRecentMatchFromDataBase = new Promise(async function (resolve) {
