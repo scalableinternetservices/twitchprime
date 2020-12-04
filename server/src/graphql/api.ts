@@ -327,7 +327,7 @@ export const graphqlRoot: Resolvers<Context> = {
 
       // update how many times the gameId has been searched
       let matchDetailCnt = 1;
-      let matchDetailThreshold = 30
+      let matchDetailThreshold = 10
       let secondsSinceEpoch = Math.round(new Date().getTime() / 1000)
       if (matchDetailTimestampMap.has(gameId) && secondsSinceEpoch - matchDetailTimestampMap.get(gameId) <= 1800 && matchDetailCntMap.has(gameId)) {
         matchDetailCnt = matchDetailCntMap.get(gameId) + 1;
@@ -540,7 +540,7 @@ export const graphqlRoot: Resolvers<Context> = {
 
       // update how many times the player name has been searched
       let playerNameCnt = 1;
-      let playerNameThreshold = 30
+      let playerNameThreshold = 10
       let secondsSinceEpoch = Math.round(new Date().getTime() / 1000)
       if (playerNameTimestampMap.has(playerName) && secondsSinceEpoch - playerNameTimestampMap.get(playerName) <= 1800 && playerNameCntMap.has(playerName)) {
         playerNameCnt = playerNameCntMap.get(playerName) + 1;

@@ -4,23 +4,51 @@ import { Counter, Rate } from 'k6/metrics'
 
 // export const options = {
 //   scenarios: {
-//     example_scenario: {
+//     constant_vus_scenario: {
 //       executor: 'constant-vus',
-//       vus: 20,
-//       duration: '15s',
+//       vus: 2000,
+//       duration: '120s',
 //     },
 //   },
 // }
 
 
+// export const options = {
+//   scenarios: {
+//     ramping_arrival_rate_scenario: {
+//       // name of the executor to use
+//       executor: 'ramping-arrival-rate',
+//       // common scenario configuration
+//       startRate: '2',
+//       timeUnit: '10s',
+//       // executor-specific configuration
+//       preAllocatedVUs: 1,
+//       maxVUs: 5000,
+//       stages: [
+//         //start only 1 instance at first to avoid multiple instances
+//         //to fetch the summoner data from riot api and save it to the the db
+//         { target: 1, duration: '10s' },
+//         { target: 5000, duration: '80s' },
+//         { target: 0, duration: '60s' },
+//       ],
+//     },
+//   },
+// }
+
 export const options = {
-  scenarios: {
-    example_scenario: {
+  scenarios:{
+    // constant_vus_scenario: {
+    //   executor: 'constant-vus',
+    //   vus: 2000,
+    //   duration: '120s',
+    // },
+
+    ramping_arrival_rate_scenario: {
       // name of the executor to use
       executor: 'ramping-arrival-rate',
       // common scenario configuration
       startRate: '2',
-      timeUnit: '2s',
+      timeUnit: '10s',
       // executor-specific configuration
       preAllocatedVUs: 1,
       maxVUs: 5000,
@@ -32,14 +60,24 @@ export const options = {
         { target: 0, duration: '60s' },
       ],
     },
-  },
+    // ramping_vus_scenario:{
+    //   executor: 'ramping-vus',
+    //   startVUS: 0,
+    //   stages:[
+    //     {duration: '6s', target:1},
+    //     {duration:'120s', target: 5000},
+    //     {duration:'60s', target: 0},
+    //   ],
+    //   gracefulRampDown: '0s',
+    // }
+  }
 }
 
 export default function () {
   http.get('http://localhost:3000/app/player-detail/Yunbee2')
-  sleep(2)
+  sleep(3 * Math.random() * 3)
   http.get('http://localhost:3000/app/player-detail/yassuo')
-  sleep(2)
+  sleep(3 * Math.random() * 3)
   http.get('http://localhost:3000/app/player-detail/Revenge')
   //http.get('http://localhost:3000/app/match-detail/3688675482')
   sleep(3 * Math.random() * 3)
