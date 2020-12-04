@@ -53,7 +53,6 @@ export function SearchPage(props: HomePageProps) {
 
   function onClickFunction() {
     apiSave();
-    searchPlayerName();
   }
 
 
@@ -66,24 +65,32 @@ export function SearchPage(props: HomePageProps) {
           marginBottom: 18
         }}>LEAGUE OF LEGENDS STATS TRACKER
         </div>
-        <TextField style={{ marginRight: 4 }}
-          id="outlined-basic" label="Player Name" variant="outlined"
-          InputLabelProps={{ shrink: true, }}
-          value={playerName}
-          onChange={handlePlayerNameChange}
-        >
-        </TextField>
-        <TextField style={{ marginRight: 4 }}
-          id="outlined-basic" label="Riot API Key" variant="outlined" type="password"
-          InputLabelProps={{ shrink: true, }}
-          value={API}
-          onChange={handleAPIChange}
-        >
-        </TextField>
-        <Button style={{ marginLeft: 4 }} variant="contained" color="primary"
-          onClick={onClickFunction}>
-          <NavigateNextRoundedIcon />
-        </Button>
+        <div style={{ marginBottom: 18 }} >
+          <TextField style={{ marginRight: 4 }}
+            id="outlined-basic" label="Riot API Key" variant="outlined" type="password"
+            InputLabelProps={{ shrink: true, }}
+            value={API}
+            onChange={handleAPIChange}
+          >
+          </TextField>
+          <Button style={{ marginLeft: 4 }} variant="contained" color="primary"
+            onClick={onClickFunction}>
+            <NavigateNextRoundedIcon />
+          </Button>
+        </div>
+        <div>
+          <TextField style={{ marginRight: 4 }}
+            id="outlined-basic" label="Player Name" variant="outlined"
+            InputLabelProps={{ shrink: true, }}
+            value={playerName}
+            onChange={handlePlayerNameChange}
+          >
+          </TextField>
+          <Button style={{ marginLeft: 4 }} variant="contained" color="primary"
+            onClick={searchPlayerName}>
+            <NavigateNextRoundedIcon />
+          </Button>
+        </div>
         <div style={{
           fontSize: 14, fontWeight: 700, fontStyle: "italic",
           color: "#bdbdbd", marginTop: 14
