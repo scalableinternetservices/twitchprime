@@ -327,12 +327,12 @@ export const graphqlRoot: Resolvers<Context> = {
 
       // update how many times the gameId has been searched
       let matchDetailCnt = 1;
-      let matchDetailThreshold = 10
+      let matchDetailThreshold = 5
       let secondsSinceEpoch = Math.round(new Date().getTime() / 1000)
       if (matchDetailTimestampMap.has(gameId) && secondsSinceEpoch - matchDetailTimestampMap.get(gameId) <= 1800 && matchDetailCntMap.has(gameId)) {
         matchDetailCnt = matchDetailCntMap.get(gameId) + 1;
         if (matchDetailCnt > matchDetailThreshold) {
-          console.log("####### get gameid " + gameId + " from redis!")
+          console.log("Get MatchDetail " + gameId + " from redis!")
           var returnMatchDetail: any
           var returnParticipants: Participant[] = [];
 
@@ -527,7 +527,7 @@ export const graphqlRoot: Resolvers<Context> = {
       })
 
       if (matchDetailCnt === matchDetailThreshold) {
-        console.log(gameId + " has been searched for 2 times, save it to redis!")
+        console.log("MatchDetail "+ gameId + " has been searched for "+ matchDetailThreshold + " times, save it to redis!")
         await redis.set(gameId, JSON.stringify(jsonObj));
       }
 
@@ -548,14 +548,14 @@ export const graphqlRoot: Resolvers<Context> = {
         if (playerNameCnt > playerNameThreshold) {
           let playerDetailObjFromRedis: any
           await redis.get(playerName).then(function (result: any) {
-            // console.log("get " + playerName + " from redis!")
+            console.log("get " + playerName + "'s PlayerDetail from redis!")
             // console.log("####### " + result)
             playerDetailObjFromRedis = JSON.parse(result);
           });
           // let recentMatchObjFromRedis: any
-          let returnRrecentMatches: RecentMatch[] = [];
+          let returnRecentMatches: RecentMatch[] = [];
           await redis.get(playerName + "#RM").then(function (result: any) {
-            // console.log("get " + playerName + "#RM from redis!")
+            console.log("get " + playerName + "'s RecentMatch from redis!")
             // console.log("####### " + result)
             var recentMatches = JSON.parse(result);
             for (let i = 0; i < 10; i++) {
@@ -565,7 +565,7 @@ export const graphqlRoot: Resolvers<Context> = {
                 queue: recentMatches[i].queue, season: recentMatches[i].season, timestamp: recentMatches[i].timestamp,
                 role: recentMatches[i].role, lane: recentMatches[i].lane
               })
-              returnRrecentMatches.push(returnRecentMatch)
+              returnRecentMatches.push(returnRecentMatch)
             }
           });
           let returnPlayerDetail = createPlayerDetail({
@@ -573,7 +573,7 @@ export const graphqlRoot: Resolvers<Context> = {
             accountId: playerDetailObjFromRedis.accountid, summonerName: playerDetailObjFromRedis.summonername, profileIconId: playerDetailObjFromRedis.profileiconid,
             summonerLevel: playerDetailObjFromRedis.summonerlevel, leaguePoints: playerDetailObjFromRedis.leaguepoints, tier: playerDetailObjFromRedis.tier, rank: playerDetailObjFromRedis.rank,
             wins: playerDetailObjFromRedis.wins, losses: playerDetailObjFromRedis.losses, winRate: playerDetailObjFromRedis.winrate, veteran: playerDetailObjFromRedis.veteran,
-            inactive: playerDetailObjFromRedis.inactive, hotStreak: playerDetailObjFromRedis.hotstreak, recentMatches: returnRrecentMatches
+            inactive: playerDetailObjFromRedis.inactive, hotStreak: playerDetailObjFromRedis.hotstreak, recentMatches: returnRecentMatches
           });
           // console.log(returnPlayerDetail)
           return returnPlayerDetail
@@ -584,7 +584,12 @@ export const graphqlRoot: Resolvers<Context> = {
 
       var riotAPI = new RiotAPI(API.key)
       var jsonObj: any
-      jsonObj = await riotAPI.getSummonerByName(playerName)
+      var playerDetailAndRecentMatchesJSON : any
+      jsonObj = await riotAPI.getSummonerByNameAndRecentMatch(playerName)
+      //console.log(JSON.stringify(jsonObj))
+      if(jsonObj){
+        playerDetailAndRecentMatchesJSON = JSON.parse(JSON.stringify(jsonObj))
+      }
       if (!jsonObj) {//failed to search for summoner
         let returnPlayerDetail = createPlayerDetail({
           timeStamp: null, summonerId: null,
@@ -596,21 +601,21 @@ export const graphqlRoot: Resolvers<Context> = {
         return returnPlayerDetail
       }
 
+
       // create an RecentMatch obj & RecentMatch array
       var returnRecentMatch: any
-      let returnRrecentMatches: RecentMatch[] = [];
-      var recentMatchesObj: any
-      recentMatchesObj = await riotAPI.getRecentMatches(playerName)
-      if (!recentMatchesObj) {
+      let returnRecentMatches: RecentMatch[] = [];
+      var recentMatches : any
+      if (!jsonObj) {
         returnRecentMatch = createRecentMatch({
           accountId: null, summonerName: null, platformId: null, gameId: null, champion: -1, queue: null, season: -1,
           timestamp: null, role: null, lane: null
         });
         for (let i = 0; i < 10; i++) {
-          returnRrecentMatches.push(returnRecentMatch)
+          returnRecentMatches.push(returnRecentMatch)
         }
       } else {
-        var recentMatches = JSON.parse(JSON.stringify(recentMatchesObj))
+        recentMatches = playerDetailAndRecentMatchesJSON[1]
         for (let i = 0; i < 10; i++) {
           returnRecentMatch = createRecentMatch({
             accountId: recentMatches[i].accountId, summonerName: recentMatches[i].summonerName,
@@ -618,27 +623,27 @@ export const graphqlRoot: Resolvers<Context> = {
             queue: recentMatches[i].queue, season: recentMatches[i].season, timestamp: recentMatches[i].timestamp,
             role: recentMatches[i].role, lane: recentMatches[i].lane
           })
-          returnRrecentMatches.push(returnRecentMatch)
+          returnRecentMatches.push(returnRecentMatch)
         }
       }
 
       // create an playerDetail obj
-      var playerDetail = JSON.parse(JSON.stringify(jsonObj))
+      var playerDetail = playerDetailAndRecentMatchesJSON[0]
       let returnPlayerDetail = createPlayerDetail({
         timeStamp: playerDetail.timestamp, summonerId: playerDetail.summonerId,
         accountId: playerDetail.accountid, summonerName: playerDetail.summonername, profileIconId: playerDetail.profileiconid,
         summonerLevel: playerDetail.summonerlevel, leaguePoints: playerDetail.leaguepoints, tier: playerDetail.tier, rank: playerDetail.rank,
         wins: playerDetail.wins, losses: playerDetail.losses, winRate: playerDetail.winrate, veteran: playerDetail.veteran,
-        inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak, recentMatches: returnRrecentMatches
+        inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak, recentMatches: returnRecentMatches
       });
       //console.log("playerDetail: " + playerDetail)
       // console.log("sending back player's detail and recentMatches")
 
       // reached threshold, store player name to redis
       if (playerNameCnt === playerNameThreshold) {
-        // console.log(playerName + " has been searched for 2 times, save it to redis!")
-        await redis.set(playerName, JSON.stringify(jsonObj));
-        await redis.set(playerName + "#RM", JSON.stringify(recentMatchesObj))
+        console.log(playerName + " has been searched for "+ playerNameThreshold +" times, save it to redis!")
+        await redis.set(playerName, JSON.stringify(playerDetail));
+        await redis.set(playerName + "#RM", JSON.stringify(recentMatches))
       }
 
       return returnPlayerDetail

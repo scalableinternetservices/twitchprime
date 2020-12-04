@@ -18,7 +18,7 @@ export const options = {
     //     {duration:'60s', target: 0},
     //   ],
     //   gracefulRampDown: '30s',
-    // }
+    // },
 
     ramping_arrival_rate_scenario: {
       // name of the executor to use
