@@ -27,23 +27,20 @@ let matchDetailTimestampMap = new Map();
 
 /* create an RecentMatch obj */
 function createRecentMatch(config: RecentMatch): {
-  accountId: string, summonerName: string, platformId: string,
-  gameId: string, champion: number, queue: string, season: number, timestamp: string, role: string, lane: string
+  accountId: string, summonerName: string,
+  gameId: string, champion: number, queue: string, season: number, timestamp: string
 } {
   let newRecentMatch = {
-    accountId: "null", summonerName: "null", platformId: "null", gameId: "null", champion: -1, queue: "null", season: -1,
-    timestamp: "null", role: "null", lane: "null"
+    accountId: "null", summonerName: "null", gameId: "null", champion: -1, queue: "null", season: -1,
+    timestamp: "null"
   };
   if (config.accountId) { newRecentMatch.accountId = config.accountId }
   if (config.summonerName) { newRecentMatch.summonerName = config.summonerName }
-  if (config.platformId) { newRecentMatch.platformId = config.platformId }
   if (config.gameId) { newRecentMatch.gameId = config.gameId }
   if (config.champion) { newRecentMatch.champion = config.champion }
   if (config.queue) { newRecentMatch.queue = config.queue }
   if (config.season) { newRecentMatch.season = config.season }
   if (config.timestamp) { newRecentMatch.timestamp = config.timestamp }
-  if (config.role) { newRecentMatch.role = config.role }
-  if (config.lane) { newRecentMatch.lane = config.lane }
   return newRecentMatch;
 }
 
@@ -52,13 +49,13 @@ function createPlayerDetail(config: PlayerDetail): {
   timeStamp: number, summonerId: string,
   accountId: string, summonerName: string, profileIconId: number, summonerLevel: number,
   leaguePoints: number, tier: string, rank: string, wins: number, losses: number, winRate: float,
-  veteran: boolean, inactive: boolean, hotStreak: boolean, recentMatches: Array<RecentMatch>
+  recentMatches: Array<RecentMatch>
 } {
 
   // create an default RecentMatch obj & RecentMatch array
   let defaultRecentMatch = createRecentMatch({
-    accountId: "null", summonerName: "null", platformId: "null", gameId: "null", champion: -1, queue: "null", season: -1,
-    timestamp: "null", role: "null", lane: "null"
+    accountId: "null", summonerName: "null", gameId: "null", champion: -1, queue: "null", season: -1,
+    timestamp: "null"
   });
   let defaultRecentMatches: Array<RecentMatch> = [defaultRecentMatch, defaultRecentMatch, defaultRecentMatch, defaultRecentMatch,
     defaultRecentMatch, defaultRecentMatch, defaultRecentMatch, defaultRecentMatch, defaultRecentMatch, defaultRecentMatch];
@@ -67,7 +64,7 @@ function createPlayerDetail(config: PlayerDetail): {
     timeStamp: -1, summonerId: "null",
     accountId: "null", summonerName: "null", profileIconId: -1, summonerLevel: -1,
     leaguePoints: -1, tier: "", rank: "", wins: -1, losses: -1, winRate: -1,
-    veteran: false, inactive: false, hotStreak: false, recentMatches: defaultRecentMatches
+    recentMatches: defaultRecentMatches
   };
 
   if (config.timeStamp) { newPlayerDetail.timeStamp = config.timeStamp; }
@@ -82,9 +79,6 @@ function createPlayerDetail(config: PlayerDetail): {
   if (config.wins) { newPlayerDetail.wins = config.wins; }
   if (config.losses) { newPlayerDetail.losses = config.losses; }
   if (config.winRate) { newPlayerDetail.winRate = config.winRate; }
-  if (config.veteran) { newPlayerDetail.veteran = config.veteran }
-  if (config.inactive) { newPlayerDetail.inactive = config.inactive; }
-  if (config.hotStreak) { newPlayerDetail.hotStreak = config.hotStreak; }
   if (config.recentMatches) { newPlayerDetail.recentMatches = config.recentMatches }
 
   return newPlayerDetail;
@@ -96,10 +90,6 @@ function createMatchDetail(config: MatchDetail): {
   queueId: string,
   gameType: string,
   gameDuration: string,
-  platformId: string,
-  gameCreation: string,
-  seasonId: string,
-  gameVersion: string,
   mapId: string,
   gameMode: string,
   blueTowerKills: number,
@@ -113,7 +103,6 @@ function createMatchDetail(config: MatchDetail): {
   blueBaronKills: number,
   blueFirstInhibitor: boolean,
   blueFirstTower: boolean,
-  blueVilemawKills: number,
   blueFirstRiftHerald: boolean,
   blueWin: string,
   redTowerKills: number,
@@ -127,7 +116,6 @@ function createMatchDetail(config: MatchDetail): {
   redBaronKills: number,
   redFirstInhibitor: boolean,
   redFirstTower: boolean,
-  redVilemawKills: number,
   redFirstRiftHerald: boolean,
   redWin: string
   participants: Array<Participant>
@@ -140,27 +128,22 @@ function createMatchDetail(config: MatchDetail): {
 
   let newMatchDetail = {
     gameId: "null", queueId: "null", gameType: "null",
-    gameDuration: "null", platformId: "null", gameCreation: "null", seasonId: "null",
-    gameVersion: "null", mapId: "null", gameMode: "null",
+    gameDuration: "null", mapId: "null", gameMode: "null",
     blueTowerKills: -1, blueRiftHeraldKills: -1,
     blueFirstBlood: false, blueInhibitorKills: -1, blueFirstBaron: false, blueFirstDragon: false,
     blueDominionVictoryScore: -1, blueDragonKills: -1, blueBaronKills: 1,
-    blueFirstInhibitor: false, blueFirstTower: false, blueVilemawKills: 0,
+    blueFirstInhibitor: false, blueFirstTower: false,
     blueFirstRiftHerald: false, blueWin: "null",
     redTowerKills: -1, redRiftHeraldKills: -1,
     redFirstBlood: false, redInhibitorKills: -1, redFirstBaron: false, redFirstDragon: false,
     redDominionVictoryScore: -1, redDragonKills: -1, redBaronKills: 1,
-    redFirstInhibitor: false, redFirstTower: false, redVilemawKills: 0,
+    redFirstInhibitor: false, redFirstTower: false,
     redFirstRiftHerald: false, redWin: "null", participants: defaultParticipants
   };
   if (config.gameId) { newMatchDetail.gameId = config.gameId }
   if (config.queueId) { newMatchDetail.queueId = config.queueId }
   if (config.gameType) { newMatchDetail.gameType = config.gameType }
   if (config.gameDuration) { newMatchDetail.gameDuration = config.gameDuration }
-  if (config.platformId) { newMatchDetail.platformId = config.platformId }
-  if (config.gameCreation) { newMatchDetail.gameCreation = config.gameCreation }
-  if (config.seasonId) { newMatchDetail.seasonId = config.seasonId }
-  if (config.gameVersion) { newMatchDetail.gameVersion = config.gameVersion }
   if (config.mapId) { newMatchDetail.mapId = config.mapId }
   if (config.gameMode) { newMatchDetail.gameMode = config.gameMode }
   if (config.blueTowerKills) { newMatchDetail.blueTowerKills = config.blueTowerKills }
@@ -174,7 +157,6 @@ function createMatchDetail(config: MatchDetail): {
   if (config.blueBaronKills) { newMatchDetail.blueBaronKills = config.blueBaronKills }
   if (config.blueFirstInhibitor) { newMatchDetail.blueFirstInhibitor = config.blueFirstInhibitor }
   if (config.blueFirstTower) { newMatchDetail.blueFirstTower = config.blueFirstTower }
-  if (config.blueVilemawKills) { newMatchDetail.blueVilemawKills = config.blueVilemawKills }
   if (config.blueFirstRiftHerald) { newMatchDetail.blueFirstRiftHerald = config.blueFirstRiftHerald }
   if (config.blueWin) { newMatchDetail.blueWin = config.blueWin }
   if (config.redTowerKills) { newMatchDetail.redTowerKills = config.redTowerKills }
@@ -188,7 +170,6 @@ function createMatchDetail(config: MatchDetail): {
   if (config.redBaronKills) { newMatchDetail.redBaronKills = config.redBaronKills }
   if (config.redFirstInhibitor) { newMatchDetail.redFirstInhibitor = config.redFirstInhibitor }
   if (config.redFirstTower) { newMatchDetail.redFirstTower = config.redFirstTower }
-  if (config.redVilemawKills) { newMatchDetail.redVilemawKills = config.redVilemawKills }
   if (config.redFirstRiftHerald) { newMatchDetail.redFirstRiftHerald = config.redFirstRiftHerald }
   if (config.redWin) { newMatchDetail.redWin = config.redWin }
   if (config.participants) { newMatchDetail.participants = config.participants }
@@ -388,10 +369,6 @@ export const graphqlRoot: Resolvers<Context> = {
             queueId: returnMatchDetail[0].queueId,
             gameType: returnMatchDetail[0].gameType,
             gameDuration: returnMatchDetail[0].gameDuration,
-            platformId: returnMatchDetail[0].platformId,
-            gameCreation: returnMatchDetail[0].gameCreation,
-            seasonId: returnMatchDetail[0].seasonId,
-            gameVersion: returnMatchDetail[0].gameVersion,
             mapId: returnMatchDetail[0].mapId,
             gameMode: returnMatchDetail[0].gameMode,
             blueTowerKills: returnMatchDetail[0].blueTowerKills,
@@ -405,7 +382,6 @@ export const graphqlRoot: Resolvers<Context> = {
             blueBaronKills: returnMatchDetail[0].blueBaronKills,
             blueFirstInhibitor: returnMatchDetail[0].blueFirstInhibitor,
             blueFirstTower: returnMatchDetail[0].blueFirstTower,
-            blueVilemawKills: returnMatchDetail[0].blueVilemawKills,
             blueFirstRiftHerald: returnMatchDetail[0].blueFirstRiftHerald,
             blueWin: returnMatchDetail[0].blueWin,
             redTowerKills: returnMatchDetail[0].redTowerKills,
@@ -419,7 +395,6 @@ export const graphqlRoot: Resolvers<Context> = {
             redBaronKills: returnMatchDetail[0].redBaronKills,
             redFirstInhibitor: returnMatchDetail[0].redFirstInhibitor,
             redFirstTower: returnMatchDetail[0].redFirstTower,
-            redVilemawKills: returnMatchDetail[0].redVilemawKills,
             redFirstRiftHerald: returnMatchDetail[0].redFirstRiftHerald,
             redWin: returnMatchDetail[0].redWin,
             participants: returnParticipants
@@ -489,10 +464,6 @@ export const graphqlRoot: Resolvers<Context> = {
         queueId: returnMatchDetail[0].queueId,
         gameType: returnMatchDetail[0].gameType,
         gameDuration: returnMatchDetail[0].gameDuration,
-        platformId: returnMatchDetail[0].platformId,
-        gameCreation: returnMatchDetail[0].gameCreation,
-        seasonId: returnMatchDetail[0].seasonId,
-        gameVersion: returnMatchDetail[0].gameVersion,
         mapId: returnMatchDetail[0].mapId,
         gameMode: returnMatchDetail[0].gameMode,
         blueTowerKills: returnMatchDetail[0].blueTowerKills,
@@ -506,7 +477,6 @@ export const graphqlRoot: Resolvers<Context> = {
         blueBaronKills: returnMatchDetail[0].blueBaronKills,
         blueFirstInhibitor: returnMatchDetail[0].blueFirstInhibitor,
         blueFirstTower: returnMatchDetail[0].blueFirstTower,
-        blueVilemawKills: returnMatchDetail[0].blueVilemawKills,
         blueFirstRiftHerald: returnMatchDetail[0].blueFirstRiftHerald,
         blueWin: returnMatchDetail[0].blueWin,
         redTowerKills: returnMatchDetail[0].redTowerKills,
@@ -520,7 +490,6 @@ export const graphqlRoot: Resolvers<Context> = {
         redBaronKills: returnMatchDetail[0].redBaronKills,
         redFirstInhibitor: returnMatchDetail[0].redFirstInhibitor,
         redFirstTower: returnMatchDetail[0].redFirstTower,
-        redVilemawKills: returnMatchDetail[0].redVilemawKills,
         redFirstRiftHerald: returnMatchDetail[0].redFirstRiftHerald,
         redWin: returnMatchDetail[0].redWin,
         participants: returnParticipants
@@ -561,9 +530,8 @@ export const graphqlRoot: Resolvers<Context> = {
             for (let i = 0; i < 10; i++) {
               returnRecentMatch = createRecentMatch({
                 accountId: recentMatches[i].accountId, summonerName: recentMatches[i].summonerName,
-                platformId: recentMatches[i].platformId, gameId: recentMatches[i].gameId, champion: recentMatches[i].champion,
-                queue: recentMatches[i].queue, season: recentMatches[i].season, timestamp: recentMatches[i].timestamp,
-                role: recentMatches[i].role, lane: recentMatches[i].lane
+                gameId: recentMatches[i].gameId, champion: recentMatches[i].champion,
+                queue: recentMatches[i].queue, season: recentMatches[i].season, timestamp: recentMatches[i].timestamp
               })
               returnRecentMatches.push(returnRecentMatch)
             }
@@ -572,8 +540,7 @@ export const graphqlRoot: Resolvers<Context> = {
             timeStamp: playerDetailObjFromRedis.timestamp, summonerId: playerDetailObjFromRedis.summonerId,
             accountId: playerDetailObjFromRedis.accountid, summonerName: playerDetailObjFromRedis.summonername, profileIconId: playerDetailObjFromRedis.profileiconid,
             summonerLevel: playerDetailObjFromRedis.summonerlevel, leaguePoints: playerDetailObjFromRedis.leaguepoints, tier: playerDetailObjFromRedis.tier, rank: playerDetailObjFromRedis.rank,
-            wins: playerDetailObjFromRedis.wins, losses: playerDetailObjFromRedis.losses, winRate: playerDetailObjFromRedis.winrate, veteran: playerDetailObjFromRedis.veteran,
-            inactive: playerDetailObjFromRedis.inactive, hotStreak: playerDetailObjFromRedis.hotstreak, recentMatches: returnRecentMatches
+            wins: playerDetailObjFromRedis.wins, losses: playerDetailObjFromRedis.losses, winRate: playerDetailObjFromRedis.winrate, recentMatches: returnRecentMatches
           });
           // console.log(returnPlayerDetail)
           return returnPlayerDetail
@@ -595,8 +562,7 @@ export const graphqlRoot: Resolvers<Context> = {
           timeStamp: null, summonerId: null,
           accountId: null, summonerName: null, profileIconId: null,
           summonerLevel: null, leaguePoints: null, tier: null, rank: null,
-          wins: null, losses: null, winRate: null, veteran: null,
-          inactive: null, hotStreak: null
+          wins: null, losses: null, winRate: null
         });
         return returnPlayerDetail
       }
@@ -608,8 +574,8 @@ export const graphqlRoot: Resolvers<Context> = {
       var recentMatches : any
       if (!jsonObj) {
         returnRecentMatch = createRecentMatch({
-          accountId: null, summonerName: null, platformId: null, gameId: null, champion: -1, queue: null, season: -1,
-          timestamp: null, role: null, lane: null
+          accountId: null, summonerName: null, gameId: null, champion: -1, queue: null, season: -1,
+          timestamp: null
         });
         for (let i = 0; i < 10; i++) {
           returnRecentMatches.push(returnRecentMatch)
@@ -619,9 +585,8 @@ export const graphqlRoot: Resolvers<Context> = {
         for (let i = 0; i < 10; i++) {
           returnRecentMatch = createRecentMatch({
             accountId: recentMatches[i].accountId, summonerName: recentMatches[i].summonerName,
-            platformId: recentMatches[i].platformId, gameId: recentMatches[i].gameId, champion: recentMatches[i].champion,
+            gameId: recentMatches[i].gameId, champion: recentMatches[i].champion,
             queue: recentMatches[i].queue, season: recentMatches[i].season, timestamp: recentMatches[i].timestamp,
-            role: recentMatches[i].role, lane: recentMatches[i].lane
           })
           returnRecentMatches.push(returnRecentMatch)
         }
@@ -633,8 +598,7 @@ export const graphqlRoot: Resolvers<Context> = {
         timeStamp: playerDetail.timestamp, summonerId: playerDetail.summonerId,
         accountId: playerDetail.accountid, summonerName: playerDetail.summonername, profileIconId: playerDetail.profileiconid,
         summonerLevel: playerDetail.summonerlevel, leaguePoints: playerDetail.leaguepoints, tier: playerDetail.tier, rank: playerDetail.rank,
-        wins: playerDetail.wins, losses: playerDetail.losses, winRate: playerDetail.winrate, veteran: playerDetail.veteran,
-        inactive: playerDetail.inactive, hotStreak: playerDetail.hotstreak, recentMatches: returnRecentMatches
+        wins: playerDetail.wins, losses: playerDetail.losses, winRate: playerDetail.winrate, recentMatches: returnRecentMatches
       });
       //console.log("playerDetail: " + playerDetail)
       // console.log("sending back player's detail and recentMatches")

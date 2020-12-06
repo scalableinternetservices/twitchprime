@@ -149,6 +149,28 @@ export interface getPlayerDetailVariables {
 // @generated
 // This file was automatically generated and should not be edited.
 
+// ====================================================
+// GraphQL query operation: saveAPI
+// ====================================================
+
+export interface saveAPI_saveAPI {
+  __typename: "API";
+  key: string | null;
+}
+
+export interface saveAPI {
+  saveAPI: saveAPI_saveAPI;
+}
+
+export interface saveAPIVariables {
+  apiKey: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
 //==============================================================
 // START Enums and Input Objects
 //==============================================================

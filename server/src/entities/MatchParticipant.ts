@@ -130,26 +130,6 @@ export class MatchParticipant extends BaseEntity {
   @Column({
     default: 0
   })
-  goldSpent: number
-
-  @Column({
-    default: 0
-  })
-  totalDamageTaken: number
-
-  @Column({
-    default: 0
-  })
-  totalHeal: number
-
-  @Column({
-    default: 0
-  })
-  totalPlayerScore: number
-
-  @Column({
-    default: 0
-  })
   champLevel: number
 
   @Column({
@@ -171,11 +151,6 @@ export class MatchParticipant extends BaseEntity {
     default: 0
   })
   assist: number
-
-  @Column({
-    default: 0
-  })
-  damageSelfMitigated: number
 
   @Column({
     default: 0

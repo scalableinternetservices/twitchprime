@@ -15,9 +15,6 @@ export class RecentMatch extends BaseEntity {
   matchDetail: MatchDetail
 
   @Column()
-  platformId: string
-
-  @Column()
   gameId: string
 
   @Column()
@@ -31,10 +28,4 @@ export class RecentMatch extends BaseEntity {
 
   @Column()
   timestamp: String
-
-  @Column()
-  role: string
-
-  @Column()
-  lane: string
 }

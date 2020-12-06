@@ -49,9 +49,6 @@ export class RiotAPI {
         summoner.rank = element.rank
         summoner.wins = element.wins
         summoner.losses = element.losses
-        summoner.veteran = element.veteran
-        summoner.inactive = element.inactive
-        summoner.hotStreak = element.hotStreak
 
         Summoner.save(summoner)//.then(s => console.log('saved summoner: ' + s.summonerName))
       });
@@ -126,9 +123,6 @@ export class RiotAPI {
                     summoner.rank = RANKED_SOLO_5x5.rank
                     summoner.wins = RANKED_SOLO_5x5.wins
                     summoner.losses = RANKED_SOLO_5x5.losses
-                    summoner.veteran = RANKED_SOLO_5x5.veteran
-                    summoner.inactive = RANKED_SOLO_5x5.inactive
-                    summoner.hotStreak = RANKED_SOLO_5x5.hotStreak
                   }
                 }
               }
@@ -182,14 +176,11 @@ export class RiotAPI {
 
               var recentMatch = new RecentMatch()
               recentMatch.summoner = summoner
-              recentMatch.platformId = element.platformId
               recentMatch.gameId = element.gameId
               recentMatch.champion = element.champion
               recentMatch.queue = element.queue
               recentMatch.season = element.season
               recentMatch.timestamp = element.timestamp
-              recentMatch.role = element.role
-              recentMatch.lane = element.lane
               await recentMatch.save()
 
 
@@ -244,10 +235,6 @@ export class RiotAPI {
             newMatchDetail.queueId = matchDetail.queueId.toString()
             newMatchDetail.gameType = matchDetail.gameType
             newMatchDetail.gameDuration = matchDetail.gameDuration.toString()
-            newMatchDetail.gameCreation = matchDetail.gameCreation.toString()
-            newMatchDetail.platformId = matchDetail.platformId
-            newMatchDetail.seasonId = matchDetail.seasonId.toString()
-            newMatchDetail.gameVersion = matchDetail.gameVersion
             newMatchDetail.mapId = matchDetail.mapId.toString()
             newMatchDetail.gameMode = matchDetail.gameMode
             for (let i = 0; i < matchDetail.teams.length; i++) {
@@ -258,11 +245,9 @@ export class RiotAPI {
                 newMatchDetail.blueInhibitorKills = matchDetail.teams[i].inhibitorKills
                 newMatchDetail.blueFirstBaron = matchDetail.teams[i].firstBaron
                 newMatchDetail.blueFirstDragon = matchDetail.teams[i].firstDragon
-                newMatchDetail.blueDominionVictoryScore = matchDetail.teams[i].dominionVictoryScore
                 newMatchDetail.blueDragonKills = matchDetail.teams[i].dragonKills
                 newMatchDetail.blueBaronKills = matchDetail.teams[i].baronKills
                 newMatchDetail.blueFirstInhibitor = matchDetail.teams[i].firstInhibitor
-                newMatchDetail.blueVilemawKills = matchDetail.teams[i].vilemawKills
                 newMatchDetail.blueFirstRiftHerald = matchDetail.teams[i].firstRiftHerald
                 newMatchDetail.blueFirstTower = matchDetail.teams[i].firstTower
                 newMatchDetail.blueWin = matchDetail.teams[i].win
@@ -273,11 +258,9 @@ export class RiotAPI {
                 newMatchDetail.redInhibitorKills = matchDetail.teams[i].inhibitorKills
                 newMatchDetail.redFirstBaron = matchDetail.teams[i].firstBaron
                 newMatchDetail.redFirstDragon = matchDetail.teams[i].firstDragon
-                newMatchDetail.redDominionVictoryScore = matchDetail.teams[i].dominionVictoryScore
                 newMatchDetail.redDragonKills = matchDetail.teams[i].dragonKills
                 newMatchDetail.redBaronKills = matchDetail.teams[i].baronKills
                 newMatchDetail.redFirstInhibitor = matchDetail.teams[i].firstInhibitor
-                newMatchDetail.redVilemawKills = matchDetail.teams[i].vilemawKills
                 newMatchDetail.redFirstRiftHerald = matchDetail.teams[i].firstRiftHerald
                 newMatchDetail.redFirstTower = matchDetail.teams[i].firstTower
                 newMatchDetail.redWin = matchDetail.teams[i].win
@@ -323,17 +306,11 @@ export class RiotAPI {
               newParticipant.item4 = matchDetail.participants[i].stats.item4
               newParticipant.item5 = matchDetail.participants[i].stats.item5
               newParticipant.item6 = matchDetail.participants[i].stats.item6
-              newParticipant.goldEarned = matchDetail.participants[i].stats.goldEarned
-              newParticipant.goldSpent = matchDetail.participants[i].stats.goldSpent
-              newParticipant.totalDamageTaken = matchDetail.participants[i].stats.totalDamageTaken
-              newParticipant.totalHeal = matchDetail.participants[i].stats.totalHeal
-              newParticipant.totalPlayerScore = matchDetail.participants[i].stats.totalPlayerScore
               newParticipant.champLevel = matchDetail.participants[i].stats.champLevel
               newParticipant.totalDamageDealtToChampions = matchDetail.participants[i].stats.totalDamageDealtToChampions
               newParticipant.kills = matchDetail.participants[i].stats.kills
               newParticipant.deaths = matchDetail.participants[i].stats.deaths
               newParticipant.assist = matchDetail.participants[i].stats.assists
-              newParticipant.damageSelfMitigated = matchDetail.participants[i].stats.damageSelfMitigated
               newParticipant.totalMinionsKilled = matchDetail.participants[i].stats.totalMinionsKilled
               await newParticipant.save()
               newMatchDetail.matchParticipants.push(newParticipant)
@@ -383,8 +360,7 @@ export class RiotAPI {
     var summonerResStr = '{"winrate":' + winRate + ',"timestamp":' + summoner.timestamp + ',"summonerid":"' + summoner.summonerId +
       '","accountid":"' + summoner.accountId + '","profileiconid":' + summoner.profileIconId + ',"summonername":"' + summoner.summonerName +
       '","summonerlevel":' + summoner.summonerLevel + ',"leaguepoints":' + summoner.leaguePoints + ',"tier":"' + summoner.tier + '","rank":"' + summoner.rank +
-      '","wins":' + summoner.wins + ',"losses":' + summoner.losses + ',"veteran":' + summoner.veteran + ',"inactive":' + summoner.inactive
-      + ',"hotstreak":' + summoner.hotStreak + '}'
+      '","wins":' + summoner.wins + ',"losses":' + summoner.losses  + '}'
 
     var recentMatchResStr = await this.getRecentMatches(summoner, recentMatch_need_update)
 
@@ -436,9 +412,9 @@ export class RiotAPI {
                 returnStr += ','
               }
               returnStr += '{"accountId":"' + summoner.accountId + '","summonerName":"' + summoner.summonerName
-                + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
+                + '","gameId":"' + element.gameId + '","champion":' + element.champion
                 + ',"queue":"' + element.queue + '","season":' + element.season + ',"timestamp":"' + element.timestamp
-                + '","role":"' + element.role + '","lane":"' + element.lane + '"}'
+                + '"}'
               notFirst = true
               if (index === summoner.recentMatches.length - 1) resolve()
               index += 1
@@ -461,9 +437,9 @@ export class RiotAPI {
               returnStr += ','
             }
             returnStr += '{"accountId":"' + summoner.accountId + '","summonerName":"' + summoner.summonerName
-              + '","platformId":"' + element.platformId + '","gameId":"' + element.gameId + '","champion":' + element.champion
+              + '","gameId":"' + element.gameId + '","champion":' + element.champion
               + ',"queue":"' + element.queue + '","season":' + element.season + ',"timestamp":"' + element.timestamp
-              + '","role":"' + element.role + '","lane":"' + element.lane + '"}'
+              + '"}'
             notFirst = true
             if (index === summoner.recentMatches.length - 1) resolve()
             index += 1
@@ -499,21 +475,17 @@ export class RiotAPI {
           returnStr = '['
           returnStr += '{"queueId":"' + matchDetail.queueId
             + '","gameType":"' + matchDetail.gameType + '","gameId":"' + matchDetail.gameId
-            + '","gameDuration":"' + matchDetail.gameDuration + '","platformId":"' + matchDetail.platformId
-            + '","gameCreation":"' + matchDetail.gameCreation + '","seasonId":' + matchDetail.seasonId
-            + ',"gameVersion":"' + matchDetail.gameVersion + '","mapId":' + matchDetail.mapId
+            + '","gameDuration":"' + matchDetail.gameDuration + '","mapId":' + matchDetail.mapId
             + ',"gameMode":"' + matchDetail.gameMode + '","blueTowerKills":' + matchDetail.blueTowerKills
             + ',"blueRiftHeraldKills":' + matchDetail.blueRiftHeraldKills
             + ',"blueFirstBlood":' + matchDetail.blueFirstBlood
             + ',"blueInhibitorKills":' + matchDetail.blueInhibitorKills
             + ',"blueFirstBaron":' + matchDetail.blueFirstBaron
             + ',"blueFirstDragon":' + matchDetail.blueFirstDragon
-            + ',"blueDominationVictoryScore":' + matchDetail.blueDominionVictoryScore
             + ',"blueDragonKills":' + matchDetail.blueDragonKills
             + ',"blueBaronKills":' + matchDetail.blueBaronKills
             + ',"blueFirstInhibitor":' + matchDetail.blueFirstInhibitor
             + ',"blueFirstTower":' + matchDetail.blueFirstTower
-            + ',"blueVilemawKills":' + matchDetail.blueVilemawKills
             + ',"blueFirstRiftHerald":' + matchDetail.blueFirstRiftHerald
             + ',"blueWin":"' + matchDetail.blueWin
             + '","redTowerKills":' + matchDetail.redTowerKills
@@ -522,12 +494,10 @@ export class RiotAPI {
             + ',"redInhibitorKills":' + matchDetail.redInhibitorKills
             + ',"redFirstBaron":' + matchDetail.redFirstBaron
             + ',"redFirstDragon":' + matchDetail.redFirstDragon
-            + ',"redDominationVictoryScore":' + matchDetail.redDominionVictoryScore
             + ',"redDragonKills":' + matchDetail.redDragonKills
             + ',"redBaronKills":' + matchDetail.redBaronKills
             + ',"redFirstInhibitor":' + matchDetail.redFirstInhibitor
             + ',"redFirstTower":' + matchDetail.redFirstTower
-            + ',"redVilemawKills":' + matchDetail.redVilemawKills
             + ',"redFirstRiftHerald":' + matchDetail.redFirstRiftHerald
             + ',"redWin":"' + matchDetail.redWin
             + '"},'
@@ -565,16 +535,11 @@ export class RiotAPI {
               + ',"item5":' + element.item5
               + ',"item6":' + element.item6
               + ',"goldEarned":' + element.goldEarned
-              + ',"goldSpent":' + element.goldSpent
-              + ',"totalDamageTaken":' + element.totalDamageTaken
-              + ',"totalHeal":' + element.totalHeal
-              + ',"totalPlayerScore":' + element.totalPlayerScore
               + ',"champLevel":' + element.champLevel
               + ',"totalDamageDealtToChampions":' + element.totalDamageDealtToChampions
               + ',"kills":' + element.kills
               + ',"deaths":' + element.deaths
               + ',"assist":' + element.assist
-              + ',"damageSelfMitigated":' + element.damageSelfMitigated
               + ',"totalMinionsKilled":' + element.totalMinionsKilled
               + '}'
           })

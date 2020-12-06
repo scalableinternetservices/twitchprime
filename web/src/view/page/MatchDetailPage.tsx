@@ -181,6 +181,7 @@ export function MatchDetailPage(props: HomePageProps) {
       <ThemeProvider theme={theme}>
         <title>Match Overview</title>
         <div style={{ marginTop: -110, display: "flex", flexDirection: "column" }}>
+          <div style={{ fontSize: 20, fontWeight: 700, fontStyle: "italic", color: "1e88e5" }}>Game duration: {data.matchDetail.gameDuration / 60 >> 0} min {data.matchDetail.gameDuration % 60} s</div>
           <div style={{ fontSize: 20, fontWeight: 700, fontStyle: "italic", color: "1e88e5" }}>VICTORY ({winTeamName})</div>
           <WinTable attributes={winAttributes} participants={winParticipants}></WinTable>
         </div>

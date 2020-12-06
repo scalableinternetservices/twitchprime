@@ -28,18 +28,6 @@ export class MatchDetail extends BaseEntity {
   gameDuration: String
 
   @Column()
-  platformId: String
-
-  @Column()
-  gameCreation: String
-
-  @Column()
-  seasonId: String
-
-  @Column()
-  gameVersion: string
-
-  @Column()
   mapId: String
 
   @Column()
@@ -78,11 +66,6 @@ export class MatchDetail extends BaseEntity {
   @Column({
     default: 0
   })
-  blueDominionVictoryScore: number
-
-  @Column({
-    default: 0
-  })
   blueDragonKills: number
 
   @Column({
@@ -99,11 +82,6 @@ export class MatchDetail extends BaseEntity {
     default: false
   })
   blueFirstTower: boolean
-
-  @Column({
-    default: 0
-  })
-  blueVilemawKills: number
 
   @Column({
     default: false
@@ -148,11 +126,6 @@ export class MatchDetail extends BaseEntity {
   @Column({
     default: 0
   })
-  redDominionVictoryScore: number
-
-  @Column({
-    default: 0
-  })
   redDragonKills: number
 
   @Column({
@@ -169,11 +142,6 @@ export class MatchDetail extends BaseEntity {
     default: false
   })
   redFirstTower: boolean
-
-  @Column({
-    default: 0
-  })
-  redVilemawKills: number
 
   @Column({
     default: false
