@@ -1,4 +1,3 @@
-import { sleep } from 'k6'
 import http from 'k6/http'
 
 export const options = {
@@ -24,17 +23,28 @@ export const options = {
       // name of the executor to use
       executor: 'ramping-arrival-rate',
       // common scenario configuration
-      startRate: '2',
-      timeUnit: '10s',
+      startRate: '0',
+      timeUnit: '1s',
       // executor-specific configuration
-      preAllocatedVUs: 1,
+      preAllocatedVUs: 50,
       maxVUs: 5000,
       stages: [
         //start only 1 instance at first to avoid multiple instances
         //to fetch the summoner data from riot api and save it to the the db
-        { target: 1, duration: '10s' },
-        { target: 5000, duration: '80s' },
-        { target: 0, duration: '60s' },
+        // { target: 1, duration: '10s' },
+        // { target: 5000, duration: '80s' },
+        // { target: 0, duration: '60s' },
+        { target: 1, duration: '5s'},
+        { target: 1, duration: '10s'},
+        { target: 20, duration: '20s' },
+        { target: 20, duration: '20s' },
+        { target: 30, duration: '10s' },
+        { target: 30, duration: '20s' },
+        { target: 40, duration: '10s' },
+        { target: 40, duration: '20s' },
+        { target: 50, duration: '10s' },
+        { target: 50, duration: '20s' },
+        { target: 0, duration: '30s' },
       ],
     },
   }
@@ -42,12 +52,12 @@ export const options = {
 
 export default function () {
   http.get('http://localhost:3000/app/player-detail/Yunbee2')
-  sleep(3 * Math.random() * 3)
-  http.get('http://localhost:3000/app/player-detail/yassuo')
-  sleep(3 * Math.random() * 3)
-  http.get('http://localhost:3000/app/player-detail/Revenge')
+  // sleep(3 * Math.random() * 3)
+  // http.get('http://localhost:3000/app/player-detail/yassuo')
+  // sleep(3 * Math.random() * 3)
+  // http.get('http://localhost:3000/app/player-detail/Revenge')
   //http.get('http://localhost:3000/app/match-detail/3688675482')
-  sleep(3 * Math.random() * 3)
+  //sleep(3 * Math.random() * 3)
 
 }
 
