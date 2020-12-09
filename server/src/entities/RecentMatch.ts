@@ -7,11 +7,11 @@ export class RecentMatch extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(() => Summoner, summoner => summoner.recentMatches)
+  @ManyToOne(() => Summoner, summoner => summoner.recentMatches, {onDelete: 'CASCADE'})
   @JoinColumn()
   summoner: Summoner
 
-  @OneToOne(() => MatchDetail, matchDetail => matchDetail.recentMatch, {eager: true})
+  @OneToOne(() => MatchDetail, matchDetail => matchDetail.recentMatch, {eager: false})
   matchDetail: MatchDetail
 
   @Column()

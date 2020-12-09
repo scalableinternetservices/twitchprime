@@ -3,7 +3,7 @@ require('honeycomb-beeline')({
   dataset: process.env.APP_NAME || 'twitchprime',
   serviceName: process.env.APPSERVER_TAG || 'local',
   enabledInstrumentations: ['express', 'mysql2', 'react-dom/server'],
-  sampleRate: 10,
+  sampleRate: 1,
 })
 
 import assert from 'assert'
