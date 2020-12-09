@@ -67,93 +67,95 @@ export class RiotAPI {
     notFound = false
 
     //update account info
-    try {
-      await this.instance({
-        method: 'get',
-        url: '/summoner/v4/summoners/by-name/' + searchName, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
-        headers:
-        {
-          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
-          "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
-          "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-          "Origin": "https://developer.riotgames.com",
-          "X-Riot-Token": this.riotToken
-        }
-      }).then(async function (response) {
-        console.log("Called riotAPI /summoners/by-name/")
-        console.log("Account info Update for summoner " + searchName)
-        const summonerByName = JSON.parse(JSON.stringify(response.data))
-        summoner = await (Summoner.findOne({ where: { summonerId: summonerByName.id } }))
-        const now = new Date()
-        const secondsSinceEpoch = Math.round(now.getTime() / 1000)
-
-        var need_update = false
-        if(summoner){
-          if (secondsSinceEpoch - summoner.timestamp < 600) {//No need to update summoner with in 10 mins
-            console.log("The Summoner data just updated within 10 mins")
-          }else{
-            need_update = true
+    var updateSummonerByNamePromise = new Promise(async (resolve) =>{
+      try {
+        await this.instance({
+          method: 'get',
+          url: '/summoner/v4/summoners/by-name/' + searchName, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
+          headers:
+          {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6,it-IT;q=0.5,it;q=0.4",
+            "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Origin": "https://developer.riotgames.com",
+            "X-Riot-Token": this.riotToken
           }
-        }
+        }).then(async function (response) {
+          console.log("Called riotAPI /summoners/by-name/")
+          console.log("Account info Update for summoner " + searchName)
+          const summonerByName = JSON.parse(JSON.stringify(response.data))
+          summoner = await (Summoner.findOne({ where: { summonerId: summonerByName.id } }))
+          const now = new Date()
+          const secondsSinceEpoch = Math.round(now.getTime() / 1000)
 
-        if (!summoner) {
-          summoner = new Summoner()
-          summoner.summonerId = summonerByName.id
-          need_update = true;
-        }
-        if(need_update){
-          summoner.timestamp = secondsSinceEpoch
-          summoner.accountId = summonerByName.accountId
-          summoner.summonerName = summonerByName.name
-          summoner.profileIconId = summonerByName.profileIconId
-          summoner.summonerLevel = summonerByName.summonerLevel
-          Summoner.save(summoner)
-        }
+          var need_update = false
+          if(summoner){
+            if (secondsSinceEpoch - summoner.timestamp < 600) {//No need to update summoner with in 10 mins
+              console.log("The Summoner data just updated within 10 mins")
+            }else{
+              need_update = true
+            }
+          }
 
-      })
-    }
-    catch (e) {
-      console.log("Summoner not found by riot API")
-      console.log(e)
-      notFound = true
-    }
+          if (!summoner) {
+            summoner = new Summoner()
+            summoner.summonerId = summonerByName.id
+            need_update = true;
+          }
+          if(need_update){
+            summoner.timestamp = secondsSinceEpoch
+            summoner.accountId = summonerByName.accountId
+            summoner.summonerName = summonerByName.name
+            summoner.profileIconId = summonerByName.profileIconId
+            summoner.summonerLevel = summonerByName.summonerLevel
+            Summoner.save(summoner)
+          }
+        }).then(async ()=>{
+          //update game stat
+          if (!notFound) {
+            await this.instance({
+              method: 'get',
+              url: '/league/v4/entries/by-summoner/' + summoner.summonerId, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
+              headers:
+              {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
+                "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja-JP;q=0.6,ja;q=0.5",
+                "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Origin": "https://developer.riotgames.com",
+                "X-Riot-Token": this.riotToken
+              }
+            }).then(function (response) {
+              console.log("Called /entries/by-summoner")
+              console.log("Game stat Update for summoner " + searchName)
+              const summonerAllGameStat = JSON.parse(JSON.stringify(response.data))
+              if (summonerAllGameStat.length != 0) {
+                const summonerGameStat = summonerAllGameStat[summonerAllGameStat.length - 1] //the last entry is the  stat of Ranked_solo_5x5
+                summoner.leaguePoints = summonerGameStat.leaguePoints
+                summoner.tier = summonerGameStat.tier
+                summoner.rank = summonerGameStat.rank
+                summoner.wins = summonerGameStat.wins
+                summoner.losses = summonerGameStat.losses
+                summoner.veteran = summonerGameStat.veteran
+                summoner.inactive = summonerGameStat.inactive
+                summoner.freshBlood = summonerGameStat.freshBlood
+                summoner.hotStreak = summonerGameStat.hotStreak
+                Summoner.save(summoner)
+                resolve(summoner)
+              }
+            });
+          }else{
+            resolve(null)
+          }
+        })
+      }
+      catch (e) {
+        console.log("Summoner not found by riot API")
+        console.log(e)
+        resolve(null)
+      }
+    })
 
-    //update game stat
-    if (!notFound) {
-      await this.instance({
-        method: 'get',
-        url: '/league/v4/entries/by-summoner/' + summoner.summonerId, // can be any player name, i.e. /summoner/v4/summoners/by-name/{playerName}
-        headers:
-        {
-          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
-          "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja-JP;q=0.6,ja;q=0.5",
-          "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-          "Origin": "https://developer.riotgames.com",
-          "X-Riot-Token": this.riotToken
-        }
-      }).then(function (response) {
-        console.log("Called /entries/by-summoner")
-        console.log("Game stat Update for summoner " + searchName)
-        const summonerAllGameStat = JSON.parse(JSON.stringify(response.data))
-        if (summonerAllGameStat.length != 0) {
-          const summonerGameStat = summonerAllGameStat[summonerAllGameStat.length - 1] //the last entry is the  stat of Ranked_solo_5x5
-          summoner.leaguePoints = summonerGameStat.leaguePoints
-          summoner.tier = summonerGameStat.tier
-          summoner.rank = summonerGameStat.rank
-          summoner.wins = summonerGameStat.wins
-          summoner.losses = summonerGameStat.losses
-          summoner.veteran = summonerGameStat.veteran
-          summoner.inactive = summonerGameStat.inactive
-          summoner.freshBlood = summonerGameStat.freshBlood
-          summoner.hotStreak = summonerGameStat.hotStreak
-        }
-      });
-    }
-    if (notFound) {
-      return null
-    }
-    Summoner.save(summoner)
-    return summoner
+    return updateSummonerByNamePromise
   }
 
   // For individual player search, first find accountId by summonerName
@@ -396,7 +398,7 @@ export class RiotAPI {
   }
 
   async getRecentMatches(searchName: string) {
-    var summoner: Summoner
+    var summoner: any
     var returnStr: string
     var jsonObj: any
     returnStr = ""

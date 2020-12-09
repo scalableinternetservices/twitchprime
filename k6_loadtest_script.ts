@@ -1,6 +1,4 @@
-import { sleep } from 'k6'
 import http from 'k6/http'
-import { Counter, Rate } from 'k6/metrics'
 
 // export const options = {
 //   scenarios: {
@@ -19,51 +17,35 @@ export const options = {
       // name of the executor to use
       executor: 'ramping-arrival-rate',
       // common scenario configuration
-      startRate: '2',
+      startRate: 0,
       timeUnit: '1s',
       // executor-specific configuration
-      preAllocatedVUs: 1,
-      maxVUs: 100,
+      preAllocatedVUs: 50,
+      maxVUs: 200,
       stages: [
         //start only 1 instance at first to avoid multiple instances
         //to fetch the summoner data from riot api and save it to the the db
         { target: 1, duration: '5s'},
-        { target: 100, duration: '30s' },
+        { target: 1, duration: '20s'},
+        { target: 10, duration: '5s' },
+        { target: 10, duration: '20s' },
+        { target: 12, duration: '5s' },
+        { target: 12, duration: '20s' },
+        { target: 13, duration: '5s' },
+        { target: 13, duration: '20s' },
+        { target: 14, duration: '5s' },
+        { target: 14, duration: '20s' },
+        { target: 15, duration: '5s' },
+        { target: 15, duration: '20s' },
         { target: 0, duration: '30s' },
       ],
     },
+
   },
 }
 
 export default function () {
-  http.get('http://localhost:3000/app/player-detail/Yunbee2')
+  http.get('http://localhost:3000/app/player-detail/yunbee2')
   //http.get('http://localhost:3000/app/assets/champion_small/Orianna.png')
-  sleep(4)
-}
-
-const count200 = new Counter('status_code_2xx')
-const count300 = new Counter('status_code_3xx')
-const count400 = new Counter('status_code_4xx')
-const count500 = new Counter('status_code_5xx')
-
-const rate200 = new Rate('rate_status_code_2xx')
-const rate300 = new Rate('rate_status_code_3xx')
-const rate400 = new Rate('rate_status_code_4xx')
-const rate500 = new Rate('rate_status_code_5xx')
-
-function recordRates(res) {
-  if (res.status >= 200 && res.status < 300) {
-    count200.add(1)
-    rate200.add(1)
-  } else if (res.status >= 300 && res.status < 400) {
-    console.log(res.body)
-    count300.add(1)
-    rate300.add(1)
-  } else if (res.status >= 400 && res.status < 500) {
-    count400.add(1)
-    rate400.add(1)
-  } else if (res.status >= 500 && res.status < 600) {
-    count500.add(1)
-    rate500.add(1)
-  }
+  //sleep(3)
 }

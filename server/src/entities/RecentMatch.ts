@@ -11,7 +11,7 @@ export class RecentMatch extends BaseEntity {
   @JoinColumn()
   summoner: Summoner
 
-  @OneToOne(() => MatchDetail, matchDetail => matchDetail.recentMatch, {eager: true})
+  @OneToOne(() => MatchDetail, matchDetail => matchDetail.recentMatch, {eager: false})
   matchDetail: MatchDetail
 
   @Column()
