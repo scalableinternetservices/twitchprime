@@ -203,7 +203,6 @@ function createParticipant(config: Participant): {
   item5: number,
   item6: number,
   goldEarned: number,
-  goldSpent: number,
   totalDamageTaken: number,
   totalHeal: number,
   totalPlayerScore: number,
@@ -242,7 +241,6 @@ function createParticipant(config: Participant): {
     item5: -1,
     item6: -1,
     goldEarned: 0,
-    goldSpent: 0,
     totalDamageTaken: 0,
     totalHeal: 0,
     totalPlayerScore: 0,
@@ -280,7 +278,6 @@ function createParticipant(config: Participant): {
   if (config.item5) { newParticipant.item5 = config.item5 }
   if (config.item6) { newParticipant.item6 = config.item6 }
   if (config.goldEarned) { newParticipant.goldEarned = config.goldEarned }
-  if (config.goldSpent) { newParticipant.goldSpent = config.goldSpent }
   if (config.totalDamageTaken) { newParticipant.totalDamageTaken = config.totalDamageTaken }
   if (config.totalHeal) { newParticipant.totalHeal = config.totalHeal }
   if (config.totalPlayerScore) { newParticipant.totalPlayerScore = config.totalPlayerScore }
@@ -349,7 +346,6 @@ export const graphqlRoot: Resolvers<Context> = {
               item5: returnMatchDetail[i].item5,
               item6: returnMatchDetail[i].item6,
               goldEarned: returnMatchDetail[i].goldEarned,
-              goldSpent: returnMatchDetail[i].goldSpent,
               totalDamageTaken: returnMatchDetail[i].totalDamageTaken,
               totalHeal: returnMatchDetail[i].totalHeal,
               totalPlayerScore: returnMatchDetail[i].totalPlayerScore,
@@ -444,7 +440,6 @@ export const graphqlRoot: Resolvers<Context> = {
           item5: returnMatchDetail[i].item5,
           item6: returnMatchDetail[i].item6,
           goldEarned: returnMatchDetail[i].goldEarned,
-          goldSpent: returnMatchDetail[i].goldSpent,
           totalDamageTaken: returnMatchDetail[i].totalDamageTaken,
           totalHeal: returnMatchDetail[i].totalHeal,
           totalPlayerScore: returnMatchDetail[i].totalPlayerScore,

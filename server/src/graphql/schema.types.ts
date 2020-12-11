@@ -162,7 +162,6 @@ export interface Participant {
   item5?: Maybe<Scalars['Int']>
   item6?: Maybe<Scalars['Int']>
   goldEarned?: Maybe<Scalars['Int']>
-  goldSpent?: Maybe<Scalars['Int']>
   totalDamageTaken?: Maybe<Scalars['Int']>
   totalHeal?: Maybe<Scalars['Int']>
   totalPlayerScore?: Maybe<Scalars['Int']>
@@ -515,7 +514,6 @@ export type ParticipantResolvers<
   item5?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   item6?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   goldEarned?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
-  goldSpent?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   totalDamageTaken?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   totalHeal?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   totalPlayerScore?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>

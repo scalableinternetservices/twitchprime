@@ -90,7 +90,6 @@ export function MatchDetailPage(props: HomePageProps) {
           item5
           item6
           goldEarned
-          goldSpent
           totalDamageTaken
           totalHeal
           totalPlayerScore

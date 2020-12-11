@@ -140,7 +140,6 @@ type Participant {
   item5: Int
   item6: Int
   goldEarned: Int
-  goldSpent: Int
   totalDamageTaken: Int
   totalHeal: Int
   totalPlayerScore: Int

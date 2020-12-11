@@ -311,6 +311,7 @@ export class RiotAPI {
               newParticipant.kills = matchDetail.participants[i].stats.kills
               newParticipant.deaths = matchDetail.participants[i].stats.deaths
               newParticipant.assist = matchDetail.participants[i].stats.assists
+              newParticipant.goldEarned = matchDetail.participants[i].stats.goldEarned
               newParticipant.totalMinionsKilled = matchDetail.participants[i].stats.totalMinionsKilled
               await newParticipant.save()
               newMatchDetail.matchParticipants.push(newParticipant)
@@ -540,6 +541,7 @@ export class RiotAPI {
               + ',"kills":' + element.kills
               + ',"deaths":' + element.deaths
               + ',"assist":' + element.assist
+              + ',"goldEarned":' + element.goldEarned
               + ',"totalMinionsKilled":' + element.totalMinionsKilled
               + '}'
           })

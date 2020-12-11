@@ -35,7 +35,6 @@ export interface getMatchDetail_matchDetail_participants {
   item5: number | null;
   item6: number | null;
   goldEarned: number | null;
-  goldSpent: number | null;
   totalDamageTaken: number | null;
   totalHeal: number | null;
   totalPlayerScore: number | null;
